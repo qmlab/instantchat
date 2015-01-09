@@ -1,0 +1,13 @@
+{
+  "name": "qmchat",
+  "version": "0.1.0",
+  "description": "Simple chatter",
+  "main": "index.js",
+  "author": "QM",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "express": "4.10.7",
+    "socket.io": "1.2.1"
+  }
+}

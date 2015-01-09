@@ -1,1 +1,2 @@
-Toy chat 
+Toy chat
+ MIT license
