@@ -98,6 +98,10 @@ ul {
   font-size: 150%;
 }
 
+.users {
+  font-size: 200%;
+}
+
 .inputMessage {
   font-size: 100%;
 }
@@ -116,10 +120,21 @@ ul {
   padding-bottom: 60px;
 }
 
+.userArea{
+  height: 100%;
+  padding-bottom: 60px;
+}
+
 .messages {
   height: 100%;
   margin: 0;
   overflow-y: scroll;
+  padding: 10px 20px 10px 20px;
+}
+
+.users {
+  height: 100%;
+  margin: 0;
   padding: 10px 20px 10px 20px;
 }
 
@@ -147,4 +162,12 @@ ul {
   position: absolute;
   right: 0;
   width: 100%;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
 }
