@@ -10,6 +10,7 @@ $(function() {
   // Initialize varibles
   var $window = $(window);
   var $usernameInput = $('.usernameInput'); // Input for username
+  var $roomnameInput = $('.roomnameInput'); // Input for username
   var $messages = $('.messages'); // Messages area
   var $users = $('.users'); // User area
   var $inputMessage = $('.inputMessage'); // Input message input box
@@ -17,14 +18,26 @@ $(function() {
   var $loginPage = $('.login.page'); // The login page
   var $chatPage = $('.chat.page'); // The chatroom page
 
+  // Context menu
+  var $contextMenu = $("#contextMenu"); // Display and show the action menu
+
+  // Apprise
+  // Add overlay and set opacity for cross-browser compatibility
+  $Apprise = $('<div class="apprise">');
+  $overlay = $('<div class="apprise-overlay">');
+  $body = $('body');
+  $window = $(window);
+  $body.append( $overlay.css('opacity', '.94') ).append($Apprise);
+
   // Prompt for setting a username
   var username;
+  var roomname;
   var connected = false;
   var typing = false;
   var lastTypingTime;
   var $currentInput = $usernameInput.focus();
 
-  var socket = io();
+  var socket = io.connect('http://localhost:3000');
 
   function addParticipantsMessage (data) {
     var message = '';
@@ -33,22 +46,28 @@ $(function() {
     } else {
       message += "there are " + data.numUsers + " participants";
     }
+
+    // Log the total number of current users
     log(message);
   }
 
   // Sets the client's username
   function setUsername () {
     username = cleanInput($usernameInput.val().trim());
+    roomname = cleanInput($roomnameInput.val().trim());
 
     // If the username is valid
-    if (username) {
-      $loginPage.fadeOut();
-      $chatPage.show();
-      $loginPage.off('click');
-      $currentInput = $inputMessage.focus();
+    if (username && roomname) {
+      //$loginPage.off('click');
 
       // Tell the server your username
-      socket.emit('add user', username);
+      socket.emit('add user', {
+        username: username,
+        roomname: roomname
+      });
+    }
+    else {
+      Apprise('Error: Invalid user name or room name')
     }
   }
 
@@ -64,6 +83,7 @@ $(function() {
         username: username,
         message: message
       });
+
       // tell server to execute 'new message' and send along one parameter
       socket.emit('new message', message);
     }
@@ -71,33 +91,42 @@ $(function() {
 
   // Log a message
   function log (message, options) {
+    options = options || {};
     var $el = $('<li>').addClass('log').text(message);
-    addMessageElement($el, $messages, options);
+    if (typeof options.scrollToBottom == 'undefined') {
+      options.scrollToBottom = true;
+    }
+    addElement($el, $messages, options);
   }
 
   // Add the user to the current user list
   function addUser (data, options) {
-    alert(data)
+    options = options || {};
     var $usernameDiv = $('<li class="username"/>')
     .text(data.username)
     .css('color', getUsernameColor(data.username));
 
-    addMessageElement($usernameDiv, $users, options);
+    options.scrollToBottom = false;
+    addElement($usernameDiv, $users, options);
   }
 
   // Adds the visual chat message to the message list
   function addChatMessage (data, options) {
+    options = options || {};
     // Don't fade the message in if there is an 'X was typing'
     var $typingMessages = getTypingMessages(data);
-    options = options || {};
     if ($typingMessages.length !== 0) {
       options.fade = false;
       $typingMessages.remove();
     }
 
+    var $dateTimeDiv = $('<span class="datetime"/>')
+    .text(GetTime())
+
     var $usernameDiv = $('<span class="username"/>')
     .text(data.username)
     .css('color', getUsernameColor(data.username));
+
     var $messageBodyDiv = $('<span class="messageBody">')
     .text(data.message);
 
@@ -105,9 +134,10 @@ $(function() {
     var $messageDiv = $('<li class="message"/>')
     .data('username', data.username)
     .addClass(typingClass)
-    .append($usernameDiv, $messageBodyDiv);
+    .append($usernameDiv, $dateTimeDiv, $messageBodyDiv);
 
-    addMessageElement($messageDiv, $messages, options);
+    options.scrollToBottom = true;
+    addElement($messageDiv, $messages, options);
   }
 
   // Adds the visual chat typing message
@@ -130,7 +160,7 @@ $(function() {
   // options.fade - If the element should fade-in (default = true)
   // options.prepend - If the element should prepend
   //   all other messages (default = false)
-  function addMessageElement (el, list, options) {
+  function addElement (el, list, options) {
     var $el = $(el);
 
     // Setup default options
@@ -153,7 +183,10 @@ $(function() {
     } else {
       list.append($el);
     }
-    list[0].scrollTop = list[0].scrollHeight;
+
+    if (options.scrollToBottom === true) {
+      $window.scrollTop(list[0].scrollHeight);
+    }
   }
 
   // Prevents input from having injected markup
@@ -205,7 +238,7 @@ $(function() {
   $window.keydown(function (event) {
     // Auto-focus the current input when a key is typed
     if (!(event.ctrlKey || event.metaKey || event.altKey)) {
-      $currentInput.focus();
+      //$currentInput.focus();
     }
     // When the client hits ENTER on their keyboard
     if (event.which === 13) {
@@ -217,17 +250,22 @@ $(function() {
         setUsername();
       }
     }
+    $contextMenu.hide();
   });
 
   $inputMessage.on('input', function() {
     updateTyping();
   });
 
+  $('#enterRoom').click(function (event) {
+    setUsername();
+  })
+
   // Click events
 
   // Focus input when clicking anywhere on login page
   $loginPage.click(function () {
-    $currentInput.focus();
+    //$currentInput.focus();
   });
 
   // Focus input when clicking on the message input's border
@@ -240,12 +278,25 @@ $(function() {
   // Whenever the server emits 'login', log the login message
   socket.on('login', function (data) {
     connected = true;
+    $loginPage.fadeOut();
+    $chatPage.show();
+    $currentInput = $inputMessage.focus();
+
     // Display the welcome message
-    var message = "Welcome to Socket.IO Chat – ";
+    var message = "Room [" + data.roomname + "]";
+    log(message, {
+      prepend: true
+    });
+    var message = "Welcome " + data.username + "!";
     log(message, {
       prepend: true
     });
     addParticipantsMessage(data);
+
+    // Add users to the user list for current user
+    data.users.forEach(function(value, index, array) {
+      addUser({ username: value })
+    })
   });
 
   // Whenever the server emits 'new message', update the chat body
@@ -255,16 +306,15 @@ $(function() {
 
   // Whenever the server emits 'user joined', log it in the chat body
   socket.on('user joined', function (data) {
-    log(data.username + ' joined');
-    addParticipantsMessage(data);
+    log(data.username + ' has joined');
     addUser(data)
   });
 
   // Whenever the server emits 'user left', log it in the chat body
   socket.on('user left', function (data) {
-    log(data.username + ' left');
-    addParticipantsMessage(data);
+    log(data.username + ' has left');
     removeChatTyping(data);
+    $('.users > li:contains("' + data.username + '")').remove()
   });
 
   // Whenever the server emits 'typing', show the typing message
@@ -276,4 +326,42 @@ $(function() {
   socket.on('stop typing', function (data) {
     removeChatTyping(data);
   });
+
+  socket.on('error message', function(e) {
+    Apprise('Error: ' + e.msg)
+  })
+
+
+  // Show and hide context menu
+  $('ul.users').on('contextmenu', 'li', function(e) {
+    $contextMenu.css({
+      display: 'block',
+      left: e.pageX,
+      top: e.pageY
+    });
+    //alert( $( this ).text() );
+    return false;
+  });
+
+  $('body').on('click', function() {
+    $contextMenu.hide();
+  })
 });
+
+function GetTime() {
+  var date = new Date()
+  var month = new Array();
+  month[0] = "Jan";
+  month[1] = "Feb";
+  month[2] = "Mar";
+  month[3] = "Apr";
+  month[4] = "May";
+  month[5] = "Jun";
+  month[6] = "Jul";
+  month[7] = "Aug";
+  month[8] = "Sep";
+  month[9] = "Oct";
+  month[10] = "Nov";
+  month[11] = "Dec";
+  return '[' + month[date.getMonth()] + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + '] '
+}

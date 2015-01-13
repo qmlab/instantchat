@@ -55,14 +55,24 @@ ul {
 .login.page .form {
   height: 100px;
   margin-top: -100px;
-  position: absolute;
+  position: fixed;
 
   text-align: center;
-  top: 50%;
+  top: 35%;
   width: 100%;
 }
 
 .login.page .form .usernameInput {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #fff;
+  outline: none;
+  padding-bottom: 15px;
+  text-align: center;
+  width: 400px;
+}
+
+.login.page .form .roomnameInput {
   background-color: transparent;
   border: none;
   border-bottom: 2px solid #fff;
@@ -86,6 +96,16 @@ ul {
   font-weight: 100;
 }
 
+.login.page .roomnameInput {
+  font-size: 200%;
+  letter-spacing: 3px;
+}
+
+.login.page .title, .login.page .roomnameInput {
+  color: #fff;
+  font-weight: 100;
+}
+
 /* Chat page */
 
 .chat.page {
@@ -96,6 +116,11 @@ ul {
 
 .messages {
   font-size: 150%;
+}
+
+.datetime {
+  font-size: 80%;
+  color: #339933;
 }
 
 .users {
@@ -123,12 +148,12 @@ ul {
 .userArea{
   height: 100%;
   padding-bottom: 60px;
+  position: fixed;
 }
 
 .messages {
   height: 100%;
   margin: 0;
-  overflow-y: scroll;
   padding: 10px 20px 10px 20px;
 }
 
@@ -143,7 +168,6 @@ ul {
 }
 
 .username {
-  float: left;
   font-weight: 700;
   overflow: hidden;
   padding-right: 15px;
@@ -170,4 +194,46 @@ ul {
   left: 0;
   right: 0;
   height: 50px;
+}
+
+.dropdown-menu {
+  display: block;
+  position: static;
+  margin-bottom: 5px;
+}
+
+#contextMenu {
+  position: absolute;
+  display:none;
+}
+
+.btn {
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  cursor: pointer;
+  padding: 25px 80px;
+  display: inline-block;
+  margin: 15px 30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  outline: none;
+  position: relative;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.btn-1 {
+  border: 3px solid #fff;
+  color: #fff;
+}
+
+.btn-1a:hover,
+.btn-1a:active {
+  color: #000;
+  background: #fff;
 }
