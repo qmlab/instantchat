@@ -232,39 +232,50 @@ $(function() {
   }
 
   // Keyboard events
-  $window.keydown(function (event) {
-    // Auto-focus the current input when a key is typed
-    if (!(event.ctrlKey || event.metaKey || event.altKey)) {
-      $(document).prop('title', defaultTitle)
-      //$currentInput.focus();
+  $('#enterRoom').click(function (e) {
+    setUsername();
+  });
+
+  $('.usernameInput').keydown(processSetUserName)
+  $('.roomnameInput').keydown(processSetUserName)
+
+  function processSetUserName(e) {
+    if (!username && e.which === 13)
+    {
+      setUsername()
     }
-    // When the client hits ENTER on their keyboard
-    if (event.which === 13) {
-      if (username) {
-        if (event.ctrlKey) {
-          if ($inputMessage.is(':focus')) {
-            sendMessage();
-            socket.emit('stop typing');
-            typing = false;
-          }
-          else if ($privateMessage.is(':focus')) {
-            sendMessage($privateModal.data('toUser'))
-          }
+  }
+
+  $window.keydown(function (e) {
+    $contextMenu.hide();
+  })
+
+  $inputMessage.keydown(processInput)
+  $privateMessage.keydown(processInput)
+
+  function processInput(e) {
+    if (username && e.which === 13) {
+      if (!(e.ctrlKey || e.metaKey || e.altKey)) {
+        if ($inputMessage.is(':focus')) {
+          sendMessage();
+          socket.emit('stop typing');
+          typing = false;
         }
-      } else {
-        setUsername();
+        else if ($privateMessage.is(':focus')) {
+          sendMessage($privateModal.data('toUser'))
+        }
+      }
+      else {
+        $(this).val(function(i, v) {
+          return v + '\n'
+        })
       }
     }
-    $contextMenu.hide();
-  });
+  }
 
   $inputMessage.on('input', function() {
     updateTyping();
   });
-
-  $('#enterRoom').click(function (event) {
-    setUsername();
-  })
 
   // Click events
 

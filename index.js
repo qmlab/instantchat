@@ -3,6 +3,9 @@ var express = require('express')
 , app = express()
 , server = require('http').createServer(app)
 , chatserver = require('./chatserver.js')
+, path = require('path')
+
+var port = 3000
 
 // For rendering views
 app.set('views', __dirname + '/public')

@@ -38,33 +38,33 @@ function AddElement (el, list, window, options) {
 function GetTime() {
   var date = new Date()
   var month = new Array();
-  month[0] = "Jan";
-  month[1] = "Feb";
-  month[2] = "Mar";
-  month[3] = "Apr";
-  month[4] = "May";
-  month[5] = "Jun";
-  month[6] = "Jul";
-  month[7] = "Aug";
-  month[8] = "Sep";
-  month[9] = "Oct";
-  month[10] = "Nov";
-  month[11] = "Dec";
+  month[0] = 'Jan';
+  month[1] = 'Feb';
+  month[2] = 'Mar';
+  month[3] = 'Apr';
+  month[4] = 'May';
+  month[5] = 'Jun';
+  month[6] = 'Jul';
+  month[7] = 'Aug';
+  month[8] = 'Sep';
+  month[9] = 'Oct';
+  month[10] = 'Nov';
+  month[11] = 'Dec';
   return '[' + month[date.getMonth()] + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + '] '
 }
 
 function ReplaceNewLines (input) {
-  var replacedString = input.replace(/\n/ig, "<br>")
+  var replacedString = input.replace(/\n/ig, '<br>')
   return replacedString
 }
 
 // Prevents input from having injected markup
 function CleanInput (input) {
-  var strippedString = input.replace(/(<([^>]+)>)/ig,"");
+  var strippedString = input.replace(/(<([^>]+)>)/ig, '').replace(/^([\r\n]+)/ig, '');
   return strippedString;
 }
 
 function GetBaseUrl() {
   var getUrl = window.location
-  return getUrl.protocol + "//" + getUrl.host + "/"
+  return getUrl.protocol + '//' + getUrl.host + '/'
 }
