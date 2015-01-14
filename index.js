@@ -73,7 +73,6 @@ io.sockets.on('connection', function (socket) {
       });
     }
     else {
-      console.log(data)
       sockets[data.toUser].emit('new message', {
         username: socket.username,
         message: data.msg,

@@ -125,7 +125,7 @@ ul {
 
 .messageType {
   font-size: 80%;
-  color: #339933;
+  color: #cc66ff;
 }
 
 .users {
@@ -169,7 +169,7 @@ ul {
 }
 
 .message .messageBody {
-  display: block;
+  word-wrap: break-word;
 }
 
 .username {
@@ -177,6 +177,10 @@ ul {
   overflow: hidden;
   padding-right: 15px;
   text-align: right;
+}
+
+.username:hover {
+  background: #f0f0f0;
 }
 
 /* Input */
@@ -195,6 +199,7 @@ ul {
 .inputMessage {
   font-size: 100%;
   border: 5px;
+  resize: none;
 }
 
 .privateMessage {

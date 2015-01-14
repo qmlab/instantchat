@@ -150,16 +150,16 @@ $(function() {
     .css('color', getUsernameColor(data.username));
 
     var $messageBodyDiv = $('<span class="messageBody"/>')
-    .text(ReplaceNewLines(data.message));
+    .html(ReplaceNewLines(data.message));
 
     if (data.toUser) {
       if (data.username === username)
       {
-        $messageTypeDiv.text('[to ' + data.toUser + '] ')
+        $messageTypeDiv.html('[to <b>' + data.toUser + '</b>] ')
       }
       else if (data.toUser === username)
       {
-        $messageTypeDiv.text('[from ' + data.username + '] ')
+        $messageTypeDiv.html('[from <b>' + data.username + '</b>] ')
       }
     }
 
@@ -293,11 +293,7 @@ $(function() {
     $currentInput = $inputMessage.focus();
 
     // Display the welcome message
-    var message = "Room [" + data.roomname + "]";
-    log(message, {
-      prepend: true
-    });
-    var message = "Welcome " + data.username + "!";
+    var message = "Welcome " + data.username + " to " + "Room \"" + data.roomname + "\"";
     log(message, {
       prepend: true
     });
@@ -342,18 +338,23 @@ $(function() {
   })
 
   // Show and hide context menu
-  $('ul.users').on('contextmenu', 'li', function(e) {
-    $contextMenu.css({
-      display: 'block',
-      left: e.pageX,
-      top: e.pageY
-    });
+  $('ul.users').on('contextmenu', '.username', showContextMenu);
+  $('ul.messages').on('contextmenu', '.username', showContextMenu);
 
-    // Put the user into the data storage of the menu
-    $contextMenu.data('toUser', $(this).text())
+  function showContextMenu(e) {
+    if ($(this).text() !== username) {
+      $contextMenu.css({
+        display: 'block',
+        left: e.pageX,
+        top: e.pageY
+      });
+
+      // Put the user into the data storage of the menu
+      $contextMenu.data('toUser', $(this).text())
+    }
 
     return false;
-  });
+  }
 
   $('#sendMsg').click(function(e) {
     var toUser = $contextMenu.data('toUser')

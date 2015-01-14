@@ -54,7 +54,7 @@ function GetTime() {
 }
 
 function ReplaceNewLines (input) {
-  var replacedString = input.replace(/\n/, "")
+  var replacedString = input.replace(/\n/ig, "<br>")
   return replacedString
 }
 
