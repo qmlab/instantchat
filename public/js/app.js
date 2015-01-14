@@ -1,5 +1,4 @@
 $(function() {
-  var FADE_TIME = 250; // ms
   var TYPING_TIMER_LENGTH = 2000; // ms
   var COLORS = [
   '#e21400', '#91580f', '#f8a700', '#f78b00',
@@ -11,31 +10,31 @@ $(function() {
   var $window = $(window);
   var $usernameInput = $('.usernameInput'); // Input for username
   var $roomnameInput = $('.roomnameInput'); // Input for username
-  var $messages = $('.messages'); // Messages area
+  var $messages = $('#publicMessages'); // Messages area
   var $users = $('.users'); // User area
   var $inputMessage = $('.inputMessage'); // Input message input box
+  var $privateMessage = $('.privateMessage')
+  var $currentInput = $usernameInput.focus();
 
   var $loginPage = $('.login.page'); // The login page
   var $chatPage = $('.chat.page'); // The chatroom page
 
   // Context menu
   var $contextMenu = $("#contextMenu"); // Display and show the action menu
+  var $privateModal = $('#privateChannel')
 
   // Apprise
   // Add overlay and set opacity for cross-browser compatibility
-  $Apprise = $('<div class="apprise">');
-  $overlay = $('<div class="apprise-overlay">');
   $body = $('body');
   $window = $(window);
-  $body.append( $overlay.css('opacity', '.94') ).append($Apprise);
 
   // Prompt for setting a username
-  var username;
-  var roomname;
-  var connected = false;
-  var typing = false;
-  var lastTypingTime;
-  var $currentInput = $usernameInput.focus();
+  var username
+  , roomname
+  , connected = false
+  , typing = false
+  , lastTypingTime
+  , defaultTitle = 'QMChat'
 
   var socket = io.connect('http://localhost:3000');
 
@@ -53,8 +52,8 @@ $(function() {
 
   // Sets the client's username
   function setUsername () {
-    username = cleanInput($usernameInput.val().trim());
-    roomname = cleanInput($roomnameInput.val().trim());
+    username = CleanInput($usernameInput.val().trim());
+    roomname = CleanInput($roomnameInput.val().trim());
 
     // If the username is valid
     if (username && roomname) {
@@ -67,25 +66,46 @@ $(function() {
       });
     }
     else {
-      Apprise('Error: Invalid user name or room name')
+      bootbox.alert('Error: Invalid user name or room name')
     }
   }
 
   // Sends a chat message
-  function sendMessage () {
-    var message = $inputMessage.val();
+  function sendMessage (toUser) {
+    var message
+    if (toUser) {
+      message = $privateMessage.val();
+    }
+    else {
+      message = $inputMessage.val();
+    }
+
     // Prevent markup from being injected into the message
-    message = cleanInput(message);
+    message = CleanInput(message);
+
     // if there is a non-empty message and a socket connection
     if (message && connected) {
-      $inputMessage.val('');
-      addChatMessage({
-        username: username,
-        message: message
-      });
+      if (toUser) {
+        $privateMessage.val('');
+        addChatMessage({
+          username: username,
+          message: message,
+          toUser: toUser
+        });
 
-      // tell server to execute 'new message' and send along one parameter
-      socket.emit('new message', message);
+        // tell server to execute 'new message' and send along one parameter
+        socket.emit('new message', { msg: message, toUser: toUser });
+      }
+      else {
+        $inputMessage.val('');
+        addChatMessage({
+          username: username,
+          message: message
+        });
+
+        // tell server to execute 'new message' and send along one parameter
+        socket.emit('new message', { msg: message });
+      }
     }
   }
 
@@ -96,7 +116,7 @@ $(function() {
     if (typeof options.scrollToBottom == 'undefined') {
       options.scrollToBottom = true;
     }
-    addElement($el, $messages, options);
+    AddElement($el, $messages, $window, options);
   }
 
   // Add the user to the current user list
@@ -107,7 +127,7 @@ $(function() {
     .css('color', getUsernameColor(data.username));
 
     options.scrollToBottom = false;
-    addElement($usernameDiv, $users, options);
+    AddElement($usernameDiv, $users, $window, options);
   }
 
   // Adds the visual chat message to the message list
@@ -120,6 +140,8 @@ $(function() {
       $typingMessages.remove();
     }
 
+    var $messageTypeDiv = $('<span class="messageType"/>')
+
     var $dateTimeDiv = $('<span class="datetime"/>')
     .text(GetTime())
 
@@ -127,17 +149,33 @@ $(function() {
     .text(data.username)
     .css('color', getUsernameColor(data.username));
 
-    var $messageBodyDiv = $('<span class="messageBody">')
-    .text(data.message);
+    var $messageBodyDiv = $('<span class="messageBody"/>')
+    .text(ReplaceNewLines(data.message));
+
+    if (data.toUser) {
+      if (data.username === username)
+      {
+        $messageTypeDiv.text('[to ' + data.toUser + '] ')
+      }
+      else if (data.toUser === username)
+      {
+        $messageTypeDiv.text('[from ' + data.username + '] ')
+      }
+    }
 
     var typingClass = data.typing ? 'typing' : '';
     var $messageDiv = $('<li class="message"/>')
     .data('username', data.username)
     .addClass(typingClass)
-    .append($usernameDiv, $dateTimeDiv, $messageBodyDiv);
+    .append($usernameDiv, $dateTimeDiv, $messageTypeDiv, $messageBodyDiv);
 
+    // Add the new message and scroll to bottom
     options.scrollToBottom = true;
-    addElement($messageDiv, $messages, options);
+    AddElement($messageDiv, $messages, $window, options);
+
+    if (data.username !== username && !data.typing) {
+      $(document).prop('title', 'New Message~~')
+    }
   }
 
   // Adds the visual chat typing message
@@ -152,46 +190,6 @@ $(function() {
     getTypingMessages(data).fadeOut(function () {
       $(this).remove();
     });
-  }
-
-  // Adds a message element to the messages and scrolls to the bottom
-  // el - The element to add as a message
-  // list - the list to append/prepend to
-  // options.fade - If the element should fade-in (default = true)
-  // options.prepend - If the element should prepend
-  //   all other messages (default = false)
-  function addElement (el, list, options) {
-    var $el = $(el);
-
-    // Setup default options
-    if (!options) {
-      options = {};
-    }
-    if (typeof options.fade === 'undefined') {
-      options.fade = true;
-    }
-    if (typeof options.prepend === 'undefined') {
-      options.prepend = false;
-    }
-
-    // Apply options
-    if (options.fade) {
-      $el.hide().fadeIn(FADE_TIME);
-    }
-    if (options.prepend) {
-      list.prepend($el);
-    } else {
-      list.append($el);
-    }
-
-    if (options.scrollToBottom === true) {
-      $window.scrollTop(list[0].scrollHeight);
-    }
-  }
-
-  // Prevents input from having injected markup
-  function cleanInput (input) {
-    return $('<div/>').text(input).text();
   }
 
   // Updates the typing event
@@ -234,18 +232,25 @@ $(function() {
   }
 
   // Keyboard events
-
   $window.keydown(function (event) {
     // Auto-focus the current input when a key is typed
     if (!(event.ctrlKey || event.metaKey || event.altKey)) {
+      $(document).prop('title', defaultTitle)
       //$currentInput.focus();
     }
     // When the client hits ENTER on their keyboard
     if (event.which === 13) {
       if (username) {
-        sendMessage();
-        socket.emit('stop typing');
-        typing = false;
+        if (event.ctrlKey) {
+          if ($inputMessage.is(':focus')) {
+            sendMessage();
+            socket.emit('stop typing');
+            typing = false;
+          }
+          else if ($privateMessage.is(':focus')) {
+            sendMessage($privateModal.data('toUser'))
+          }
+        }
       } else {
         setUsername();
       }
@@ -271,6 +276,11 @@ $(function() {
   // Focus input when clicking on the message input's border
   $inputMessage.click(function () {
     $inputMessage.focus();
+  });
+
+  // Focus input when clicking on the message input's border
+  $privateMessage.click(function () {
+    $privateMessage.focus();
   });
 
   // Socket events
@@ -328,9 +338,8 @@ $(function() {
   });
 
   socket.on('error message', function(e) {
-    Apprise('Error: ' + e.msg)
+    bootbox.alert('Error: ' + e.msg)
   })
-
 
   // Show and hide context menu
   $('ul.users').on('contextmenu', 'li', function(e) {
@@ -339,29 +348,33 @@ $(function() {
       left: e.pageX,
       top: e.pageY
     });
-    //alert( $( this ).text() );
+
+    // Put the user into the data storage of the menu
+    $contextMenu.data('toUser', $(this).text())
+
     return false;
   });
+
+  $('#sendMsg').click(function(e) {
+    var toUser = $contextMenu.data('toUser')
+    $privateModal.data('toUser', toUser)
+    $privateModal.find('.modal-title').text('To ' + toUser)
+    $privateModal.modal('toggle')
+  })
+
+  $('#sendPrivateMsgBtn').click(function(e) {
+    sendMessage($privateModal.data('toUser'))
+  })
+
+  $privateModal.on('shown.bs.modal', function () {
+    $privateMessage.focus()
+  })
 
   $('body').on('click', function() {
     $contextMenu.hide();
   })
-});
 
-function GetTime() {
-  var date = new Date()
-  var month = new Array();
-  month[0] = "Jan";
-  month[1] = "Feb";
-  month[2] = "Mar";
-  month[3] = "Apr";
-  month[4] = "May";
-  month[5] = "Jun";
-  month[6] = "Jul";
-  month[7] = "Aug";
-  month[8] = "Sep";
-  month[9] = "Oct";
-  month[10] = "Nov";
-  month[11] = "Dec";
-  return '[' + month[date.getMonth()] + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + '] '
-}
+  $('body').mouseover(function() {
+    $(document).prop('title', defaultTitle)
+  })
+});

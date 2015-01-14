@@ -16,6 +16,7 @@ app.use(express.static(__dirname + '/public'));
 
 // users which are currently connected to the chat
 var users = {};
+var sockets = {};
 
 io.sockets.on('connection', function (socket) {
   var addedUser = false;
@@ -24,6 +25,9 @@ io.sockets.on('connection', function (socket) {
   socket.on('add user', function (data) {
     // we store the username in the socket session for this client
     if (data.username && data.roomname) {
+      // Store the socket
+      sockets[data.username] = socket;
+
       if (users[data.roomname] && users[data.roomname].indexOf(data.username) >= 0) {
         socket.emit('error message', {
           msg: 'user already exists in this room'
@@ -57,16 +61,25 @@ io.sockets.on('connection', function (socket) {
         msg: 'empty username or roomname'
       })
     }
-
   });
 
   // when the client emits 'new message', this listens and executes
   socket.on('new message', function (data) {
-    // we tell the client to execute 'new message'
-    socket.broadcast.to(socket.roomname).emit('new message', {
-      username: socket.username,
-      message: data
-    });
+    if (typeof data.toUser == 'undefined') {
+      // we tell the client to execute 'new message'
+      socket.broadcast.to(socket.roomname).emit('new message', {
+        username: socket.username,
+        message: data.msg
+      });
+    }
+    else {
+      console.log(data)
+      sockets[data.toUser].emit('new message', {
+        username: socket.username,
+        message: data.msg,
+        toUser: data.toUser
+      })
+    }
   });
 
   // when the client emits 'typing', we broadcast it to others

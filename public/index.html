@@ -4,17 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>QMChat</title>
-  <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/apprise-v2.css">
 </head>
 <body>
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script src="/js/socket.io.js"></script>
+  <script src="/js/bootbox.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/app.js"></script>
+
   <ul class="pages">
     <li id="chat_page" class="chat page">
-      <div class="row">
+      <div class="navbar navbar-fixed-top navbar-default">
+        <div class="navbar-header"><a class="navbar-brand">QM Chat</a></div>
+      </div>
+      <div class="row" style="padding-top:50px">
         <div class="col-xs-12 col-md-8">
           <div class="chatArea">
-            <ul class="messages"></ul>
+            <ul class="messages" id="publicMessages"></ul>
           </div>
         </div>
         <div class="col-xs-6 col-md-4">
@@ -26,7 +35,7 @@
       </div>
       <footer class="footer">
         <div class="container">
-          <input class="inputMessage" placeholder="Type here..."/>
+          <input class="inputMessage form-control" placeholder="Saying..."/>
         </div>
       </footer>
     </li>
@@ -46,18 +55,32 @@
   </ul>
   <div id="contextMenu" class="dropdown clearfix">
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-      <li><a tabindex="-1" href="#">Send message</a></li>
+      <li><a tabindex="-1" id="sendMsg" href="#">Send message</a></li>
       <li><a tabindex="-1" href="#">Voice chat</a></li>
       <li><a tabindex="-1" href="#">Video chat</a></li>
     </ul>
   </div>
-  <div class="apprise-overlay" />
-  <div class="apprise" />
 
-  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-  <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-  <script src="/js/socket.io.js"></script>
-  <script src="/js/apprise-v2.js"></script>
-  <script src="/js/app.js"></script>
+  <div class="modal fade" id="privateChannel">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="privateMessagesTitle">Private Chat</h4>
+        </div>
+        <div class="modal-body">
+          <ul class="messages" id="privateMessages"></ul>
+          <div class="container">
+            <textarea class="privateMessage form-control" placeholder="Whispering..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="sendPrivateMsgBtn" class="btn btn-primary">Send</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

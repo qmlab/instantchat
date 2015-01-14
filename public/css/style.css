@@ -123,12 +123,13 @@ ul {
   color: #339933;
 }
 
-.users {
-  font-size: 200%;
+.messageType {
+  font-size: 80%;
+  color: #339933;
 }
 
-.inputMessage {
-  font-size: 100%;
+.users {
+  font-size: 200%;
 }
 
 .log {
@@ -167,6 +168,10 @@ ul {
   color: gray;
 }
 
+.message .messageBody {
+  display: block;
+}
+
 .username {
   font-weight: 700;
   overflow: hidden;
@@ -176,16 +181,26 @@ ul {
 
 /* Input */
 
-.inputMessage {
-  border: 10px solid #000;
+.form-control {
   bottom: 0;
   height: 60px;
-  left: 0;
+  left: 0px;
   outline: none;
   padding-left: 10px;
   position: absolute;
-  right: 0;
+  right: 0px;
   width: 100%;
+}
+
+.inputMessage {
+  font-size: 100%;
+  border: 5px;
+}
+
+.privateMessage {
+  font-size: 100%;
+  border: 2px;
+  resize: none;
 }
 
 .footer {
@@ -208,15 +223,12 @@ ul {
 }
 
 .btn {
-  border: none;
   font-family: inherit;
   font-size: inherit;
   color: inherit;
   background: none;
   cursor: pointer;
-  padding: 25px 80px;
   display: inline-block;
-  margin: 15px 30px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;
@@ -229,6 +241,8 @@ ul {
 
 .btn-1 {
   border: 3px solid #fff;
+  padding: 25px 80px;
+  margin: 15px 30px;
   color: #fff;
 }
 
@@ -236,4 +250,8 @@ ul {
 .btn-1a:active {
   color: #000;
   background: #fff;
+}
+
+.navbar .navbar-fixed-top {
+  height: 50px
 }
