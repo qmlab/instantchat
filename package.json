@@ -8,6 +8,10 @@
   "license": "MIT",
   "dependencies": {
     "express": "4.10.7",
-    "socket.io": "1.2.1"
+    "socket.io": "1.2.1",
+    "ejs": "2.1.4"
+  },
+  "scripts": {
+    "start": "node index.js"
   }
 }

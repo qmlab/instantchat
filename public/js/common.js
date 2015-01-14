@@ -63,3 +63,8 @@ function CleanInput (input) {
   var strippedString = input.replace(/(<([^>]+)>)/ig,"");
   return strippedString;
 }
+
+function GetBaseUrl() {
+  var getUrl = window.location
+  return getUrl.protocol + "//" + getUrl.host + "/"
+}

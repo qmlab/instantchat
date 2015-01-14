@@ -36,7 +36,7 @@ $(function() {
   , lastTypingTime
   , defaultTitle = 'QMChat'
 
-  var socket = io.connect('http://localhost:3000');
+  var socket = io.connect(GetBaseUrl());
 
   function addParticipantsMessage (data) {
     var message = '';
