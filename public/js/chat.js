@@ -277,12 +277,7 @@ $(function() {
   });
 
   // Click events
-
-  // Focus input when clicking anywhere on login page
-  $loginPage.click(function () {
-    $usernameInput.focus();
-  });
-
+  
   // Focus input when clicking on the message input's border
   $inputMessage.click(function () {
     $inputMessage.focus();
