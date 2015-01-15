@@ -68,3 +68,11 @@ function GetBaseUrl() {
   var getUrl = window.location
   return getUrl.protocol + '//' + getUrl.host + '/'
 }
+
+
+function ScrollTitle(text) {
+  document.title = text;
+  setTimeout(function () {
+    ScrollTitle(text.substr(3) + text.substr(0, 3));
+  }, 500);
+}

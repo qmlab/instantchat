@@ -173,7 +173,7 @@ $(function() {
     AddElement($messageDiv, $messages, $window, options);
 
     if (data.username !== username && !data.typing) {
-      $(document).prop('title', 'New Message~~')
+      ScrollTitle("You have new messages ")
     }
   }
 
@@ -277,7 +277,7 @@ $(function() {
   });
 
   // Click events
-  
+
   // Focus input when clicking on the message input's border
   $inputMessage.click(function () {
     $inputMessage.focus();
