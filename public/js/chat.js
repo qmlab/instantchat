@@ -14,7 +14,6 @@ $(function() {
   var $users = $('.users'); // User area
   var $inputMessage = $('.inputMessage'); // Input message input box
   var $privateMessage = $('.privateMessage')
-  var $currentInput = $usernameInput.focus();
 
   var $loginPage = $('.login.page'); // The login page
   var $chatPage = $('.chat.page'); // The chatroom page
@@ -281,7 +280,7 @@ $(function() {
 
   // Focus input when clicking anywhere on login page
   $loginPage.click(function () {
-    //$currentInput.focus();
+    $usernameInput.focus();
   });
 
   // Focus input when clicking on the message input's border
@@ -301,7 +300,7 @@ $(function() {
     connected = true;
     $loginPage.fadeOut();
     $chatPage.show();
-    $currentInput = $inputMessage.focus();
+    $inputMessage.focus();
 
     // Display the welcome message
     var message = "Welcome " + data.username + " to " + "Room \"" + data.roomname + "\"";
