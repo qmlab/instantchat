@@ -216,7 +216,7 @@ ul {
   height: 50px;
 }
 
-.dropdown-menu {
+.context-dropdown-menu {
   display: block;
   position: static;
   margin-bottom: 5px;
