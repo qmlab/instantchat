@@ -192,20 +192,27 @@ ul {
   outline: none;
   padding-left: 10px;
   position: absolute;
-  right: 0px;
-  width: 100%;
+}
+
+.control-panel{
+  float: right;
+  clear: both;
+  right: 5%;
+  bottom: 70px;
 }
 
 .inputMessage {
   font-size: 100%;
   border: 5px;
   resize: none;
+  width: 100%;
 }
 
 .privateMessage {
   font-size: 100%;
   border: 2px;
   resize: none;
+  width: 100%;
 }
 
 .footer {
@@ -213,7 +220,11 @@ ul {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 50px;
+  height: 100px;
+}
+
+#callStatus {
+  display: none;
 }
 
 .context-dropdown-menu {
