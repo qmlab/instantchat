@@ -70,9 +70,12 @@ function GetBaseUrl() {
 }
 
 
-function ScrollTitle(text) {
+function ScrollTitle(text, cancellationToken) {
   document.title = text;
   setTimeout(function () {
-    ScrollTitle(text.substr(3) + text.substr(0, 3));
+    if (!cancellationToken.isCanceled)
+    {
+      ScrollTitle(text.substr(3) + text.substr(0, 3));
+    }
   }, 500);
 }

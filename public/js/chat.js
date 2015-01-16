@@ -27,13 +27,14 @@ $(function() {
   $body = $('body');
   $window = $(window);
 
-  // Prompt for setting a username
+  // Variables
   var username
   , roomname
   , connected = false
   , typing = false
   , lastTypingTime
   , defaultTitle = 'TeamChat'
+  , newMsgCancellationToken = { isCancelled: false }
 
   var socket = io.connect(GetBaseUrl());
 
@@ -173,7 +174,8 @@ $(function() {
     AddElement($messageDiv, $messages, $window, options);
 
     if (data.username !== username && !data.typing) {
-      ScrollTitle("You have new messages ")
+      newMsgCancellationToken.isCancelled = false;
+      ScrollTitle("You have new messages ", newMsgCancellationToken)
     }
   }
 
@@ -273,7 +275,9 @@ $(function() {
   }
 
   $inputMessage.on('input', function() {
-    updateTyping();
+    if ($inputMessage.val().length > 1) {
+      updateTyping();
+    }
   });
 
   // Click events
@@ -383,6 +387,7 @@ $(function() {
   })
 
   $('body').mouseover(function() {
+    newMsgCancellationToken = true;
     $(document).prop('title', defaultTitle)
   })
 
