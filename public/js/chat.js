@@ -22,10 +22,7 @@ $(function() {
   var $contextMenu = $("#contextMenu"); // Display and show the action menu
   var $privateModal = $('#privateChannel')
 
-  // Apprise
-  // Add overlay and set opacity for cross-browser compatibility
-  $body = $('body');
-  $window = $(window);
+  $audioNode = $("#remoteAudio")
 
   // Variables
   var username
@@ -33,10 +30,14 @@ $(function() {
   , connected = false
   , typing = false
   , lastTypingTime
-  , defaultTitle = 'TeamChat'
+  , defaultTitle = 'InterChat'
   , newMsgCancellationToken = { isCancelled: false }
 
   var socket = io.connect(GetBaseUrl());
+
+  // Set up RTC connection
+  signalingChannel = new SignalingChannel(socket)
+  setupReceiver()
 
   function addParticipantsMessage (data) {
     var message = '';
@@ -374,6 +375,16 @@ $(function() {
     $privateModal.modal('toggle')
   })
 
+  $('#sendVoice').click(function(e) {
+    var toUser = $contextMenu.data('toUser')
+    p2pOptions.audio = true
+    p2pOptions.video = false
+    p2pOptions.username = toUser
+    p2pOptions.roomname = roomname
+    start()
+    $('.chatoption').show()
+  })
+
   $('#sendPrivateMsgBtn').click(function(e) {
     sendMessage($privateModal.data('toUser'))
   })
@@ -393,8 +404,8 @@ $(function() {
 
   $('#about').click(function(e) {
     bootbox.dialog({
-      message: '<b>TeamChat <i>Version 1.0</i></b><br><br> by QM<br> @ 2015',
-      title: 'About TeamChat',
+      message: '<b>InterChat <i>Version 1.0</i></b><br><br> by QM<br> @ 2015',
+      title: 'About InterChat',
       onEscape: function() {},
       show: true,
       buttons: {
@@ -413,5 +424,13 @@ $(function() {
         window.location.reload(true)
       }
     })
+  })
+
+  // Stop the stream for p2p
+  $('#stopVoice').click(function(e) {
+    if(!!currentStream) {
+      currentStream.stop()
+      $('.chatoption').hide()
+    }
   })
 });

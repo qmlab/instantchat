@@ -1,2 +1,2 @@
-Toy chat
+InterChat
  MIT license

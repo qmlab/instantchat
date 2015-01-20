@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TeamChat</title>
+  <title>InterChat</title>
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/chat.css">
 </head>
 <body>
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script src="https://apprtc.appspot.com/js/adapter.js"></script>
   <script src="/js/socket.io.js"></script>
   <script src="/js/bootbox.js"></script>
   <script src="/js/common.js"></script>
-  <script src="/js/Call.js"></script>
-  <script src="/js/shims.js"></script>
-  <script src="/js/holla.js"></script>
+  <script src="/js/SignalingChannel.js"></script>
+  <script src="/js/p2p.js"></script>
   <script src="/js/chat.js"></script>
 
   <ul class="pages">
     <li id="chat_page" class="chat page">
       <div class="navbar navbar-fixed-top navbar-default">
         <div class="navbar-header">
-            <a class="navbar-brand">Team Chat</a>
+            <a class="navbar-brand">InterChat</a>
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
@@ -38,8 +38,6 @@
               </li>
               <li>
                 <a href="#" id="quit">Quit</a>
-              </li>
-              <li class='chatoption'>
               </li>
             </ul>
           </div>
@@ -60,17 +58,13 @@
       </div>
       <footer class="footer">
         <div class="container">
-        <div class="control-panel">
-          <span class="label label-default" id="callStatus">In Call</span>
-          <button type="button" class="btn btn-default chatoption" id="stop">
-            <span class="glyphicon glyphicon-play"></span>
-          </button>
-          <button type="button" class="btn btn-default chatoption" id="stop">
-            <span class="glyphicon glyphicon-stop"></span>
-          </button>
-          <audio class="them" autoplay="true"></video>
-          <audio class="me rtc-pip" autoplay="true" muted="true"></video>
-        </div>
+          <div class="control-panel">
+            <audio id="remoteAudio" autoplay></audio>
+            <span class="label label-default" id="callStatus">In Call</span>
+            <button type="button" class="btn btn-default chatoption" id="stopVoice">
+              <span class="glyphicon glyphicon-stop"></span>
+            </button>
+          </div>
           <textarea class="inputMessage form-control" placeholder="Say something..."></textarea>
         </div>
       </footer>
@@ -94,8 +88,8 @@
   <div id="contextMenu" class="dropdown clearfix">
     <ul class="dropdown-menu context-dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
       <li><a tabindex="-1" id="sendMsg" href="#">Send message</a></li>
-      <li><a tabindex="-1" id="voiceChat" href="#">Voice chat</a></li>
-      <li><a tabindex="-1" href="#">Video chat</a></li>
+      <li><a tabindex="-1" id="sendVoice" href="#">Voice chat</a></li>
+      <li><a tabindex="-1" id="sendVideo" href="#">Video chat</a></li>
     </ul>
   </div>
 

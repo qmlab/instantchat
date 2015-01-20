@@ -24,5 +24,9 @@ app.get('/chat', function(req, res) {
   res.render('chat.ejs')
 })
 
+app.get('/test', function(req, res) {
+  res.render('testp2p.ejs')
+})
+
 // Server
 chatserver.start(server)

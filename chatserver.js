@@ -96,6 +96,12 @@ module.exports.start = function(server) {
         });
       }
     });
+
+    socket.on('send signal', function(data) {
+      if (!!data.username) {
+        sockets[data.username].emit('receive signal', data)
+      }
+    })
   });
 
   Array.prototype.remove = function() {

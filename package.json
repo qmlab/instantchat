@@ -1,5 +1,5 @@
 {
-  "name": "qmchat",
+  "name": "interchat",
   "version": "0.1.0",
   "description": "Simple chatter",
   "main": "index.js",

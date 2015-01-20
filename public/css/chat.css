@@ -235,7 +235,7 @@ ul {
 
 #contextMenu {
   position: absolute;
-  display:none;
+  display: none;
 }
 
 .btn {
@@ -270,4 +270,8 @@ ul {
 
 .navbar .navbar-fixed-top {
   height: 50px
+}
+
+.chatoption {
+  display: none
 }
