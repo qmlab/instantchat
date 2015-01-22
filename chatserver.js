@@ -98,8 +98,12 @@ module.exports.start = function(server) {
     });
 
     socket.on('send signal', function(data) {
-      if (!!data.username) {
-        sockets[data.username].emit('receive signal', data)
+      console.log("from:" + data.from + " to:" + data.to)
+      if (!!data.to && !!data.from) {
+        var recipient = data.to
+        data.to = data.from
+        data.from = recipient
+        sockets[recipient].emit('receive signal', data)
       }
     })
   });

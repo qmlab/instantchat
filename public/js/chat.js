@@ -26,13 +26,13 @@ $(function() {
   myVideoNode = $('#localVideo').get(0)
 
   // Variables
-  username
-  roomname
   var connected = false
   , typing = false
   , lastTypingTime
   , defaultTitle = 'InterChat'
   , newMsgCancellationToken = { isCancelled: false }
+  , username
+  , roomname
 
   var socket = io.connect(GetBaseUrl());
 
@@ -377,10 +377,11 @@ $(function() {
 
   $('#sendVideo').click(function(e) {
     var toUser = $contextMenu.data('toUser')
-    p2pOptions.audio = false
-    p2pOptions.video = true 
-    p2pOptions.username = toUser
-    p2pOptions.roomname = roomname
+    p2pOptions.audio = true
+    p2pOptions.video = true
+    p2pOptions.to = toUser
+    p2pOptions.from = username
+    p2pOptions.isCaller = true
     start()
     $('.chatoption').show()
   })
@@ -431,8 +432,8 @@ $(function() {
     if(!!currentStream) {
       videoNode.pause()
       myVideoNode.pause()
-      currentStream.stop()
       $('.chatoption').hide()
+      stopSession()
     }
   })
 });
