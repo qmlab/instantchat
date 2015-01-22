@@ -399,7 +399,7 @@ $(function() {
   })
 
   $('body').mouseover(function() {
-    newMsgCancellationToken = true;
+    newMsgCancellationToken.isCancelled = true;
     $(document).prop('title', defaultTitle)
   })
 
