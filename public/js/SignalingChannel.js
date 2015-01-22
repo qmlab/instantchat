@@ -1,6 +1,6 @@
 function SignalingChannel(socket) {
   this.socket = socket
-  this.onmessage = function(data){}
+  this.onmessage = function(data){alert('signal received')}
   this.socket.on('receive signal', this.onmessage)
 }
 

@@ -14,7 +14,6 @@
   <script src="/js/socket.io.js"></script>
   <script src="/js/bootbox.js"></script>
   <script src="/js/common.js"></script>
-  <script src="/js/SignalingChannel.js"></script>
   <script src="/js/p2p.js"></script>
   <script src="/js/chat.js"></script>
 
@@ -59,11 +58,14 @@
       <footer class="footer">
         <div class="container">
           <div class="control-panel">
-            <audio id="remoteAudio" autoplay></audio>
             <span class="label label-default" id="callStatus">In Call</span>
-            <button type="button" class="btn btn-default chatoption" id="stopVoice">
+            <button type="button" class="btn btn-default chatoption" id="stopVideo">
               <span class="glyphicon glyphicon-stop"></span>
             </button>
+            <div class="videos">
+              <video id="remoteVideo" autoplay="autoplay" controls="true"></video>
+              <video id="localVideo" autoplay="autoplay" controls="true"></video>
+            </div>
           </div>
           <textarea class="inputMessage form-control" placeholder="Say something..."></textarea>
         </div>

@@ -22,12 +22,13 @@ $(function() {
   var $contextMenu = $("#contextMenu"); // Display and show the action menu
   var $privateModal = $('#privateChannel')
 
-  $audioNode = $("#remoteAudio")
+  videoNode = $('#remoteVideo').get(0)
+  myVideoNode = $('#localVideo').get(0)
 
   // Variables
-  var username
-  , roomname
-  , connected = false
+  username
+  roomname
+  var connected = false
   , typing = false
   , lastTypingTime
   , defaultTitle = 'InterChat'
@@ -37,7 +38,6 @@ $(function() {
 
   // Set up RTC connection
   signalingChannel = new SignalingChannel(socket)
-  setupReceiver()
 
   function addParticipantsMessage (data) {
     var message = '';
@@ -375,10 +375,10 @@ $(function() {
     $privateModal.modal('toggle')
   })
 
-  $('#sendVoice').click(function(e) {
+  $('#sendVideo').click(function(e) {
     var toUser = $contextMenu.data('toUser')
-    p2pOptions.audio = true
-    p2pOptions.video = false
+    p2pOptions.audio = false
+    p2pOptions.video = true 
     p2pOptions.username = toUser
     p2pOptions.roomname = roomname
     start()
@@ -427,8 +427,10 @@ $(function() {
   })
 
   // Stop the stream for p2p
-  $('#stopVoice').click(function(e) {
+  $('#stopVideo').click(function(e) {
     if(!!currentStream) {
+      videoNode.pause()
+      myVideoNode.pause()
       currentStream.stop()
       $('.chatoption').hide()
     }

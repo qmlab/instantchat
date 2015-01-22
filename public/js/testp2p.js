@@ -8,13 +8,23 @@ $(function() {
 
   // Initialize varibles
   var $window = $(window);
-
+/*
   var socket = io.connect(GetBaseUrl());
   signalingChannel = new SignalingChannel(socket)
   setupReceiver()
+  */
 
+  var createSrc = window.URL ? window.URL.createObjectURL : function(stream) {return stream;};
+  var video = $('#videoTest').get(0)
   // For test
-  $('#record').click(function(e) {
-    start()
-  })
+    //start()
+    navigator.getUserMedia({ "audio": true, "video": true}, function (stream) {
+      video.src = createSrc(stream)
+      video.play()
+    }, logError)
 });
+
+
+function logError(error) {
+  log(error.name + ": " + error.message);
+}
