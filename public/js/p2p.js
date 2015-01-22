@@ -86,6 +86,6 @@ SignalingChannel.prototype.onmessage = function (message) {
     }, logError);
   }
   else {
-    pc.addIceCandidate(new RTCIceCandidate(message.candidate), logError);
+    pc.addIceCandidate(new RTCIceCandidate(message.candidate), logSuccess, logError);
   }
 }
