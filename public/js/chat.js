@@ -39,9 +39,17 @@ $(function() {
   // Set up RTC connection
   signalingChannel = new SignalingChannel(socket)
 
-  onchannelopen = function() { console.log('channel onopen') }
+  onchannelopen = function() {
+    console.log('channel onopen')
+  }
   onchannelmessage = function (evt) {
     alert(evt.data)
+  }
+  onchannelclose = function(e) {
+    console.log('channel onclose:' + e)
+  }
+  onchannelerror = function(e) {
+    console.error('channel error:' + e)
   }
 
 

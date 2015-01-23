@@ -1,4 +1,4 @@
-var configuration = {"iceServers":[{"url": "stun:stun.l.google.com:19302"}]}
+initConfigs(null)
 
 var p2pOptions = { audio: true, video: true, isCaller: false, isMedia: false }
 var pc
@@ -10,12 +10,14 @@ var pc
 , channel
 , onchannelopen
 , onchannelmessage
+, onchannelclose
+, onchannelerror
 
 var createSrc = window.URL ? window.URL.createObjectURL : function(stream) {return stream;};
 
 // call start() to initiate
 function start() {
-  pc = new RTCPeerConnection(configuration)
+  pc = new RTCPeerConnection(configs, contraints)
 
   // send any ice candidates to the other peer
   pc.onicecandidate = function (evt) {
@@ -58,7 +60,7 @@ function start() {
   }
   else {
     if (p2pOptions.isCaller) {
-      channel = pc.createDataChannel('interdata')
+      channel = pc.createDataChannel('interdata', { reliable: false })
       setupChat()
     }
     else {
@@ -127,6 +129,8 @@ SignalingChannel.prototype.onmessage = function (message) {
 function setupChat() {
   channel.onopen = onchannelopen
   channel.onmessage = onchannelmessage
+  channel.onclose = onchannelclose
+  channel.onerror = onchannelerror
 }
 
 function sendChatMessage(msg) {

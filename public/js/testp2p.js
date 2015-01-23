@@ -1,30 +1,52 @@
-$(function() {
-  var TYPING_TIMER_LENGTH = 2000; // ms
-  var COLORS = [
-  '#e21400', '#91580f', '#f8a700', '#f78b00',
-  '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
-  '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
-  ];
+var localPeerConnection, remotePeerConnection, sendChannel, receiveChannel;
 
-  // Initialize varibles
-  var $window = $(window);
-/*
-  var socket = io.connect(GetBaseUrl());
-  signalingChannel = new SignalingChannel(socket)
-  setupReceiver()
-  */
-
-  var createSrc = window.URL ? window.URL.createObjectURL : function(stream) {return stream;};
-  var video = $('#videoTest').get(0)
-  // For test
-    //start()
-    navigator.getUserMedia({ "audio": true, "video": true}, function (stream) {
-      video.src = createSrc(stream)
-      video.play()
-    }, logError)
+localPeerConnection = new RTCPeerConnection(null, {
+  optional: [{
+    RtpDataChannels: true
+  }]
 });
 
+localPeerConnection.onicecandidate = function(event) {
+  if (event.candidate) {
+    remotePeerConnection.addIceCandidate(event.candidate);
+  }
+};
 
-function logError(error) {
-  log(error.name + ": " + error.message);
-}
+sendChannel = localPeerConnection.createDataChannel("CHANNEL_NAME", {
+  reliable: false
+});
+
+sendChannel.onopen = function(event) {
+  var readyState = sendChannel.readyState;
+  if (readyState == "open") {
+    sendChannel.send("Hello");
+  }
+};
+
+remotePeerConnection = new RTCPeerConnection(null, {
+  optional: [{
+    RtpDataChannels: true
+  }]
+});
+
+remotePeerConnection.onicecandidate = function(event) {
+  if (event.candidate) {
+    localPeerConnection.addIceCandidate(event.candidate);
+  }
+};
+
+remotePeerConnection.ondatachannel = function(event) {
+  receiveChannel = event.channel;
+  receiveChannel.onmessage = function(event) {
+    alert(event.data);
+  };
+};
+
+localPeerConnection.createOffer(function(desc) {
+  localPeerConnection.setLocalDescription(desc);
+  remotePeerConnection.setRemoteDescription(desc);
+  remotePeerConnection.createAnswer(function(desc) {
+    remotePeerConnection.setLocalDescription(desc);
+    localPeerConnection.setRemoteDescription(desc);
+  });
+});
