@@ -462,7 +462,7 @@ $(function() {
   })
 
   $('#testData').click(function(e) {
-    sendChatMessage('Testing!')
-    $(this).hide()
+    sendChatMessage('Testing!', function() { $(this).hide() })
+
   })
 });

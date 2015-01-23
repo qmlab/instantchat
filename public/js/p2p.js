@@ -133,6 +133,10 @@ function setupChat() {
   channel.onerror = onchannelerror
 }
 
-function sendChatMessage(msg) {
-  channel.send(msg)
+function sendChatMessage(msg, callback) {
+  var readyState = channel.readyState;
+  if (readyState == "open") {
+    channel.send(msg)
+    callback()
+  }
 }

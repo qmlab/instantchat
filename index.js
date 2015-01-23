@@ -25,7 +25,7 @@ app.get('/chat', function(req, res) {
 })
 
 app.get('/test', function(req, res) {
-  res.render('testp2p.ejs')
+  res.render('testRtcConnection.ejs')
 })
 
 // Server
