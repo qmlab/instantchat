@@ -39,6 +39,12 @@ $(function() {
   // Set up RTC connection
   signalingChannel = new SignalingChannel(socket)
 
+  onchannelopen = function() { console.log('channel onopen') }
+  onchannelmessage = function (evt) {
+    alert(evt.data)
+  }
+
+
   function addParticipantsMessage (data) {
     var message = '';
     if (data.numUsers === 1) {
@@ -382,8 +388,18 @@ $(function() {
     p2pOptions.to = toUser
     p2pOptions.from = username
     p2pOptions.isCaller = true
+    p2pOptions.isMedia = true
     start()
-    $('.chatoption').show()
+    $('#stopVideo').show()
+  })
+
+  $('#testP2p').click(function(e) {
+    var toUser = $contextMenu.data('toUser')
+    p2pOptions.to = toUser
+    p2pOptions.from = username
+    p2pOptions.isCaller = true
+    start()
+    $('#testData').show()
   })
 
   $('#sendPrivateMsgBtn').click(function(e) {
@@ -432,8 +448,13 @@ $(function() {
     if(!!currentStream) {
       videoNode.pause()
       myVideoNode.pause()
-      $('.chatoption').hide()
+      $(this).hide()
       stopSession()
     }
+  })
+
+  $('#testData').click(function(e) {
+    sendChatMessage('Testing!')
+    $(this).hide()
   })
 });

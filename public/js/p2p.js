@@ -1,11 +1,15 @@
-var configuration = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]}
-var p2pOptions = { audio: false, video: true, isCaller: false}
+var configuration = {"iceServers":[{"url": "stun:stun.l.google.com:19302"}]}
+
+var p2pOptions = { audio: true, video: true, isCaller: false, isMedia: false }
 var pc
 , signalingChannel
 , currentStream
 , videoNode
 , myVideoNode
 , inSession = false
+, channel
+, onchannelopen
+, onchannelmessage
 
 var createSrc = window.URL ? window.URL.createObjectURL : function(stream) {return stream;};
 
@@ -16,7 +20,7 @@ function start() {
   // send any ice candidates to the other peer
   pc.onicecandidate = function (evt) {
     if (evt.candidate) {
-      signalingChannel.send({ "candidate": evt.candidate, "to": p2pOptions.to, "from": p2pOptions.from});
+      signalingChannel.send({ "candidate": evt.candidate, "to": p2pOptions.to, "from": p2pOptions.from, "isMedia": p2pOptions.isMedia});
     };
   }
 
@@ -35,25 +39,41 @@ function start() {
   pc.oniceconnectionstatechange = function (evt) {
     console.log('oniceconnectionstatechange: ' + evt)
     if (pc.iceConnectionState === 'disconnected') {
-      closeSession()
+      stopSession()
     }
   }
 
-  if (p2pOptions.isCaller) {
-    // get a local stream, show it in a self-view and add it to be sent
-    navigator.getUserMedia({ "audio": p2pOptions.audio, "video": p2pOptions.video }, function (stream) {
-      if (p2pOptions.video) {
-        myVideoNode.src = createSrc(stream)
-        myVideoNode.play()
+  if (p2pOptions.isMedia) {
+    if (p2pOptions.isCaller) {
+      // get a local stream, show it in a self-view and add it to be sent
+      navigator.getUserMedia({ "audio": p2pOptions.audio, "video": p2pOptions.video }, function (stream) {
+        if (p2pOptions.video) {
+          myVideoNode.src = createSrc(stream)
+          myVideoNode.play()
+        }
+        currentStream = stream
+        pc.addStream(stream);
+      }, logError);
+    }
+  }
+  else {
+    if (p2pOptions.isCaller) {
+      channel = pc.createDataChannel('interdata')
+      setupChat()
+    }
+    else {
+      pc.ondatachannel = function (evt) {
+        channel = evt.channel
+        setupChat()
       }
-      currentStream = stream
-      pc.addStream(stream);
-    }, logError);
+    }
   }
 }
 
 function localDescCreated(desc) {
-  desc.sdp = setOneWay(preferOpus(desc.sdp))
+  if (p2pOptions.isCaller && p2pOptions.isMedia) {
+    desc.sdp = setOneWay(preferOpus(desc.sdp))
+  }
   pc.setLocalDescription(desc, function () {
     signalingChannel.send({ "sdp": pc.localDescription, "to": p2pOptions.to, "from": p2pOptions.from});
   }, logError);
@@ -64,14 +84,9 @@ function stopSession() {
     currentStream.stop()
   }
   inSession = false
-}
-
-function logError(error) {
-  console.log('error:' + error)
-}
-
-function logSuccess(msg) {
-  console.log('success:' + msg)
+  p2pOptions.isCaller = false
+  p2pOptions.isMedia = false
+  pc.close()
 }
 
 function SignalingChannel(socket) {
@@ -92,6 +107,7 @@ SignalingChannel.prototype.onmessage = function (message) {
       p2pOptions.video = message.video;
       p2pOptions.to = message.to;
       p2pOptions.from = message.from;
+      p2pOptions.isMedia = message.isMedia
     }
 
     if (message.sdp) {
@@ -108,72 +124,11 @@ SignalingChannel.prototype.onmessage = function (message) {
   }
 }
 
+function setupChat() {
+  channel.onopen = onchannelopen
+  channel.onmessage = onchannelmessage
+}
 
-var setOneWay = function(sdp) {
-  var sdpLines = sdp.split('\r\n');
-
-  for (var i = 0; i < sdpLines.length; i++) {
-    sdpLines[i] = sdpLines[i].replace(/^a=sendrecv/i, 'a=sendonly')
-  }
-
-  sdp = sdpLines.join('\r\n');
-  return sdp;
-};
-
-var preferOpus = function(sdp) {
-  var sdpLines = sdp.split('\r\n');
-
-  for (var i = 0; i < sdpLines.length; i++) {
-    if (sdpLines[i].search('m=audio') !== -1) {
-      var mLineIndex = i;
-      break;
-    }
-  }
-
-  if (typeof mLineIndex !== 'undefined') {
-    for (i = 0; i < sdpLines.length; i++) {
-      if (sdpLines[i].search('opus/48000') !== -1) {
-        var opusPayload = extractSdp(sdpLines[i], /:(\d+) opus\/48000/i);
-        if (opusPayload) {
-          sdpLines[mLineIndex] = setDefaultCodec(sdpLines[mLineIndex], opusPayload);
-        }
-        break;
-      }
-    }
-
-    sdpLines = removeCN(sdpLines, mLineIndex);
-  }
-
-  sdp = sdpLines.join('\r\n');
-  return sdp;
-};
-
-var extractSdp = function(sdpLine, pattern) {
-  var result = sdpLine.match(pattern);
-  return (result && result.length == 2)? result[1]: null;
-};
-
-var setDefaultCodec = function(mLine, payload) {
-  var elements = mLine.split(' ');
-  var newLine = new Array();
-  var index = 0;
-  for (var i = 0; i < elements.length; i++) {
-    if (index === 3) newLine[index++] = payload;
-    if (elements[i] !== payload) newLine[index++] = elements[i];
-  }
-  return newLine.join(' ');
-};
-
-var removeCN = function(sdpLines, mLineIndex) {
-  var mLineElements = sdpLines[mLineIndex].split(' ');
-  for (var i = sdpLines.length-1; i >= 0; i--) {
-    var payload = extractSdp(sdpLines[i], /a=rtpmap:(\d+) CN\/\d+/i);
-    if (payload) {
-      var cnPos = mLineElements.indexOf(payload);
-      if (cnPos !== -1) mLineElements.splice(cnPos, 1);
-      sdpLines.splice(i, 1);
-    }
-  }
-  sdpLines[mLineIndex] = mLineElements.join(' ');
-  return sdpLines;
-};
+function sendChatMessage(msg) {
+  channel.send(msg)
+}
