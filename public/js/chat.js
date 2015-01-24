@@ -490,16 +490,18 @@ $(function() {
 
   // Stop the stream for p2p
   $('#stopVideo').click(function(e) {
-    if(!!currentStream) {
-      videoNode.pause()
+    if(!!localStream) {
       myVideoNode.pause()
-      stopSession()
-      onVideoStreamclose()
     }
+    if(!!remoteStream) {
+      videoNode.pause()
+    }
+    stopSession()
+    onVideoStreamclose()
   })
 
   $('#stopAudio').click(function(e) {
-    if(!!currentStream) {
+    if(!!remoteStream && !!localStream) {
       audioNode.pause()
       stopSession()
       onAudioStreamclose()

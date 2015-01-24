@@ -99,6 +99,17 @@ var setOneWay = function(sdp) {
   return sdp;
 };
 
+var setTwoWay = function(sdp) {
+  var sdpLines = sdp.split('\r\n');
+
+  for (var i = 0; i < sdpLines.length; i++) {
+    sdpLines[i] = sdpLines[i].replace(/^a=recvonly/i, 'a=sendrecv')
+  }
+
+  sdp = sdpLines.join('\r\n');
+  return sdp;
+};
+
 var preferOpus = function(sdp) {
   var sdpLines = sdp.split('\r\n');
 

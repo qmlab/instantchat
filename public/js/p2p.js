@@ -3,7 +3,8 @@ initConfigs(null)
 var p2pOptions = { audio: true, video: true, isCaller: false, isMedia: false }
 var pc
 , signalingChannel
-, currentStream
+, localStream
+, remoteStream
 , videoNode
 , myVideoNode
 , audioNode
@@ -45,14 +46,14 @@ function start() {
       onVideoStreamopen(evt)
       videoNode.src = URL.createObjectURL(evt.stream)
       videoNode.play()
-      currentStream = evt.stream
+      remoteStream = evt.stream
     }
     else if (p2pOptions.audio)
     {
       onAudioStreamopen(evt)
       audioNode.src = URL.createObjectURL(evt.stream)
       audioNode.play()
-      currentStream = evt.stream
+      remoteStream = evt.stream
     }
     else {
       return
@@ -77,17 +78,15 @@ function start() {
   }
 
   if (p2pOptions.isMedia) {
-    if (p2pOptions.isCaller) {
-      // get a local stream, show it in a self-view and add it to be sent
-      navigator.getUserMedia({ 'audio': p2pOptions.audio, 'video': p2pOptions.video }, function (stream) {
-        if (p2pOptions.video) {
-          myVideoNode.src = createSrc(stream)
-          myVideoNode.play()
-        }
-        currentStream = stream
-        pc.addStream(stream)
-      }, loadMediaError)
-    }
+    // get a local stream, show it in a self-view and add it to be sent
+    navigator.getUserMedia({ 'audio': p2pOptions.audio, 'video': p2pOptions.video }, function (stream) {
+      if (p2pOptions.video) {
+        myVideoNode.src = createSrc(stream)
+        myVideoNode.play()
+      }
+      localStream = stream
+      pc.addStream(stream)
+    }, loadMediaError)
   }
   else {
     if (p2pOptions.isCaller) {
@@ -125,13 +124,17 @@ function loadMediaError(e) {
 }
 
 function stopSession() {
-  if (!!currentStream) {
-    currentStream.stop()
-    currentStream = null
+  if (!!localStream) {
+    localStream.stop()
+    localStream = undefined
+  }
+  if (!!remoteStream) {
+    remoteStream.stop()
+    remoteStream = undefined
   }
   if (!!channel) {
     channel.close()
-    channel = null
+    channel = undefined
   }
   if (pc.signalingState !== 'closed') {
     pc.close()
@@ -154,12 +157,12 @@ SignalingChannel.prototype.onmessage = function (message) {
   if (!pc || pc.iceConnectionState === 'closed') {
     if (!inSession) {
       inSession = true
-      start()
       p2pOptions.audio = message.audio
       p2pOptions.video = message.video
       p2pOptions.to = message.from
       p2pOptions.from = message.to
       p2pOptions.isMedia = message.isMedia
+      start()
     }
   }
 
