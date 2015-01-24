@@ -24,6 +24,7 @@ $(function() {
 
   videoNode = $('#remoteVideo').get(0)
   myVideoNode = $('#localVideo').get(0)
+  audioNode = $('#remoteAudio').get(0)
 
   // Variables
   var connected = false
@@ -50,6 +51,24 @@ $(function() {
   }
   onchannelerror = function(e) {
     console.error('channel error:' + e)
+  }
+  onVideoStreamopen = function(evt) {
+    $('#videoIcon').show()
+    $('.videos').show()
+    $('#stopVideo').show()
+  }
+  onVideoStreamclose = function() {
+    $('#videoIcon').hide()
+    $('.videos').hide()
+    $('#stopVideo').hide()
+  }
+  onAudioStreamopen = function(evt) {
+    $('#audioIcon').show()
+    $('#stopAudio').show()
+  }
+  onAudioStreamclose = function() {
+    $('#audioIcon').hide()
+    $('#stopAudio').hide()
   }
 
 
@@ -389,7 +408,7 @@ $(function() {
     $privateModal.modal('toggle')
   })
 
-  $('#sendVideo').click(function(e) {
+  $('#startVideo').click(function(e) {
     var toUser = $contextMenu.data('toUser')
     p2pOptions.audio = true
     p2pOptions.video = true
@@ -397,8 +416,20 @@ $(function() {
     p2pOptions.from = username
     p2pOptions.isCaller = true
     p2pOptions.isMedia = true
+    onVideoStreamopen()
     start()
-    $('#stopVideo').show()
+  })
+
+  $('#startAudio').click(function(e) {
+    var toUser = $contextMenu.data('toUser')
+    p2pOptions.audio = true
+    p2pOptions.video = false
+    p2pOptions.to = toUser
+    p2pOptions.from = username
+    p2pOptions.isCaller = true
+    p2pOptions.isMedia = true
+    onAudioStreamopen()
+    start()
   })
 
   $('#testP2p').click(function(e) {
@@ -406,8 +437,14 @@ $(function() {
     p2pOptions.to = toUser
     p2pOptions.from = username
     p2pOptions.isCaller = true
+    onchannelopen = function() {
+      if (p2pOptions.isCaller)
+      {
+        $('#testData').show()
+      }
+      console.log('channel onopen')
+    }
     start()
-    $('#testData').show()
   })
 
   $('#sendPrivateMsgBtn').click(function(e) {
@@ -456,13 +493,24 @@ $(function() {
     if(!!currentStream) {
       videoNode.pause()
       myVideoNode.pause()
-      $(this).hide()
       stopSession()
+      onVideoStreamclose()
+    }
+  })
+
+  $('#stopAudio').click(function(e) {
+    if(!!currentStream) {
+      audioNode.pause()
+      stopSession()
+      onAudioStreamclose()
     }
   })
 
   $('#testData').click(function(e) {
-    sendChatMessage('Testing!', function() { $(this).hide() })
+    sendChatMessage('Testing!', function() {
+      stopSession()
+      $('#testData').hide()
+    })
 
   })
 });

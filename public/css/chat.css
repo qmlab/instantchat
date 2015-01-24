@@ -195,10 +195,18 @@ ul {
 }
 
 .control-panel{
+  position: absolute;
   float: right;
   clear: both;
-  right: 5%;
+  right: 10%;
   bottom: 70px;
+}
+
+.sessionType-icon {
+  float: right;
+  right: 5px;
+  top: 18px;
+  display: none;
 }
 
 .inputMessage {
@@ -220,7 +228,6 @@ ul {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 300px;
 }
 
 #callStatus {
@@ -235,6 +242,18 @@ ul {
 
 #contextMenu {
   position: absolute;
+  display: none;
+}
+
+#testP2p {
+  display: none;
+}
+
+.videos {
+  display: none;
+}
+
+.audios {
   display: none;
 }
 

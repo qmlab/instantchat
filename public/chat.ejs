@@ -23,6 +23,8 @@
       <div class="navbar navbar-fixed-top navbar-default">
         <div class="navbar-header">
             <a class="navbar-brand">InterChat</a>
+            <span class="glyphicon glyphicon-facetime-video sessionType-icon" id="videoIcon"></span>
+            <span class="glyphicon glyphicon-volume-up sessionType-icon" id="audioIcon"></span>
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
@@ -30,7 +32,6 @@
             </button>
           </div>
         <div class="container">
-
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
               <li>
@@ -55,12 +56,12 @@
             <ul class="users"></ul>
           </div>
         </div>
-      </div>
-      <footer class="footer">
-        <div class="container">
-          <div class="control-panel">
+        <div class="control-panel">
             <span class="label label-default" id="callStatus">In Call</span>
             <button type="button" class="btn btn-default chatoption" id="stopVideo">
+              <span class="glyphicon glyphicon-stop"></span>
+            </button>
+            <button type="button" class="btn btn-default chatoption" id="stopAudio">
               <span class="glyphicon glyphicon-stop"></span>
             </button>
             <button type="button" class="btn btn-default chatoption" id="testData">
@@ -70,7 +71,14 @@
               <video id="remoteVideo" autoplay="autoplay" controls="true"></video>
               <video id="localVideo" autoplay="autoplay" controls="true"></video>
             </div>
+            <div class="audios">
+              <audio id="remoteAudio" autoplay="autoplay"></audio>
+            </div>
           </div>
+      </div>
+      <footer class="footer">
+        <div class="container">
+
           <textarea class="inputMessage form-control" placeholder="Say something..."></textarea>
         </div>
       </footer>
@@ -94,8 +102,8 @@
   <div id="contextMenu" class="dropdown clearfix">
     <ul class="dropdown-menu context-dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
       <li><a tabindex="-1" id="sendMsg" href="#">Send message</a></li>
-      <li><a tabindex="-1" id="sendVoice" href="#">Voice chat</a></li>
-      <li><a tabindex="-1" id="sendVideo" href="#">Video chat</a></li>
+      <li><a tabindex="-1" id="startAudio" href="#">Voice chat</a></li>
+      <li><a tabindex="-1" id="startVideo" href="#">Video chat</a></li>
       <li><a tabindex="-1" id="testP2p" href="#">Test</a></li>
     </ul>
   </div>
