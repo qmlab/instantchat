@@ -6,7 +6,7 @@ var FADE_TIME = 250; // ms
 // options.fade - If the element should fade-in (default = true)
 // options.prepend - If the element should prepend
 //   all other messages (default = false)
-function AddElement (el, list, window, options) {
+function addElement (el, list, window, options) {
   var $el = $(el);
 
   // Setup default options
@@ -35,7 +35,7 @@ function AddElement (el, list, window, options) {
   }
 }
 
-function GetTime() {
+function getTime() {
   var date = new Date()
   var month = new Array();
   month[0] = 'Jan';
@@ -53,29 +53,29 @@ function GetTime() {
   return '[' + month[date.getMonth()] + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + '] '
 }
 
-function ReplaceNewLines (input) {
+function replaceNewLines (input) {
   var replacedString = input.replace(/\n/ig, '<br>')
   return replacedString
 }
 
 // Prevents input from having injected markup
-function CleanInput (input) {
+function cleanInput (input) {
   var strippedString = input.replace(/(<([^>]+)>)/ig, '').replace(/^([\r\n]+)/ig, '');
   return strippedString;
 }
 
-function GetBaseUrl() {
+function getBaseUrl() {
   var getUrl = window.location
   return getUrl.protocol + '//' + getUrl.host + '/'
 }
 
 
-function ScrollTitle(text, cancellationToken) {
+function scrollTitle(text, cancellationToken) {
   document.title = text;
   setTimeout(function () {
     if (!cancellationToken.isCanceled)
     {
-      ScrollTitle(text.substr(3) + text.substr(0, 3));
+      scrollTitle(text.substr(3) + text.substr(0, 3));
     }
   }, 500);
 }

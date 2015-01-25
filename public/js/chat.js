@@ -21,10 +21,11 @@ $(function() {
   // Context menu
   var $contextMenu = $("#contextMenu"); // Display and show the action menu
   var $privateModal = $('#privateChannel')
+  var $videoModal = $('#videoChannel')
 
-  videoNode = $('#remoteVideo').get(0)
-  myVideoNode = $('#localVideo').get(0)
-  audioNode = $('#remoteAudio').get(0)
+  videoNode = $('.remoteVideo').get(0)
+  myVideoNode = $('.localVideo').get(0)
+  audioNode = $('.remoteAudio').get(0)
 
   // Variables
   var connected = false
@@ -35,7 +36,7 @@ $(function() {
   , username
   , roomname
 
-  var socket = io.connect(GetBaseUrl());
+  var socket = io.connect(getBaseUrl());
 
   // Set up RTC connection
   signalingChannel = new SignalingChannel(socket)
@@ -53,22 +54,30 @@ $(function() {
     console.error('channel error:' + e)
   }
   onVideoStreamopen = function(evt) {
-    $('#videoIcon').show()
+    $('.videoIcon').show()
     $('.videos').show()
-    $('#stopVideo').show()
+    $('.stopVideo').show()
+    $('.callStatus').text('In Video Call')
+    $('.callStatus').show()
+    $videoModal.modal('show')
   }
   onVideoStreamclose = function() {
-    $('#videoIcon').hide()
+    $('.videoIcon').hide()
     $('.videos').hide()
-    $('#stopVideo').hide()
+    $('.stopVideo').hide()
+    $('.callStatus').hide()
+    $videoModal.modal('hide')
   }
   onAudioStreamopen = function(evt) {
-    $('#audioIcon').show()
-    $('#stopAudio').show()
+    $('.audioIcon').show()
+    $('.stopAudio').show()
+    $('.callStatus').text('In Audio Call')
+    $('.callStatus').show()
   }
   onAudioStreamclose = function() {
-    $('#audioIcon').hide()
-    $('#stopAudio').hide()
+    $('.audioIcon').hide()
+    $('.stopAudio').hide()
+    $('.callStatus').hide()
   }
 
 
@@ -86,8 +95,8 @@ $(function() {
 
   // Sets the client's username
   function setUsername () {
-    username = CleanInput($usernameInput.val().trim());
-    roomname = CleanInput($roomnameInput.val().trim());
+    username = cleanInput($usernameInput.val().trim());
+    roomname = cleanInput($roomnameInput.val().trim());
 
     // If the username is valid
     if (username && roomname) {
@@ -115,7 +124,7 @@ $(function() {
     }
 
     // Prevent markup from being injected into the message
-    message = CleanInput(message);
+    message = cleanInput(message);
 
     // if there is a non-empty message and a socket connection
     if (message && connected) {
@@ -150,23 +159,24 @@ $(function() {
     if (typeof options.scrollToBottom == 'undefined') {
       options.scrollToBottom = true;
     }
-    AddElement($el, $messages, $window, options);
+    addElement($el, $messages, $window, options);
   }
 
   // Add the user to the current user list
-  function addUser (data, options) {
+  function addUser (theusername, list, options) {
     options = options || {};
     var $usernameDiv = $('<li class="username"/>')
-    .text(data.username)
-    .css('color', getUsernameColor(data.username));
+    .text(theusername)
+    .css('color', getUsernameColor(theusername));
 
     options.scrollToBottom = false;
-    AddElement($usernameDiv, $users, $window, options);
+    addElement($usernameDiv, list, $window, options);
   }
 
   // Adds the visual chat message to the message list
   function addChatMessage (data, options) {
     options = options || {};
+
     // Don't fade the message in if there is an 'X was typing'
     var $typingMessages = getTypingMessages(data);
     if ($typingMessages.length !== 0) {
@@ -177,14 +187,14 @@ $(function() {
     var $messageTypeDiv = $('<span class="messageType"/>')
 
     var $dateTimeDiv = $('<span class="datetime"/>')
-    .text(GetTime())
+    .text(getTime())
 
     var $usernameDiv = $('<span class="username"/>')
     .text(data.username)
     .css('color', getUsernameColor(data.username));
 
     var $messageBodyDiv = $('<span class="messageBody"/>')
-    .html(ReplaceNewLines(data.message));
+    .html(replaceNewLines(data.message));
 
     if (data.toUser) {
       if (data.username === username)
@@ -205,12 +215,31 @@ $(function() {
 
     // Add the new message and scroll to bottom
     options.scrollToBottom = true;
-    AddElement($messageDiv, $messages, $window, options);
+    addElement($messageDiv, $messages, $window, options);
 
     if (data.username !== username && !data.typing) {
       newMsgCancellationToken.isCancelled = false;
-      ScrollTitle("You have new messages ", newMsgCancellationToken)
+      scrollTitle("You have new messages ", newMsgCancellationToken)
     }
+  }
+
+  function listRoommates(options) {
+    options = options || {};
+    options.scrollToBottom = true;
+
+    var $messageDiv = $('<li class="message"/>')
+    var $start = $('<span class="log"/>').text('Current people in the room:');
+    $messageDiv.html($start)
+
+    var namelist = $('ul.users li').each(function() {
+      var $usernameDiv = $('<span class="username"/>')
+      .text($(this).text())
+      .css('color', getUsernameColor($(this).text()));
+
+      $messageDiv = $messageDiv.append($usernameDiv)
+    })
+
+    addElement($messageDiv, $messages, $window, options)
   }
 
   // Adds the visual chat typing message
@@ -344,7 +373,7 @@ $(function() {
 
     // Add users to the user list for current user
     data.users.forEach(function(value, index, array) {
-      addUser({ username: value })
+      addUser(value, $users)
     })
   });
 
@@ -356,7 +385,7 @@ $(function() {
   // Whenever the server emits 'user joined', log it in the chat body
   socket.on('user joined', function (data) {
     log(data.username + ' has joined');
-    addUser(data)
+    addUser(data.username, $users)
   });
 
   // Whenever the server emits 'user left', log it in the chat body
@@ -464,6 +493,14 @@ $(function() {
     $(document).prop('title', defaultTitle)
   })
 
+  $('.navbarItem').click(function(e) {
+    $('.navbar-collapse').collapse('hide')
+  })
+
+  $('#listroommates').click(function(e) {
+    listRoommates()
+  })
+
   $('#about').click(function(e) {
     bootbox.dialog({
       message: '<b>InterChat <i>Version 1.0</i></b><br><br> by QM<br> @ 2015',
@@ -489,7 +526,7 @@ $(function() {
   })
 
   // Stop the stream for p2p
-  $('#stopVideo').click(function(e) {
+  $('.stopVideo').click(function(e) {
     if(!!localStream) {
       myVideoNode.pause()
     }
@@ -500,7 +537,7 @@ $(function() {
     onVideoStreamclose()
   })
 
-  $('#stopAudio').click(function(e) {
+  $('.stopAudio').click(function(e) {
     if(!!remoteStream && !!localStream) {
       audioNode.pause()
       stopSession()

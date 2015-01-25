@@ -23,8 +23,8 @@
       <div class="navbar navbar-fixed-top navbar-default">
         <div class="navbar-header">
             <a class="navbar-brand">InterChat</a>
-            <span class="glyphicon glyphicon-facetime-video sessionType-icon" id="videoIcon"></span>
-            <span class="glyphicon glyphicon-volume-up sessionType-icon" id="audioIcon"></span>
+            <a href="#" class="glyphicon glyphicon-facetime-video sessionType-icon videoIcon" data-toggle="modal" data-target="#videoChannel"></a>
+            <a href="#" class="glyphicon glyphicon-volume-up sessionType-icon audioIcon"></a>
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
@@ -35,16 +35,19 @@
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
               <li>
-                <a href="#" id="about">About</a>
+                <a href="#" class="navbarItem" id="listroommates">List Chatters</a>
               </li>
               <li>
-                <a href="#" id="quit">Quit</a>
+                <a href="#" class="navbarItem" id="about">About</a>
+              </li>
+              <li>
+                <a href="#" class="navbarItem" id="quit">Quit</a>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      <div class="row" style="padding-top:50px">
+      <div class="row mainAreas">
         <div class="col-xs-12 col-sm-12 col-md-8">
           <div class="chatArea">
             <ul class="messages" id="publicMessages"></ul>
@@ -56,29 +59,28 @@
             <ul class="users"></ul>
           </div>
         </div>
+      </div>
+      <div class="row-fluid">
+        <div class="audios">
+          <audio class="remoteAudio" autoplay="autoplay"></audio>
+        </div>
         <div class="control-panel">
-            <span class="label label-default" id="callStatus">In Call</span>
-            <button type="button" class="btn btn-default chatoption" id="stopVideo">
+          <span class="label label-default callStatus"></span>
+          <span class="span2">
+            <button type="button" class="btn btn-danger chatoption stopVideo">
               <span class="glyphicon glyphicon-stop"></span>
             </button>
-            <button type="button" class="btn btn-default chatoption" id="stopAudio">
+            <button type="button" class="btn btn-danger chatoption stopAudio">
               <span class="glyphicon glyphicon-stop"></span>
             </button>
             <button type="button" class="btn btn-default chatoption" id="testData">
               <span class="glyphicon glyphicon-play-circle"></span>
             </button>
-            <div class="videos">
-              <video id="remoteVideo" autoplay="autoplay" controls="true"></video>
-              <video id="localVideo" autoplay="autoplay" controls="true"></video>
-            </div>
-            <div class="audios">
-              <audio id="remoteAudio" autoplay="autoplay"></audio>
-            </div>
-          </div>
+          </span>
+        </div>
       </div>
       <footer class="footer">
         <div class="container">
-
           <textarea class="inputMessage form-control" placeholder="Say something..."></textarea>
         </div>
       </footer>
@@ -122,8 +124,29 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" id="sendPrivateMsgBtn" class="btn btn-primary">Send</button>
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="videoChannel">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Video chat</h4>
+        </div>
+        <div class="modal-body">
+          <div class="media-panel">
+            <div class="videos">
+              <video class="remoteVideo" autoplay="autoplay" controls="true"></video>
+              <video class="localVideo" autoplay="autoplay" controls="true"></video>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger stopVideo" data-dismiss="modal">Stop</button>
         </div>
       </div>
     </div>

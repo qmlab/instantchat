@@ -107,6 +107,10 @@ ul {
 }
 
 /* Chat page */
+.mainAreas {
+  padding-top: 50px;
+  width: 100%;
+}
 
 .chat.page {
   display: none;
@@ -195,11 +199,13 @@ ul {
 }
 
 .control-panel{
-  position: absolute;
+  position: fixed;
   float: right;
-  clear: both;
-  right: 10%;
+  right: 3%;
   bottom: 70px;
+}
+
+.media-panel{
 }
 
 .sessionType-icon {
@@ -230,7 +236,7 @@ ul {
   right: 0;
 }
 
-#callStatus {
+.callStatus {
   display: none;
 }
 
@@ -251,6 +257,19 @@ ul {
 
 .videos {
   display: none;
+}
+
+.remoteVideo {
+  width: 100%;
+  height: auto;
+}
+
+.localVideo {
+  width: 20%;
+  height: auto;
+  position: absolute;
+  right: 10%;
+  bottom: 10%;
 }
 
 .audios {
