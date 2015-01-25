@@ -494,7 +494,9 @@ $(function() {
   })
 
   $('.navbarItem').click(function(e) {
-    $('.navbar-collapse').collapse('hide')
+    if ($('.navbar-toggle').is(':visible')) {
+      $('.navbar-collapse').collapse('hide')
+    }
   })
 
   $('#listroommates').click(function(e) {
