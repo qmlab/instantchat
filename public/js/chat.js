@@ -27,6 +27,9 @@ $(function() {
   myVideoNode = $('.localVideo').get(0)
   audioNode = $('.remoteAudio').get(0)
 
+  $("#muteSwitch").bootstrapSwitch('state')
+  $("#holdSwitch").bootstrapSwitch('state')
+
   // Variables
   var connected = false
   , typing = false
@@ -71,12 +74,14 @@ $(function() {
   onAudioStreamopen = function(evt) {
     $('.audioIcon').show()
     $('.stopAudio').show()
+    $('.audioControls').show()
     $('.callStatus').text('In Audio Call')
     $('.callStatus').show()
   }
   onAudioStreamclose = function() {
     $('.audioIcon').hide()
     $('.stopAudio').hide()
+    $('.audioControls').hide()
     $('.callStatus').hide()
   }
 
@@ -540,18 +545,54 @@ $(function() {
   })
 
   $('.stopAudio').click(function(e) {
-    if(!!remoteStream && !!localStream) {
-      audioNode.pause()
-      stopSession()
-      onAudioStreamclose()
+    audioNode.pause()
+    stopSession()
+    onAudioStreamclose()
+  })
+
+  $('.mute').on('switchChange.bootstrapSwitch', function(evt, state) {
+    localStream.getAudioTracks()[0].enabled = state
+  })
+
+  /*
+  $('.hold').on('switchChange.bootstrapSwitch', function(evt, state) {
+    if (state) {
+      if (p2pOptions.video) {
+        if(!!localStream) {
+          myVideoNode.play()
+        }
+        if(!!remoteStream) {
+          videoNode.play()
+        }
+      }
+      else if (p2pOptions.audio) {
+        if(!!localStream || !!remoteStream) {
+          audioNode.play()
+        }
+      }
+    }
+    else {
+      if (p2pOptions.video) {
+        if(!!localStream) {
+          myVideoNode.pause()
+        }
+        if(!!remoteStream) {
+          videoNode.pause()
+        }
+      }
+      else if (p2pOptions.audio) {
+        if(!!localStream || !!remoteStream) {
+          audioNode.play()
+        }
+      }
     }
   })
+  */
 
   $('#testData').click(function(e) {
     sendChatMessage('Testing!', function() {
       stopSession()
       $('#testData').hide()
     })
-
   })
 });

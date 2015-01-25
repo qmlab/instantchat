@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>InterChat</title>
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="//www.bootstrap-switch.org/dist/css/bootstrap3/bootstrap-switch.css" rel="stylesheet">
   <link rel="stylesheet" href="css/chat.css">
 </head>
 <body>
-  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-  <script src="https://apprtc.appspot.com/js/adapter.js"></script>
+  <script src="//www.bootstrap-switch.org/dist/js/bootstrap-switch.js"></script>
+  <script src="//apprtc.appspot.com/js/adapter.js"></script>
   <script src="/js/socket.io.js"></script>
   <script src="/js/bootbox.js"></script>
   <script src="/js/common.js"></script>
@@ -66,17 +68,18 @@
         </div>
         <div class="control-panel">
           <span class="label label-default callStatus"></span>
-          <span class="span2">
-            <button type="button" class="btn btn-danger chatoption stopVideo">
-              <span class="glyphicon glyphicon-stop"></span>
-            </button>
+          <div class="audioControls">
+            <input id="muteSwitch" type="checkbox" data-off-text="Mute" data-on-text="Unmute" checked="true" class="BSswitch mute">
             <button type="button" class="btn btn-danger chatoption stopAudio">
               <span class="glyphicon glyphicon-stop"></span>
             </button>
-            <button type="button" class="btn btn-default chatoption" id="testData">
-              <span class="glyphicon glyphicon-play-circle"></span>
-            </button>
-          </span>
+          </div>
+          <button type="button" class="btn btn-danger chatoption stopVideo">
+            <span class="glyphicon glyphicon-stop"></span>
+          </button>
+          <button type="button" class="btn btn-default chatoption" id="testData">
+            <span class="glyphicon glyphicon-play-circle"></span>
+          </button>
         </div>
       </div>
       <footer class="footer">
@@ -87,12 +90,12 @@
     </li>
     <li class="login page">
       <div class="form">
-        <input class="usernameInput" type="text" maxlength="14" placeholder="Your name"/>
+        <input class="usernameInput" type="text" maxlength="64" placeholder="Your name"/>
         <br>
         <br>
         <br>
         <br>
-        <input class="roomnameInput" type="text" maxlength="14" placeholder="Room name"/>
+        <input class="roomnameInput" type="text" maxlength="64" placeholder="Room name"/>
         <br>
         <br>
         <br>
@@ -140,8 +143,8 @@
         <div class="modal-body">
           <div class="media-panel">
             <div class="videos">
-              <video class="remoteVideo" autoplay="autoplay" controls="true"></video>
-              <video class="localVideo" autoplay="autoplay" controls="true"></video>
+              <video class="remoteVideo" autoplay="autoplay"></video>
+              <video class="localVideo" autoplay="autoplay"></video>
             </div>
           </div>
         </div>

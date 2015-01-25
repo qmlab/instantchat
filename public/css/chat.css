@@ -69,7 +69,7 @@ ul {
   outline: none;
   padding-bottom: 15px;
   text-align: center;
-  width: 400px;
+  max-width: 100%;
 }
 
 .login.page .form .roomnameInput {
@@ -79,7 +79,7 @@ ul {
   outline: none;
   padding-bottom: 15px;
   text-align: center;
-  width: 400px;
+  max-width: 100%;
 }
 
 .login.page .title {
@@ -159,13 +159,13 @@ ul {
 .messages {
   height: 100%;
   margin: 0;
-  padding: 10px 20px 10px 20px;
+  padding: 10px 20px 50px 20px;
 }
 
 .users {
   height: 100%;
   margin: 0;
-  padding: 10px 20px 10px 20px;
+  padding: 10px 20px 50px 20px;
 }
 
 .message.typing .messageBody {
@@ -311,5 +311,9 @@ ul {
 }
 
 .chatoption {
+  display: none
+}
+
+.audioControls {
   display: none
 }

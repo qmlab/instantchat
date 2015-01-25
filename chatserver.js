@@ -98,7 +98,7 @@ module.exports.start = function(server) {
     });
 
     socket.on('send signal', function(data) {
-      console.log('from:' + data.from + ' to:' + data.to)
+      //console.log('from:' + data.from + ' to:' + data.to)
       if (!!data.to && !!data.from) {
         sockets[data.to].emit('receive signal', data)
       }
