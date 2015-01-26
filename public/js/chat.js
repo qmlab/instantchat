@@ -34,7 +34,7 @@ $(function() {
   var connected = false
   , typing = false
   , lastTypingTime
-  , defaultTitle = 'InterChat'
+  , defaultTitle = 'InstantChat'
   , newMsgCancellationToken = { isCancelled: false }
   , username
   , roomname
@@ -510,8 +510,8 @@ $(function() {
 
   $('#about').click(function(e) {
     bootbox.dialog({
-      message: '<b>InterChat <i>Version 1.0</i></b><br><br> by QM<br> @ 2015',
-      title: 'About InterChat',
+      message: '<b>InstantChat <i>Version 1.0</i></b><br><br> by QM<br> @ 2015',
+      title: 'About InstantChat',
       onEscape: function() {},
       show: true,
       buttons: {
