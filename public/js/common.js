@@ -138,6 +138,17 @@ var preferOpus = function(sdp) {
   return sdp;
 };
 
+var setSDPBandwidth = function (sdp, bandwidth) {
+  var sdpLines = sdp.split('\r\n')
+
+  for (var i = 0; i < sdpLines.length; i++) {
+    sdpLines[i] = sdpLines[i].replace(/^b=AS:(\d)+/i, 'b=AS:' + bandwidth)
+  }
+
+  sdp = sdpLines.join('\r\n');
+  return sdp;
+}
+
 var extractSdp = function(sdpLine, pattern) {
   var result = sdpLine.match(pattern);
   return (result && result.length == 2)? result[1]: null;
@@ -167,3 +178,16 @@ var removeCN = function(sdpLines, mLineIndex) {
   sdpLines[mLineIndex] = mLineElements.join(' ');
   return sdpLines;
 };
+
+function saveToDisk(fileUrl, fileName) {
+    var save = document.createElement('a');
+    save.href = fileUrl;
+    save.target = '_blank';
+    save.download = fileName || fileUrl;
+
+    var event = document.createEvent('Event');
+    event.initEvent('click', true, true);
+
+    save.dispatchEvent(event);
+    (window.URL || window.webkitURL).revokeObjectURL(save.href);
+}

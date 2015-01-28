@@ -14,9 +14,11 @@ function initConfigs(preferSCTP) {
   var chromeVersion = !!navigator.mozGetUserMedia ? 0 : parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]);
 
   if (isFirefox) {
+    /*
     configs.iceServers.push({
       url: 'stun:23.21.150.121'
     });
+    */
 
     configs.iceServers.push({
       url: 'stun:stun.services.mozilla.com'
@@ -28,9 +30,11 @@ function initConfigs(preferSCTP) {
       url: 'stun:stun.l.google.com:19302'
     });
 
+    /*
     configs.iceServers.push({
       url: 'stun:stun.anyfirewall.com:3478'
     });
+    */
   }
 
   if (isChrome && chromeVersion < 28) {

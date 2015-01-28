@@ -5,6 +5,9 @@ $(function() {
   '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
   '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
   ];
+  var CHUNKSIZE = 1024;
+  var CHUNKBUFFERSIZE = 100;
+  var mime = 'text/html'
 
   // Initialize varibles
   var $window = $(window);
@@ -47,9 +50,28 @@ $(function() {
   onchannelopen = function() {
     console.log('channel onopen')
   }
-  onchannelmessage = function (evt) {
-    alert(evt.data)
+
+  var chunks = [];
+  var blobs = [];
+  onchannelmessage = function (event) {
+    var data = JSON.parse(event.data);
+    var blobCount = 0;
+    chunks.push(data.message); // pushing chunks in array
+    if (chunks.length > CHUNKBUFFERSIZE || data.last) {
+      blobs.push(new Blob([chunks], {type: mime}))
+      chunks = []
+      console.log('created blob ' + blobCount)
+      blobCount++
+    }
+
+    if (data.last) {
+      var finalBlob = new Blob(blobs, {type: mime})
+      console.log('final blob created')
+      saveToDisk(URL.createObjectURL(finalBlob), data.filename);
+      blobs = []
+    }
   }
+
   onchannelclose = function(e) {
     console.log('channel onclose:' + e)
   }
@@ -417,8 +439,114 @@ $(function() {
   // Show and hide context menu
   $('ul.users').on('contextmenu', '.username', showContextMenu);
   $('ul.users').on('click', '.username', showContextMenu);
+  $('ul.users').on('dragover', '.username', dragIgnoreDefault);
+  $('ul.users').on('dragenter', '.username', dragIgnoreDefault);
+  $('ul.users').on('drop', '.username', dragDrop);
   $('ul.messages').on('contextmenu', '.username', showContextMenu);
   $('ul.messages').on('click', '.username', showContextMenu);
+  $('ul.messages').on('dragover', '.username', dragIgnoreDefault);
+  $('ul.messages').on('drop', '.username', dragDrop);
+
+  function dragIgnoreDefault(e) {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  function dragDrop(e) {
+    if(e.originalEvent.dataTransfer){
+      if ($(this).text() !== username) {
+        if(e.originalEvent.dataTransfer.files.length) {
+          e.preventDefault();
+          e.stopPropagation();
+          handleFiles(e.originalEvent.dataTransfer.files, $(this).text());
+        }
+      }
+    }
+  }
+
+  var startTimes = {}
+  function handleFiles(files, user) {
+    $(files).each(function(index, file) {
+      var msg = 'Sending file "' + file.name + '" to "' + user + '". FileSize: ' + file.size;
+      log(msg)
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        p2pOptions.to = user
+        p2pOptions.from = username
+        p2pOptions.isCaller = true
+        startTimes[file.name] = new Date()
+        dataChannelSend(e, file.name, onReadAsDataURL)
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  function dataChannelSend(evt, filename, callback) {
+    if (!!channel && channel.target !== p2pOptions.to) {
+      onchannelclose = function(e) {
+        console.log('channel onclose:' + e)
+        onchannelopen = function() {
+          if (p2pOptions.isCaller) {
+            console.log('channel onopen')
+            callback(evt, null, filename)
+          }
+        }
+        start()
+        onchannelclose = function(e) {
+          console.log('channel onclose:' + e)
+        }
+      }
+
+      stopSession()
+    }
+    else if (!channel) {
+      onchannelopen = function() {
+        if (p2pOptions.isCaller) {
+          console.log('channel onopen')
+          callback(evt, null, filename)
+        }
+      }
+      start()
+    }
+    else {
+      callback(evt, null, filename)
+    }
+  }
+
+  var numOfFunctionCalls = 0; // Prevent stack from being too deep
+  function onReadAsDataURL(event, text, filename) {
+    numOfFunctionCalls++;
+    var data = {}; // data object to transmit over data channel
+
+    if (event) text = event.target.result; // on first invocation
+
+    data.filename = filename
+    if (text.length > CHUNKSIZE) {
+      data.message = text.slice(0, CHUNKSIZE); // getting chunk using predefined chunk length
+    } else {
+      data.message = text;
+      data.last = true;
+    }
+
+    sendData(JSON.stringify(data), function() {
+      var remainingDataURL = text.slice(data.message.length);
+      if (remainingDataURL.length) {
+        if (numOfFunctionCalls % 100 === 0) {
+          setTimeout(function() { onReadAsDataURL(null, remainingDataURL, data.filename); }, 10)
+        }
+        else {
+          onReadAsDataURL(null, remainingDataURL, data.filename);
+        }
+      }
+      else {
+        stopSession(true)
+        var endTime = new Date()
+        var elapsedTime = (endTime - startTimes[filename]) / 1000
+        var msg = 'file "' + filename + '" transfer completed in ' + elapsedTime + 's.'
+        log(msg)
+      }
+    })
+  }
 
   function showContextMenu(e) {
     if ($(this).text() !== username) {
@@ -590,7 +718,7 @@ $(function() {
   */
 
   $('#testData').click(function(e) {
-    sendChatMessage('Testing!', function() {
+    sendData('Testing!', function() {
       stopSession()
       $('#testData').hide()
     })

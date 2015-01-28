@@ -91,6 +91,7 @@ function start() {
   else {
     if (p2pOptions.isCaller) {
       channel = pc.createDataChannel('interdata', { reliable: false })
+      channel.target = p2pOptions.to
       setupDataChannelEvents()
     }
     else {
@@ -103,8 +104,11 @@ function start() {
 }
 
 function localDescCreated(desc) {
-  if (p2pOptions.isCaller && p2pOptions.isMedia) {
+  if(p2pOptions.isMedia) {
     desc.sdp = preferOpus(desc.sdp)
+  }
+  else {
+    desc.sdp = setSDPBandwidth(desc.sdp, 1024 * 1024)
   }
   pc.setLocalDescription(desc, function () {
     signalingChannel.send({ 'sdp': pc.localDescription, 'to': p2pOptions.to, 'from': p2pOptions.from, 'isMedia': p2pOptions.isMedia, 'audio': p2pOptions.audio, 'video': p2pOptions.video})
@@ -123,7 +127,7 @@ function loadMediaError(e) {
   }
 }
 
-function stopSession() {
+function stopSession(keepAlive) {
   if (!!localStream) {
     localStream.stop()
     localStream = undefined
@@ -133,11 +137,15 @@ function stopSession() {
     remoteStream = undefined
   }
   if (!!channel) {
-    channel.close()
-    channel = undefined
+    if (!keepAlive) {
+      channel.close()
+      channel = undefined
+    }
   }
   if (pc.signalingState !== 'closed') {
-    pc.close()
+    if (!keepAlive) {
+      pc.close()
+    }
   }
   inSession = false
   p2pOptions.isCaller = false
@@ -187,10 +195,10 @@ function setupDataChannelEvents() {
   channel.onerror = onchannelerror
 }
 
-function sendChatMessage(msg, callback) {
+function sendData(data, callback) {
   var readyState = channel.readyState
   if (readyState == 'open') {
-    channel.send(msg)
-    callback()
+    channel.send(data)
+    callback(data)
   }
 }

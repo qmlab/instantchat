@@ -25,7 +25,7 @@ module.exports.start = function(server) {
         socket.join(data.roomname);
         socket.username = data.username;
         socket.roomname = data.roomname;
-		console.log(socket.username + ' joined ' + socket.roomname);
+        console.log(socket.username + ' joined ' + socket.roomname);
 
         users[socket.roomname] = users[socket.roomname] || []
 
@@ -89,7 +89,7 @@ module.exports.start = function(server) {
       // remove the username from global users list
       if (addedUser) {
         users[socket.roomname].remove(socket.username);
-		
+
 		console.log(socket.username + ' left ' + socket.roomname);
 
         // echo globally that this client has left
