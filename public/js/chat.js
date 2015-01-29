@@ -26,7 +26,6 @@ $(function() {
   videoNode = $('.remoteVideo').get(0)
   myVideoNode = $('.localVideo').get(0)
   audioNode = $('.remoteAudio').get(0)
-  window.AudioContext = window.AudioContext || window.webkitAudioContext
 
   $("#muteSwitch").bootstrapSwitch('state')
   $("#holdSwitch").bootstrapSwitch('state')
