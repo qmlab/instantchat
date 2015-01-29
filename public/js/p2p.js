@@ -82,6 +82,10 @@ function start() {
     navigator.getUserMedia({ 'audio': p2pOptions.audio, 'video': p2pOptions.video }, function (stream) {
       if (p2pOptions.video) {
         myVideoNode.src = createSrc(stream)
+
+        // Noise control
+        myVideoNode.volume = 0
+
         myVideoNode.play()
       }
       localStream = stream
