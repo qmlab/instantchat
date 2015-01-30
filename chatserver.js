@@ -107,6 +107,26 @@ module.exports.start = function(server) {
         sockets[data.to].emit('receive signal ' + data.type || 'general', data)
       }
     })
+
+    // Non-message info
+    socket.on('new info', function (data) {
+      if (typeof data.toUser == 'undefined') {
+        // we tell the client to execute 'new message'
+        socket.broadcast.to(socket.roomname).emit('new info', {
+          username: socket.username,
+          message: data.msg
+        });
+      }
+      else {
+        sockets[data.toUser].emit('new info', {
+          username: socket.username,
+          message: data.msg,
+          toUser: data.toUser
+        })
+      }
+    });
+
+
   });
 
   Array.prototype.remove = function() {

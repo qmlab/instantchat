@@ -144,6 +144,13 @@ $(function() {
     }
   }
 
+  function sendInfo (toUser, msg) {
+    socket.emit('new info', {
+      toUser: toUser,
+      msg: msg
+    })
+  }
+
   // Sends a chat message
   function sendMessage (toUser) {
     var message
@@ -413,6 +420,10 @@ $(function() {
     addChatMessage(data);
   });
 
+  socket.on('new info', function (data) {
+    log(data.message)
+  })
+
   // Whenever the server emits 'user joined', log it in the chat body
   socket.on('user joined', function (data) {
     log(data.username + ' has joined');
@@ -457,12 +468,13 @@ $(function() {
   }
 
   function dragDrop(e) {
+    var toUser = $(this).text()
     if(e.originalEvent.dataTransfer){
-      if ($(this).text() !== username) {
+      if (toUser !== username) {
         if(e.originalEvent.dataTransfer.files.length) {
           e.preventDefault();
           e.stopPropagation();
-          handleFiles(e.originalEvent.dataTransfer.files, $(this).text());
+          handleFiles(e.originalEvent.dataTransfer.files, toUser);
         }
       }
     }
@@ -477,6 +489,7 @@ $(function() {
         dataChannel.p2pOptions.to = user
         dataChannel.p2pOptions.from = username
         dataChannel.p2pOptions.isCaller = true
+        sendInfo(toUser, username + ' is sending "' + file.name + '"')
         dataChannel.sendFile(e, file.name, log)
       }
       reader.readAsDataURL(file)
@@ -507,11 +520,13 @@ $(function() {
 
   $('#startVideo').click(function(e) {
     var toUser = $contextMenu.data('toUser')
+    sendInfo(toUser, username + ' has initiated a video chat. Please allow the use of camera.')
     mediaChannel.startVideo(toUser, username)
   })
 
   $('#startAudio').click(function(e) {
     var toUser = $contextMenu.data('toUser')
+    sendInfo(toUser, username + ' has initiated an audio chat. Please allow the use of microphone.')
     mediaChannel.startAudio(toUser, username)
   })
 
@@ -568,15 +583,27 @@ $(function() {
 
   // Stop the stream for p2p
   $('.stopVideo').click(function(e) {
-    mediaChannel.stopVideo()
+    var toUser = mediaChannel.getPeer()
+    if (!!toUser) {
+      sendInfo(toUser, username + ' has stopped video chat.')
+      mediaChannel.stopVideo()
+    }
   })
 
   $('.stopAudio').click(function(e) {
-    mediaChannel.stopAudio()
+    var toUser = mediaChannel.getPeer()
+    if (!!toUser) {
+      sendInfo(toUser, username + ' has stopped audio chat.')
+      mediaChannel.stopAudio()
+    }
   })
 
   $('.mute').on('switchChange.bootstrapSwitch', function(evt, state) {
-    mediaChannel.muteMe()
+    var toUser = mediaChannel.getPeer()
+    if (!!toUser) {
+      sendInfo(toUser, username + ' has muted its mic')
+      mediaChannel.muteMe()
+    }
   })
 
   /*

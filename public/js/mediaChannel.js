@@ -194,3 +194,7 @@ MediaChannel.prototype.onmessage = function(message) {
     this.pc.addIceCandidate(new RTCIceCandidate(message.candidate), logSuccess, logError)
   }
 }
+
+MediaChannel.prototype.getPeer = function() {
+  return this.p2pOptions.to
+}
