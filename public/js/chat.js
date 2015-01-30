@@ -41,16 +41,23 @@ $(function() {
 
   var socket = io.connect(getBaseUrl());
 
-  // Set up RTC connection
-  signalingChannel = new SignalingChannel(socket)
+  // Set up RTC connections
+  if (!!configs) {
+    initConfigs(null)
+  }
+  var dataChannel = new DataChannel(window.configs, window.constraints, socket)
+  var mediaChannel = new MediaChannel(window.configs, window.constraints, socket)
+  mediaChannel.videoNode = videoNode
+  mediaChannel.myVideoNode = myVideoNode
+  mediaChannel.audioNode = audioNode
 
-  onchannelopen = function() {
+  dataChannel.onchannelopen = function() {
     console.log('channel onopen')
   }
 
   var chunks = [];
   var blobs = [];
-  onchannelmessage = function (event) {
+  dataChannel.onchannelmessage = function (event) {
     var data = JSON.parse(event.data);
     var blobCount = 0;
     chunks.push(data.message); // pushing chunks in array
@@ -69,13 +76,13 @@ $(function() {
     }
   }
 
-  onchannelclose = function(e) {
+  dataChannel.onchannelclose = function(e) {
     console.log('channel onclose:' + e)
   }
-  onchannelerror = function(e) {
+  dataChannel.onchannelerror = function(e) {
     console.error('channel error:' + e)
   }
-  onVideoStreamopen = function(evt) {
+  mediaChannel.onVideoStreamopen = function(evt) {
     $('.videoIcon').show()
     $('.videos').show()
     $('.stopVideo').show()
@@ -83,21 +90,21 @@ $(function() {
     $('.callStatus').show()
     $videoModal.modal('show')
   }
-  onVideoStreamclose = function() {
+  mediaChannel.onVideoStreamclose = function() {
     $('.videoIcon').hide()
     $('.videos').hide()
     $('.stopVideo').hide()
     $('.callStatus').hide()
     $videoModal.modal('hide')
   }
-  onAudioStreamopen = function(evt) {
+  mediaChannel.onAudioStreamopen = function(evt) {
     $('.audioIcon').show()
     $('.stopAudio').show()
     $('.audioControls').show()
     $('.callStatus').text('In Audio Call')
     $('.callStatus').show()
   }
-  onAudioStreamclose = function() {
+  mediaChannel.onAudioStreamclose = function() {
     $('.audioIcon').hide()
     $('.stopAudio').hide()
     $('.audioControls').hide()
@@ -461,87 +468,18 @@ $(function() {
     }
   }
 
-  var startTimes = {}
   function handleFiles(files, user) {
     $(files).each(function(index, file) {
       var msg = 'Sending file "' + file.name + '" to "' + user + '". FileSize: ' + file.size;
       log(msg)
       var reader = new FileReader();
       reader.onload = function(e) {
-        p2pOptions.to = user
-        p2pOptions.from = username
-        p2pOptions.isCaller = true
-        startTimes[file.name] = new Date()
-        dataChannelSend(e, file.name, onReadAsDataURL)
+        dataChannel.p2pOptions.to = user
+        dataChannel.p2pOptions.from = username
+        dataChannel.p2pOptions.isCaller = true
+        dataChannel.sendFile(e, file.name, log)
       }
       reader.readAsDataURL(file)
-    })
-  }
-
-  function dataChannelSend(evt, filename, callback) {
-    if (!!channel && channel.target !== p2pOptions.to) {
-      onchannelclose = function(e) {
-        console.log('channel onclose:' + e)
-        onchannelopen = function() {
-          if (p2pOptions.isCaller) {
-            console.log('channel onopen')
-            callback(evt, null, filename)
-          }
-        }
-        start()
-        onchannelclose = function(e) {
-          console.log('channel onclose:' + e)
-        }
-      }
-
-      stopSession()
-    }
-    else if (!channel) {
-      onchannelopen = function() {
-        if (p2pOptions.isCaller) {
-          console.log('channel onopen')
-          callback(evt, null, filename)
-        }
-      }
-      start()
-    }
-    else {
-      callback(evt, null, filename)
-    }
-  }
-
-  var numOfFunctionCalls = 0; // Prevent stack from being too deep
-  function onReadAsDataURL(event, text, filename) {
-    numOfFunctionCalls++;
-    var data = {}; // data object to transmit over data channel
-
-    if (event) text = event.target.result; // on first invocation
-
-    data.filename = filename
-    if (text.length > CHUNKSIZE) {
-      data.message = text.slice(0, CHUNKSIZE); // getting chunk using predefined chunk length
-    } else {
-      data.message = text;
-      data.last = true;
-    }
-
-    sendData(JSON.stringify(data), function() {
-      var remainingDataURL = text.slice(data.message.length);
-      if (remainingDataURL.length) {
-        if (numOfFunctionCalls % 100 === 0) {
-          setTimeout(function() { onReadAsDataURL(null, remainingDataURL, data.filename); }, 10)
-        }
-        else {
-          onReadAsDataURL(null, remainingDataURL, data.filename);
-        }
-      }
-      else {
-        stopSession(true)
-        var endTime = new Date()
-        var elapsedTime = (endTime - startTimes[filename]) / 1000
-        var msg = 'file "' + filename + '" transfer completed in ' + elapsedTime + 's.'
-        log(msg)
-      }
     })
   }
 
@@ -569,41 +507,12 @@ $(function() {
 
   $('#startVideo').click(function(e) {
     var toUser = $contextMenu.data('toUser')
-    p2pOptions.audio = true
-    p2pOptions.video = true
-    p2pOptions.to = toUser
-    p2pOptions.from = username
-    p2pOptions.isCaller = true
-    p2pOptions.isMedia = true
-    onVideoStreamopen()
-    start()
+    mediaChannel.startVideo(toUser, username)
   })
 
   $('#startAudio').click(function(e) {
     var toUser = $contextMenu.data('toUser')
-    p2pOptions.audio = true
-    p2pOptions.video = false
-    p2pOptions.to = toUser
-    p2pOptions.from = username
-    p2pOptions.isCaller = true
-    p2pOptions.isMedia = true
-    onAudioStreamopen()
-    start()
-  })
-
-  $('#testP2p').click(function(e) {
-    var toUser = $contextMenu.data('toUser')
-    p2pOptions.to = toUser
-    p2pOptions.from = username
-    p2pOptions.isCaller = true
-    onchannelopen = function() {
-      if (p2pOptions.isCaller)
-      {
-        $('#testData').show()
-      }
-      console.log('channel onopen')
-    }
-    start()
+    mediaChannel.startAudio(toUser, username)
   })
 
   $('#sendPrivateMsgBtn').click(function(e) {
@@ -659,24 +568,15 @@ $(function() {
 
   // Stop the stream for p2p
   $('.stopVideo').click(function(e) {
-    if(!!localStream) {
-      myVideoNode.pause()
-    }
-    if(!!remoteStream) {
-      videoNode.pause()
-    }
-    stopSession()
-    onVideoStreamclose()
+    mediaChannel.stopVideo()
   })
 
   $('.stopAudio').click(function(e) {
-    audioNode.pause()
-    stopSession()
-    onAudioStreamclose()
+    mediaChannel.stopAudio()
   })
 
   $('.mute').on('switchChange.bootstrapSwitch', function(evt, state) {
-    localStream.getAudioTracks()[0].enabled = state
+    mediaChannel.muteMe()
   })
 
   /*
@@ -713,11 +613,4 @@ $(function() {
     }
   })
   */
-
-  $('#testData').click(function(e) {
-    sendData('Testing!', function() {
-      stopSession()
-      $('#testData').hide()
-    })
-  })
 });
