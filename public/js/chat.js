@@ -587,6 +587,7 @@ $(function() {
     if (!!toUser) {
       sendInfo(toUser, username + ' has stopped video chat.')
       mediaChannel.stopVideo()
+      $('.mute').attr('checked', true)
     }
   })
 
@@ -595,13 +596,14 @@ $(function() {
     if (!!toUser) {
       sendInfo(toUser, username + ' has stopped audio chat.')
       mediaChannel.stopAudio()
+      $('.mute').attr('checked', true)
     }
   })
 
   $('.mute').on('switchChange.bootstrapSwitch', function(evt, state) {
     var toUser = mediaChannel.getPeer()
-    if (!!toUser) {
-      sendInfo(toUser, username + ' has muted its mic')
+    if (!!toUser && !state) {
+      sendInfo(toUser, username + ' has muted their mic')
       mediaChannel.muteMe()
     }
   })
