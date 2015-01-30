@@ -1,10 +1,12 @@
 
 var MediaChannel = function(configs, constraints, socket) {
+  var type = 'media'
+
   this.configs = configs
   this.contraints = constraints
-  this.signalingChannel = new SignalingChannel(socket, this)
+  this.signalingChannel = new SignalingChannel(socket, type, this)
 
-  this.p2pOptions = { audio: false, video: false, isCaller: false, isMedia: false }
+  this.p2pOptions = { audio: false, video: false, isCaller: false }
   this.pc
   this.inSession = false
   this.localStream
@@ -22,26 +24,19 @@ var MediaChannel = function(configs, constraints, socket) {
   this.createSrc = window.URL ? window.URL.createObjectURL : function(stream) {return stream}
 
   this.localDescCreated = function(desc) {
-    if(this.p2pOptions.isMedia) {
-      desc.sdp = preferOpus(desc.sdp)
-    }
-    else {
-      desc.sdp = setSDPBandwidth(desc.sdp, 1024 * 1024)
-    }
+    desc.sdp = preferOpus(desc.sdp)
     this.pc.setLocalDescription(desc, (function () {
-      this.signalingChannel.send({ 'sdp': this.pc.localDescription, 'to': this.p2pOptions.to, 'from': this.p2pOptions.from, 'isMedia': this.p2pOptions.isMedia, 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video})
+      this.signalingChannel.send({ 'type': type, 'sdp': this.pc.localDescription, 'to': this.p2pOptions.to, 'from': this.p2pOptions.from, 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video})
     }).bind(this), logError)
   }
 
   this.loadMediaError = function(e) {
     logError(e)
-    if (this.p2pOptions.isMedia) {
-      if (this.p2pOptions.video) {
-        this.onVideoStreamclose()
-      }
-      else if (p2pOptions.audio) {
-        this.onAudioStreamclose()
-      }
+    if (this.p2pOptions.video) {
+      this.onVideoStreamclose()
+    }
+    else if (p2pOptions.audio) {
+      this.onAudioStreamclose()
     }
   }
 
@@ -61,7 +56,6 @@ var MediaChannel = function(configs, constraints, socket) {
     }
     this.inSession = false
     this.p2pOptions.isCaller = false
-    this.p2pOptions.isMedia = false
   }
 
   // call start() to initiate
@@ -71,7 +65,7 @@ var MediaChannel = function(configs, constraints, socket) {
     // send any ice candidates to the other peer
     this.pc.onicecandidate = (function (evt) {
       if (evt.candidate) {
-        this.signalingChannel.send({ 'candidate': evt.candidate, 'to': this.p2pOptions.to, 'from': this.p2pOptions.from })
+        this.signalingChannel.send({ 'type': type, 'candidate': evt.candidate, 'to': this.p2pOptions.to, 'from': this.p2pOptions.from })
       }
     }).bind(this)
 
@@ -119,21 +113,19 @@ var MediaChannel = function(configs, constraints, socket) {
       console.log('onsignalingstatechange: ' + this.pc.signalingState)
     }).bind(this)
 
-    if (this.p2pOptions.isMedia) {
-      // get a local stream, show it in a self-view and add it to be sent
-      navigator.getUserMedia({ 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video }, (function (stream) {
-        if (this.p2pOptions.video) {
-          this.myVideoNode.src = this.createSrc(stream)
+    // get a local stream, show it in a self-view and add it to be sent
+    navigator.getUserMedia({ 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video }, (function (stream) {
+      if (this.p2pOptions.video) {
+        this.myVideoNode.src = this.createSrc(stream)
 
-          // Noise control
-          this.myVideoNode.volume = 0
+        // Noise control
+        this.myVideoNode.volume = 0
 
-          this.myVideoNode.play()
-        }
-        this.localStream = stream
-        this.pc.addStream(stream)
-      }).bind(this), this.loadMediaError)
-    }
+        this.myVideoNode.play()
+      }
+      this.localStream = stream
+      this.pc.addStream(stream)
+    }).bind(this), this.loadMediaError)
   }
 }
 
@@ -143,7 +135,6 @@ MediaChannel.prototype.startVideo = function(to, from) {
   this.p2pOptions.to = to
   this.p2pOptions.from = from
   this.p2pOptions.isCaller = true
-  this.p2pOptions.isMedia = true
   this.onVideoStreamopen()
   this.start()
 }
@@ -154,7 +145,6 @@ MediaChannel.prototype.startAudio = function(to, from) {
   this.p2pOptions.to = to
   this.p2pOptions.from = from
   this.p2pOptions.isCaller = true
-  this.p2pOptions.isMedia = true
   this.onAudioStreamopen()
   this.start()
 }
@@ -188,7 +178,6 @@ MediaChannel.prototype.onmessage = function(message) {
       this.p2pOptions.video = message.video
       this.p2pOptions.to = message.from
       this.p2pOptions.from = message.to
-      this.p2pOptions.isMedia = message.isMedia
       this.start()
     }
   }

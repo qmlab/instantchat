@@ -102,8 +102,9 @@ module.exports.start = function(server) {
 
     socket.on('send signal', function(data) {
       //console.log('from:' + data.from + ' to:' + data.to)
+      //console.log(JSON.stringify(data))
       if (!!data.to && !!data.from) {
-        sockets[data.to].emit('receive signal', data)
+        sockets[data.to].emit('receive signal ' + data.type || 'general', data)
       }
     })
   });

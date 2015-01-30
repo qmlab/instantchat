@@ -3,11 +3,13 @@ var CHUNKBUFFERSIZE = 100;
 var mime = 'text/html'
 
 var DataChannel = function(configs, constraints, socket) {
+  var type = 'data'
+
   this.configs = configs
   this.contraints = constraints
-  this.signalingChannel = new SignalingChannel(socket, this)
+  this.signalingChannel = new SignalingChannel(socket, type, this)
 
-  this.p2pOptions = { audio: false, video: false, isCaller: false, isMedia: false }
+  this.p2pOptions = { audio: false, video: false, isCaller: false }
   this.pc
   this.inSession = false
   this.channel
@@ -25,14 +27,9 @@ var DataChannel = function(configs, constraints, socket) {
   this.startTimes = {}
 
   this.localDescCreated = function(desc) {
-    if(this.p2pOptions.isMedia) {
-      desc.sdp = preferOpus(desc.sdp)
-    }
-    else {
-      desc.sdp = setSDPBandwidth(desc.sdp, 1024 * 1024)
-    }
+    desc.sdp = setSDPBandwidth(desc.sdp, 1024 * 1024)
     this.pc.setLocalDescription(desc, (function () {
-      this.signalingChannel.send({ 'sdp': this.pc.localDescription, 'to': this.p2pOptions.to, 'from': this.p2pOptions.from, 'isMedia': this.p2pOptions.isMedia, 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video})
+      this.signalingChannel.send({ 'type': type, 'sdp': this.pc.localDescription, 'to': this.p2pOptions.to, 'from': this.p2pOptions.from, 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video})
     }).bind(this), logError)
   }
 
@@ -94,7 +91,6 @@ var DataChannel = function(configs, constraints, socket) {
     }
     this.inSession = false
     this.p2pOptions.isCaller = false
-    this.p2pOptions.isMedia = false
   }
 
   this.start = function() {
@@ -103,7 +99,7 @@ var DataChannel = function(configs, constraints, socket) {
     // send any ice candidates to the other peer
     this.pc.onicecandidate = (function (evt) {
       if (evt.candidate) {
-        this.signalingChannel.send({ 'candidate': evt.candidate, 'to': this.p2pOptions.to, 'from': this.p2pOptions.from })
+        this.signalingChannel.send({ 'type': type, 'candidate': evt.candidate, 'to': this.p2pOptions.to, 'from': this.p2pOptions.from })
       }
     }).bind(this)
 
@@ -123,19 +119,10 @@ var DataChannel = function(configs, constraints, socket) {
       console.log('onsignalingstatechange: ' + this.pc.signalingState)
     }).bind(this)
 
-    if (!this.p2pOptions.isMedia) {
-      if (this.p2pOptions.isCaller) {
-        this.channel = this.pc.createDataChannel('interdata', { reliable: false })
-        this.channel.target = this.p2pOptions.to
-        this.setupDataChannelEvents()
-      }
-      else {
-        this.pc.ondatachannel = (function (evt) {
-          this.channel = evt.channel
-          this.setupDataChannelEvents()
-        }).bind(this)
-      }
-    }
+    this.pc.ondatachannel = (function (evt) {
+      this.channel = evt.channel
+      this.setupDataChannelEvents()
+    }).bind(this)
   }
 }
 
@@ -190,7 +177,6 @@ DataChannel.prototype.onmessage = function(message) {
       this.p2pOptions.video = message.video
       this.p2pOptions.to = message.from
       this.p2pOptions.from = message.to
-      this.p2pOptions.isMedia = message.isMedia
       this.start()
     }
   }
