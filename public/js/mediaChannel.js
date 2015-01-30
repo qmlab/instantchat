@@ -166,7 +166,7 @@ MediaChannel.prototype.stopAudio = function () {
   this.onAudioStreamclose()
 }
 
-MediaChannel.prototype.muteMe = function () {
+MediaChannel.prototype.muteMe = function (state) {
   this.localStream.getAudioTracks()[0].enabled = state
 }
 

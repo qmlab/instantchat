@@ -602,9 +602,13 @@ $(function() {
 
   $('.mute').on('switchChange.bootstrapSwitch', function(evt, state) {
     var toUser = mediaChannel.getPeer()
-    if (!!toUser && !state) {
-      sendInfo(toUser, username + ' has muted their mic')
-      mediaChannel.muteMe()
+    if (!!toUser) {
+      if (!state) {
+        sendInfo(toUser, username + ' has muted their mic')
+      } else {
+        sendInfo(toUser, username + ' has unmuted their mic')
+      }
+      mediaChannel.muteMe(state)
     }
   })
 
