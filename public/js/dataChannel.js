@@ -119,10 +119,17 @@ var DataChannel = function(configs, constraints, socket) {
       console.log('onsignalingstatechange: ' + this.pc.signalingState)
     }).bind(this)
 
-    this.pc.ondatachannel = (function (evt) {
-      this.channel = evt.channel
+    if (this.p2pOptions.isCaller) {
+      this.channel = this.pc.createDataChannel('interdata', { reliable: false })
+      this.channel.target = this.p2pOptions.to
       this.setupDataChannelEvents()
-    }).bind(this)
+    }
+    else {
+      this.pc.ondatachannel = (function (evt) {
+        this.channel = evt.channel
+        this.setupDataChannelEvents()
+      }).bind(this)
+    }
   }
 }
 

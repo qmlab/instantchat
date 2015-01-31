@@ -489,7 +489,7 @@ $(function() {
         dataChannel.p2pOptions.to = user
         dataChannel.p2pOptions.from = username
         dataChannel.p2pOptions.isCaller = true
-        sendInfo(toUser, username + ' is sending "' + file.name + '"')
+        sendInfo(user, username + ' is sending "' + file.name + '"')
         dataChannel.sendFile(e, file.name, log)
       }
       reader.readAsDataURL(file)
