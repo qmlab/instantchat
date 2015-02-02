@@ -1,5 +1,6 @@
-var CHUNKSIZE = 1024;
+var CHUNKSIZE = 1200;
 var CHUNKBUFFERSIZE = 100;
+var CACHESIZE = 100000000;
 var mime = 'text/html'
 
 var DataChannel = function(configs, constraints, socket) {
@@ -16,9 +17,28 @@ var DataChannel = function(configs, constraints, socket) {
 
   // Callbacks
   this.onchannelopen
-  this.onchannelmessage
   this.onchannelclose
   this.onchannelerror
+  this.onchannelmessage = function (event) {
+    var data = JSON.parse(event.data);
+    var content = common.util.convert.decode(data.message)
+    var blobCount = 0;
+    this.chunks = this.chunks.concat(content); // pushing chunks in array
+    if (this.chunks.length > CHUNKBUFFERSIZE || data.last) {
+      this.blobs.push(new Blob(this.chunks), {type: 'application/octet-binary'})
+      this.chunks = []
+      console.log('created blob ' + blobCount)
+      blobCount++
+    }
+
+    if (data.last) {
+      var finalBlob = new Blob(this.blobs, {type: 'application/octet-binary'})
+      console.log('final blob created')
+      saveToDisk(URL.createObjectURL(finalBlob), data.filename);
+      this.blobs = []
+    }
+  }
+
 
   // Private counter
   this.numOfFunctionCalls = 0; // Prevent stack from being too deep
@@ -39,42 +59,84 @@ var DataChannel = function(configs, constraints, socket) {
     this.channel.onmessage = this.onchannelmessage
     this.channel.onclose = this.onchannelclose
     this.channel.onerror = this.onchannelerror
+    this.channel.chunks = [];
+    this.channel.blobs = [];
   }
 
-  this.onReadAsDataURL = function(event, text, filename, log) {
+  this.chunkAndTransfer = function(event, text, filename, log, isLastSlice, callback) {
     this.numOfFunctionCalls++;
     var data = {}; // data object to transmit over data channel
 
-    if (event) text = event.target.result; // on first invocation
+    if (event) {
+      text = common.util.convert.encode(event.target.result); // on first invocation
+    }
 
     data.filename = filename
     if (text.length > CHUNKSIZE) {
       data.message = text.slice(0, CHUNKSIZE); // getting chunk using predefined chunk length
     } else {
       data.message = text;
-      data.last = true;
+      if (isLastSlice) {
+        data.last = true;
+      }
     }
 
     this.sendData(JSON.stringify(data), (function() {
-      var remainingDataURL = text.slice(data.message.length);
-      if (remainingDataURL.length) {
-        if (this.numOfFunctionCalls % 100 === 0) {
-          setTimeout((function() { this.onReadAsDataURL(null, remainingDataURL, data.filename); }).bind(this), 10)
+      var remainingSlice = text.slice(data.message.length);
+      if (remainingSlice.length) {
+        /*if (this.numOfFunctionCalls % 100 === 0) {
+          setTimeout((function() { this.chunkAndTransfer(null, remainingSlice, data.filename, log, isLastSlice, callback).bind(this)}).bind(this), 10)
         }
-        else {
-          this.onReadAsDataURL(null, remainingDataURL, data.filename);
-        }
+        else {*/
+        this.chunkAndTransfer(null, remainingSlice, data.filename, log, isLastSlice, callback)
+        //}
       }
       else {
-        this.stopSession(true)
-        var endTime = new Date()
-        var elapsedTime = (endTime - this.startTimes[filename]) / 1000
-        var msg = 'file "' + filename + '" transfer completed in ' + elapsedTime + 's.'
-        if (!!log) {
-          log(msg)
+        if (!!callback) {
+          callback()
         }
       }
     }).bind(this))
+  }
+
+  this.finishedLoadingFile = function(file, log) {
+    this.stopSession(true)
+    var endTime = new Date()
+    var elapsedTime = (endTime - this.startTimes[file.name]) / 1000
+    var msg = 'file "' + file.name + '" transfer completed in ' + elapsedTime + 's.'
+    if (!!log) {
+      log(msg)
+    }
+  }
+
+  this.sendFileInternal = function (file, log) {
+    this.startTimes[file.name] = new Date()
+    var reader = new FileReader();
+    var sliceId = 0
+    var sliceSize = CHUNKSIZE
+    //read a slice the size not bigger than CACHESIZE,100MB since ~100MB is the limit for read size of file api (in chrome).
+    var chunksPerSlice = Math.floor(Math.min(1024000,CACHESIZE,100000000)/CHUNKSIZE);
+    //var swID;
+    var sliceSize = chunksPerSlice * CHUNKSIZE;
+    reader.onloadend = (function (evt) {
+      if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+        this.chunkAndTransfer(evt, null, file.name, log, blob.size < sliceSize, (function(){
+          sliceId++;
+          if ((sliceId + 1) * sliceSize < file.size) {
+            blob = file.slice(sliceId * sliceSize, (sliceId + 1) * sliceSize);
+            reader.readAsArrayBuffer(blob);
+          } else if (sliceId * sliceSize < file.size) {
+            blob = file.slice(sliceId * sliceSize, file.size);
+            reader.readAsArrayBuffer(blob);
+          } else {
+            this.finishedLoadingFile(file, log);
+          }
+        }).bind(this))
+      }
+    }).bind(this)
+
+    blob = file.slice(sliceId * sliceSize, (sliceId + 1) * sliceSize);
+    reader.readAsArrayBuffer(blob);
   }
 
   this.stopSession = function(keepAlive) {
@@ -142,15 +204,14 @@ DataChannel.prototype.sendData = function(data, callback) {
 }
 
 // evt - FileReader onload event
-DataChannel.prototype.sendFile = function(evt, filename, log) {
-  this.startTimes[filename] = new Date()
+DataChannel.prototype.sendFile = function(file, log) {
   if (typeof this.channel != 'undefined' && this.channel.target !== this.p2pOptions.to) {
     this.onchannelclose = (function(e) {
       console.log('channel onclose:' + e)
       this.onchannelopen = (function() {
         if (this.p2pOptions.isCaller) {
           console.log('channel onopen')
-          this.onReadAsDataURL(evt, null, filename, log)
+          this.sendFileInternal(file, log)
         }
       }).bind(this)
       this.start()
@@ -165,13 +226,14 @@ DataChannel.prototype.sendFile = function(evt, filename, log) {
     this.onchannelopen = (function() {
       if (this.p2pOptions.isCaller) {
         console.log('channel onopen')
-        this.onReadAsDataURL(evt, null, filename, log)
+        this.sendFileInternal(file, log)
       }
     }).bind(this)
+
     this.start()
   }
   else {
-    this.onReadAsDataURL(evt, null, filename, log)
+    this.sendFileInternal(file, log)
   }
 }
 

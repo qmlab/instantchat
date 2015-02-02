@@ -55,27 +55,6 @@ $(function() {
     console.log('channel onopen')
   }
 
-  var chunks = [];
-  var blobs = [];
-  dataChannel.onchannelmessage = function (event) {
-    var data = JSON.parse(event.data);
-    var blobCount = 0;
-    chunks.push(data.message); // pushing chunks in array
-    if (chunks.length > CHUNKBUFFERSIZE || data.last) {
-      blobs.push(new Blob([chunks], {type: mime}))
-      chunks = []
-      console.log('created blob ' + blobCount)
-      blobCount++
-    }
-
-    if (data.last) {
-      var finalBlob = new Blob(blobs, {type: mime})
-      console.log('final blob created')
-      saveToDisk(URL.createObjectURL(finalBlob), data.filename);
-      blobs = []
-    }
-  }
-
   dataChannel.onchannelclose = function(e) {
     console.log('channel onclose:' + e)
   }
@@ -484,15 +463,11 @@ $(function() {
     $(files).each(function(index, file) {
       var msg = 'Sending file "' + file.name + '" to "' + user + '". FileSize: ' + file.size;
       log(msg)
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        dataChannel.p2pOptions.to = user
-        dataChannel.p2pOptions.from = username
-        dataChannel.p2pOptions.isCaller = true
-        sendInfo(user, username + ' is sending "' + file.name + '"')
-        dataChannel.sendFile(e, file.name, log)
-      }
-      reader.readAsDataURL(file)
+      dataChannel.p2pOptions.to = user
+      dataChannel.p2pOptions.from = username
+      dataChannel.p2pOptions.isCaller = true
+      sendInfo(user, username + ' is sending "' + file.name + '"')
+      dataChannel.sendFile(file, log)
     })
   }
 

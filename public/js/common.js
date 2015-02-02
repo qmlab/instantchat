@@ -1,3 +1,7 @@
+var common = {
+  util: {}
+}
+
 var FADE_TIME = 250; // ms
 
 // Adds a message element to the messages and scrolls to the bottom
@@ -190,4 +194,11 @@ function saveToDisk(fileUrl, fileName) {
 
     save.dispatchEvent(event);
     (window.URL || window.webkitURL).revokeObjectURL(save.href);
+}
+
+function appendBuffer( buffer1, buffer2 ) {
+  var tmp = new Uint8Array( buffer1.byteLength + buffer2.byteLength );
+  tmp.set( new Uint8Array( buffer1 ), 0 );
+  tmp.set( new Uint8Array( buffer2 ), buffer1.byteLength );
+  return tmp.buffer;
 }
