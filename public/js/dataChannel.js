@@ -25,14 +25,14 @@ var DataChannel = function(configs, constraints, socket) {
     var blobCount = 0;
     this.chunks = this.chunks.concat(content); // pushing chunks in array
     if (this.chunks.length > CHUNKBUFFERSIZE || data.last) {
-      this.blobs.push(new Blob(this.chunks), {type: 'application/octet-binary'})
+      this.blobs.push(new Blob(this.chunks, {type: mime}))
       this.chunks = []
       console.log('created blob ' + blobCount)
       blobCount++
     }
 
     if (data.last) {
-      var finalBlob = new Blob(this.blobs, {type: 'application/octet-binary'})
+      var finalBlob = new Blob(this.blobs, {type: mime})
       console.log('final blob created')
       saveToDisk(URL.createObjectURL(finalBlob), data.filename);
       this.blobs = []
@@ -93,7 +93,7 @@ var DataChannel = function(configs, constraints, socket) {
       }
       else {
         if (!!callback) {
-          callback()
+          setTimeout(callback.bind(this), 750)
         }
       }
     }).bind(this))
