@@ -11,7 +11,7 @@ function initConfigs(preferSCTP) {
   var isMobileDevice = navigator.userAgent.match(/Android|iPhone|iPad|iPod|BlackBerry|IEMobile/i);
   var isChrome = !!navigator.webkitGetUserMedia;
   var isFirefox = !!navigator.mozGetUserMedia;
-  var chromeVersion = !!navigator.mozGetUserMedia ? 0 : parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]);
+  var chromeVersion
 
   if (isFirefox) {
     /*
@@ -19,13 +19,14 @@ function initConfigs(preferSCTP) {
       url: 'stun:23.21.150.121'
     });
     */
-
+    chromeVersion = 0
     configs.iceServers.push({
       url: 'stun:stun.services.mozilla.com'
     });
   }
 
   if (isChrome) {
+    chromeVersion = parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]);
     configs.iceServers.push({
       url: 'stun:stun.l.google.com:19302'
     });

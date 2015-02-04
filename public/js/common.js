@@ -77,7 +77,7 @@ function getBaseUrl() {
 function scrollTitle(text, cancellationToken) {
   document.title = text;
   setTimeout(function () {
-    if (!cancellationToken.isCanceled)
+    if (!!cancellationToken && !cancellationToken.isCancelled)
     {
       scrollTitle(text.substr(3) + text.substr(0, 3));
     }
@@ -224,5 +224,5 @@ function setCookie(cname, cvalue, exdays) {
 }
 
 function deleteCookie(cname) {
-  document.cookie = cname + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC' 
+  document.cookie = cname + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC'
 }
