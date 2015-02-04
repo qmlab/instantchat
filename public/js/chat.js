@@ -330,7 +330,7 @@ $(function() {
   function processsetUserName(e) {
     if (!username && e.which === 13)
     {
-      setUserName()
+      setUserName(cleanInput($usernameInput.val().trim()), cleanInput($roomnameInput.val().trim()));
     }
   }
 
