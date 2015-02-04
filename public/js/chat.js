@@ -465,7 +465,6 @@ $(function() {
       log(msg)
       dataChannel.p2pOptions.to = user
       dataChannel.p2pOptions.from = username
-      dataChannel.p2pOptions.isCaller = true
       sendInfo(user, username + ' is sending "' + file.name + '"')
       dataChannel.sendFile(file, log)
     })
