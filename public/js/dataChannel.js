@@ -56,6 +56,7 @@ var DataChannel = function(configs, constraints, socket) {
   this.startTimes = {}
 
   this.sliceId = 0
+  this.blob
 
   this.localDescCreated = function(desc) {
     desc.sdp = setSDPBandwidth(desc.sdp, 1024 * 1024)
@@ -119,7 +120,6 @@ var DataChannel = function(configs, constraints, socket) {
     this.stopSession(true)
   }
 
-  this.blob
 
   this.sendFileInternal = function (file, log) {
     this.startTimes[file.name] = new Date()
