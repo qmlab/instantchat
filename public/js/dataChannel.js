@@ -30,13 +30,11 @@ var DataChannel = function(configs, constraints, socket) {
   this.onchannelmessage = function (event) {
     var data = JSON.parse(event.data);
     var content = common.util.convert.decode(data.message)
-    var blobCount = 0;
     this.chunks = this.chunks.concat(content); // pushing chunks in array
     if (this.chunks.length > CHUNK_BUFFER_SIZE || data.last) {
       this.blobs.push(new Blob(this.chunks, {type: MIME}))
       this.chunks = []
-      console.log('created blob ' + blobCount)
-      blobCount++
+      console.log('created blob')
     }
 
     if (data.last) {

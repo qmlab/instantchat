@@ -90,6 +90,13 @@ $(function() {
     $('.callStatus').hide()
   }
 
+  // Cookies
+  var cUserName = getCookie('username')
+  var cRoomName = getCookie('roomname')
+  if (cUserName.length > 0 && cRoomName.length > 0) {
+    setUserName(cUserName, cRoomName)
+  }
+
 
   function addParticipantsMessage (data) {
     var message = '';
@@ -104,9 +111,9 @@ $(function() {
   }
 
   // Sets the client's username
-  function setUsername () {
-    username = cleanInput($usernameInput.val().trim());
-    roomname = cleanInput($roomnameInput.val().trim());
+  function setUserName (usernameIn, roomnameIn) {
+    username = usernameIn;
+    roomname = roomnameIn;
 
     // If the username is valid
     if (username && roomname) {
@@ -314,16 +321,16 @@ $(function() {
 
   // Keyboard events
   $('#enterRoom').click(function (e) {
-    setUsername();
+    setUserName(cleanInput($usernameInput.val().trim()), cleanInput($roomnameInput.val().trim()));
   });
 
-  $('.usernameInput').keydown(processSetUserName)
-  $('.roomnameInput').keydown(processSetUserName)
+  $('.usernameInput').keydown(processsetUserName)
+  $('.roomnameInput').keydown(processsetUserName)
 
-  function processSetUserName(e) {
+  function processsetUserName(e) {
     if (!username && e.which === 13)
     {
-      setUsername()
+      setUserName()
     }
   }
 
@@ -395,6 +402,10 @@ $(function() {
     data.users.forEach(function(value, index, array) {
       addUser(value, $users)
     })
+
+    // Set cookies for the last successful login
+    setCookie('username', username, 7)
+    setCookie('roomname', roomname, 7)
   });
 
   // Whenever the server emits 'new message', update the chat body
@@ -553,6 +564,8 @@ $(function() {
   $('#quit').click(function(e) {
     bootbox.confirm('Are you sure to quit?', function(result) {
       if (true === result) {
+        deleteCookie('username')
+        deleteCookie('roomname')
         window.location.reload(true)
       }
     })
