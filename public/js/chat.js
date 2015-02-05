@@ -235,7 +235,7 @@ $(function() {
     var $messageDiv = $('<li class="message"/>')
     .data('username', data.username)
     .addClass(typingClass)
-    .append($usernameDiv, $dateTimeDiv, $messageTypeDiv, $messageBodyDiv);
+    .append($usernameDiv, data.typing ? null : $dateTimeDiv, $messageTypeDiv, $messageBodyDiv);
 
     // Add the new message and scroll to bottom
     options.scrollToBottom = true;
