@@ -13,15 +13,16 @@ module.exports.start = function(server) {
     socket.on('add user', function (data) {
       // we store the username in the socket session for this client
       if (data.username && data.roomname) {
-        // Store the socket
-        sockets[data.username] = socket;
-
         if (users[data.roomname] && users[data.roomname].indexOf(data.username) >= 0) {
           socket.emit('error message', {
             msg: 'user already exists in this room'
           })
           return;
         }
+        
+        // Store the socket
+        sockets[data.username] = socket;
+
         socket.join(data.roomname);
         socket.username = data.username;
         socket.roomname = data.roomname;
@@ -126,6 +127,25 @@ module.exports.start = function(server) {
       }
     });
 
+
+    // Non-message poke
+    socket.on('new poke', function (data) {
+      if (typeof data.toUser == 'undefined') {
+        // we tell the client to execute 'new message'
+        socket.broadcast.to(socket.roomname).emit('new poke', {
+          username: socket.username
+        });
+      }
+      else {
+        console.log('from:' + socket.username)
+        console.log('to:' + data.toUser)
+        console.log(sockets[data.toUser].username)
+        sockets[data.toUser].emit('new poke', {
+          username: socket.username,
+          toUser: data.toUser
+        })
+      }
+    });
 
   });
 

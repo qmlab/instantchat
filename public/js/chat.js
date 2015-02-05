@@ -1,5 +1,6 @@
 $(function() {
   var TYPING_TIMER_LENGTH = 2000; // ms
+  var MIN_POKE_INTERVAL = 5000; // ms
   var COLORS = [
   '#e21400', '#91580f', '#f8a700', '#f78b00',
   '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
@@ -38,8 +39,8 @@ $(function() {
   , newMsgCancellationToken = { isCancelled: false }
   , username
   , roomname
-
-  var socket = io.connect(getBaseUrl());
+  , lastPoke = new Date('1970-01-01')
+  , socket = io.connect(getBaseUrl())
 
   // Set up RTC connections
   if (!!configs) {
@@ -135,6 +136,19 @@ $(function() {
       toUser: toUser,
       msg: msg
     })
+  }
+
+  function sendPoke(toUser) {
+    var elapsed = Date.now() - lastPoke
+    if (elapsed > MIN_POKE_INTERVAL) {
+      socket.emit('new poke', {
+        toUser: toUser
+      })
+      lastPoke = Date.now()
+    }
+    else {
+      bootbox.alert('Sorry, you are poking too fast!')
+    }
   }
 
   // Sends a chat message
@@ -417,6 +431,14 @@ $(function() {
     log(data.message)
   })
 
+  socket.on('new poke', function (data) {
+    var from = data.username
+    var to = data.toUser
+    var msg = from + ' has poked you!'
+    log(msg)
+    alert(msg)
+  })
+
   // Whenever the server emits 'user joined', log it in the chat body
   socket.on('user joined', function (data) {
     log(data.username + ' has joined');
@@ -516,6 +538,12 @@ $(function() {
     var toUser = $contextMenu.data('toUser')
     sendInfo(toUser, username + ' has initiated an audio chat. Please allow the use of microphone.')
     mediaChannel.startAudio(toUser, username)
+  })
+
+  $('#poke').click(function(e) {
+    var toUser = $contextMenu.data('toUser')
+    log('You poked ' + toUser)
+    sendPoke(toUser)
   })
 
   $('#sendPrivateMsgBtn').click(function(e) {
