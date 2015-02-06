@@ -485,17 +485,23 @@ $(function() {
     e.stopPropagation()
   }
 
-  function dragDrop(e) {
+  function dragDrop(evt) {
     var toUser = $(this).text()
-    if(e.originalEvent.dataTransfer){
+    if(evt.originalEvent.dataTransfer){
       if (toUser !== username) {
-        if(e.originalEvent.dataTransfer.files.length) {
-          e.preventDefault();
-          e.stopPropagation();
-          handleFiles(e.originalEvent.dataTransfer.files, toUser);
+        if(evt.originalEvent.dataTransfer.files.length) {
+          evt.preventDefault();
+          evt.stopPropagation();
+          handleFiles(evt.originalEvent.dataTransfer.files, toUser);
         }
       }
     }
+  }
+
+  function handleFileSelector(evt) {
+    var toUser = $contextMenu.data('toUser')
+    var files = evt.target.files
+    handleFiles(files, toUser)
   }
 
   function handleFiles(files, user) {
@@ -542,6 +548,14 @@ $(function() {
     sendInfo(toUser, username + ' has initiated an audio chat. Please allow the use of microphone.')
     mediaChannel.startAudio(toUser, username)
   })
+
+  $('#sendFile').click(function(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    $('#fileInput').trigger('click')
+  })
+
+  $('#fileInput').change(handleFileSelector)
 
   $('#poke').click(function(e) {
     var toUser = $contextMenu.data('toUser')
@@ -632,38 +646,5 @@ $(function() {
     }
   })
 
-  /*
-  $('.hold').on('switchChange.bootstrapSwitch', function(evt, state) {
-    if (state) {
-      if (p2pOptions.video) {
-        if(!!localStream) {
-          myVideoNode.play()
-        }
-        if(!!remoteStream) {
-          videoNode.play()
-        }
-      }
-      else if (p2pOptions.audio) {
-        if(!!localStream || !!remoteStream) {
-          audioNode.play()
-        }
-      }
-    }
-    else {
-      if (p2pOptions.video) {
-        if(!!localStream) {
-          myVideoNode.pause()
-        }
-        if(!!remoteStream) {
-          videoNode.pause()
-        }
-      }
-      else if (p2pOptions.audio) {
-        if(!!localStream || !!remoteStream) {
-          audioNode.play()
-        }
-      }
-    }
-  })
-  */
+
 });

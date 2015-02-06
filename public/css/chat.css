@@ -330,3 +330,7 @@ ul {
   width: 100%;
   padding-right: 3%;
 }
+
+#fileInput {
+  display: none;
+}
