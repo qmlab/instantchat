@@ -63,7 +63,7 @@ $(function() {
     console.error('channel error:' + e)
   }
   mediaChannel.onVideoStreamopen = function(evt) {
-    $('.videoIcon').show()
+    //$('.videoIcon').show()
     $('.videos').show()
     $('.stopVideo').show()
     $('.mediaControls').show()
@@ -92,6 +92,10 @@ $(function() {
     $('.mediaControls').hide()
     $('.callStatus').hide()
   }
+
+  $('#videoChannel').on('hidden.bs.modal', function() {
+    $('.videoIcon').show()
+  })
 
   // Cookies
   var cUserName = getCookie('username')
