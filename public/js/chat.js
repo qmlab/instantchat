@@ -75,7 +75,7 @@ $(function() {
     $('.videoIcon').hide()
     $('.videos').hide()
     $('.stopVideo').hide()
-    $('.mediaControls').show()
+    $('.mediaControls').hide()
     $('.callStatus').hide()
     $videoModal.modal('hide')
   }

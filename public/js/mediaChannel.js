@@ -113,19 +113,44 @@ var MediaChannel = function(configs, constraints, socket) {
       console.log('onsignalingstatechange: ' + this.pc.signalingState)
     }).bind(this)
 
-    // get a local stream, show it in a self-view and add it to be sent
-    navigator.getUserMedia({ 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video }, (function (stream) {
+    if (this.p2pOptions.audio) {
       if (this.p2pOptions.video) {
-        this.myVideoNode.src = this.createSrc(stream)
+        navigator.getUserMedia({ 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video }, (function (stream) {
+          if (this.p2pOptions.video) {
+            // get a local stream, show it in a self-view and add it to be sent
+            this.myVideoNode.src = this.createSrc(stream)
 
-        // Noise control
-        this.myVideoNode.volume = 0
+            // Noise control
+            this.myVideoNode.volume = 0
 
-        this.myVideoNode.play()
+            this.myVideoNode.play()
+          }
+          this.localStream = stream
+          this.pc.addStream(stream)
+        }).bind(this), (function () {
+          navigator.getUserMedia({ 'audio': this.p2pOptions.audio, 'video': false }, (function (stream) {
+            // If video is not available, fall back to audio chat
+            this.localStream = stream
+            this.pc.addStream(stream)
+          }).bind(this), this.loadMediaError)
+        }).bind(this))
       }
-      this.localStream = stream
-      this.pc.addStream(stream)
-    }).bind(this), this.loadMediaError)
+      else {
+        navigator.getUserMedia({ 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video }, (function (stream) {
+          if (this.p2pOptions.video) {
+            this.myVideoNode.src = this.createSrc(stream)
+
+            // Noise control
+            this.myVideoNode.volume = 0
+
+            this.myVideoNode.play()
+          }
+          this.localStream = stream
+          this.pc.addStream(stream)
+        }).bind(this), this.loadMediaError)
+      }
+    }
+
   }
 }
 
