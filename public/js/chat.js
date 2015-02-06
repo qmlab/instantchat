@@ -66,6 +66,7 @@ $(function() {
     $('.videoIcon').show()
     $('.videos').show()
     $('.stopVideo').show()
+    $('.mediaControls').show()
     $('.callStatus').text('In Video Call')
     $('.callStatus').show()
     $videoModal.modal('show')
@@ -74,20 +75,21 @@ $(function() {
     $('.videoIcon').hide()
     $('.videos').hide()
     $('.stopVideo').hide()
+    $('.mediaControls').show()
     $('.callStatus').hide()
     $videoModal.modal('hide')
   }
   mediaChannel.onAudioStreamopen = function(evt) {
     $('.audioIcon').show()
     $('.stopAudio').show()
-    $('.audioControls').show()
+    $('.mediaControls').show()
     $('.callStatus').text('In Audio Call')
     $('.callStatus').show()
   }
   mediaChannel.onAudioStreamclose = function() {
     $('.audioIcon').hide()
     $('.stopAudio').hide()
-    $('.audioControls').hide()
+    $('.mediaControls').hide()
     $('.callStatus').hide()
   }
 
