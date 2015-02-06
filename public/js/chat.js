@@ -141,6 +141,7 @@ $(function() {
   function sendPoke(toUser) {
     var elapsed = Date.now() - lastPoke
     if (elapsed > MIN_POKE_INTERVAL) {
+      log('You poked ' + toUser)
       socket.emit('new poke', {
         toUser: toUser
       })
@@ -542,7 +543,6 @@ $(function() {
 
   $('#poke').click(function(e) {
     var toUser = $contextMenu.data('toUser')
-    log('You poked ' + toUser)
     sendPoke(toUser)
   })
 

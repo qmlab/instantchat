@@ -163,9 +163,12 @@ ul {
 }
 
 .users {
-  height: 100%;
+  height: 70%;
   margin: 0;
   padding: 10px 20px 50px 20px;
+  opacity: 0.6;
+  background-color: #FAFAFA;
+  box-shadow: inset 0px 0px 35px 9px #CFCFCF;
 }
 
 .message.typing .messageBody {
@@ -180,7 +183,6 @@ ul {
   font-weight: 700;
   overflow: hidden;
   padding-right: 15px;
-  text-align: right;
 }
 
 .username:hover {
