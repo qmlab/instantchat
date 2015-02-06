@@ -325,3 +325,8 @@ ul {
   position: fixed;
   bottom: 52px;
 }
+
+.container .navbarContainer {
+  width: 100%;
+  padding-right: 3%;
+}
