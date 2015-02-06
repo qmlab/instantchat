@@ -66,20 +66,20 @@
         </div>
       </div>
       <div class="row-fluid">
+        <div class="statusbar"><span class="label label-default callStatus"></span></div>
         <div class="audios">
           <audio class="remoteAudio" autoplay="autoplay"></audio>
         </div>
         <div class="control-panel">
-          <span class="label label-default callStatus"></span>
           <div class="audioControls">
-            <input id="muteSwitch" type="checkbox" data-off-text="Muted" data-on-text="Unmuted" checked="true" class="BSswitch mute">
-            <button type="button" class="btn btn-danger chatoption stopAudio">
-              <span class="glyphicon glyphicon-stop"></span>
+            <button type="button" class="btn btn-danger chatoption stopAudio" data-toggle="tooltip" data-placement="top" title="Stop the call">
+              STOP
             </button>
+            <button type="button" class="btn btn-danger chatoption stopVideo" data-toggle="tooltip" data-placement="top" title="Stop the call">
+              STOP
+            </button>
+            <input type="checkbox" data-off-text="Muted" data-on-text="Unmuted" checked="true" class="BSswitch mute">
           </div>
-          <button type="button" class="btn btn-danger chatoption stopVideo">
-            <span class="glyphicon glyphicon-stop"></span>
-          </button>
         </div>
       </div>
       <footer class="footer">
@@ -149,7 +149,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger stopVideo" data-dismiss="modal">Stop</button>
+          <button type="button" class="btn btn-danger stopVideo" data-dismiss="modal">STOP</button>
+          <input type="checkbox" data-off-text="Muted" data-on-text="Unmuted" checked="true" class="BSswitch mute">
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ module.exports.start = function(server) {
           })
           return;
         }
-        
+
         // Store the socket
         sockets[data.username] = socket;
 
@@ -91,7 +91,7 @@ module.exports.start = function(server) {
       if (addedUser) {
         users[socket.roomname].remove(socket.username);
 
-		console.log(socket.username + ' left ' + socket.roomname);
+        console.log(socket.username + ' left ' + socket.roomname);
 
         // echo globally that this client has left
         socket.broadcast.to(socket.roomname).emit('user left', {
@@ -137,9 +137,8 @@ module.exports.start = function(server) {
         });
       }
       else {
-        console.log('from:' + socket.username)
-        console.log('to:' + data.toUser)
-        console.log(sockets[data.toUser].username)
+        //console.log('from:' + socket.username)
+        //console.log('to:' + data.toUser)
         sockets[data.toUser].emit('new poke', {
           username: socket.username,
           toUser: data.toUser

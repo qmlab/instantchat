@@ -28,8 +28,8 @@ $(function() {
   myVideoNode = $('.localVideo').get(0)
   audioNode = $('.remoteAudio').get(0)
 
-  $("#muteSwitch").bootstrapSwitch('state')
-  $("#holdSwitch").bootstrapSwitch('state')
+  $('.mute').bootstrapSwitch('state')
+  $('[data-toggle="tooltip"]').tooltip()
 
   // Variables
   var connected = false

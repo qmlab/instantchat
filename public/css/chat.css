@@ -154,6 +154,7 @@ ul {
   height: 100%;
   padding-bottom: 60px;
   position: fixed;
+  right: 10%;
 }
 
 .messages {
@@ -314,4 +315,13 @@ ul {
 
 .audioControls {
   display: none
+}
+
+.mute {
+  margin-left: 20px;
+}
+
+.statusbar {
+  position: fixed;
+  bottom: 52px;
 }
