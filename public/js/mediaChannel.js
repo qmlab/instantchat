@@ -116,6 +116,7 @@ var MediaChannel = function(configs, constraints, socket) {
     if (this.p2pOptions.audio) {
       if (this.p2pOptions.video) {
         navigator.getUserMedia({ 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video }, (function (stream) {
+          this.inSession = true
           if (this.p2pOptions.video) {
             // get a local stream, show it in a self-view and add it to be sent
             this.myVideoNode.src = this.createSrc(stream)

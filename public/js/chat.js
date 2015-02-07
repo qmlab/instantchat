@@ -95,7 +95,9 @@ $(function() {
   }
 
   $('#videoChannel').on('hidden.bs.modal', function() {
-    $('.videoIcon').show()
+    if (mediaChannel.inSession) {
+      $('.videoIcon').show()
+    }
   })
 
   // Cookies
