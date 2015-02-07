@@ -41,6 +41,7 @@ $(function() {
   , roomname
   , lastPoke = new Date('1970-01-01')
   , socket = io.connect(getBaseUrl())
+  , filesToSend = {}  // Files to send out by receiver
 
   // Set up RTC connections
   if (!!configs) {
@@ -496,7 +497,11 @@ $(function() {
         if(evt.originalEvent.dataTransfer.files.length) {
           evt.preventDefault();
           evt.stopPropagation();
-          handleFiles(evt.originalEvent.dataTransfer.files, toUser);
+          filesToSend[toUser] = evt.originalEvent.dataTransfer.files
+          log('initiating file transfer with ' + toUser)
+          socket.emit('start file request', {
+            to: toUser
+          })
         }
       }
     }
@@ -505,7 +510,11 @@ $(function() {
   function handleFileSelector(evt) {
     var toUser = $contextMenu.data('toUser')
     var files = evt.target.files
-    handleFiles(files, toUser)
+    filesToSend[toUser] = files
+    log('initiating file transfer with ' + toUser)
+    socket.emit('start file request', {
+      to: toUser
+    })
   }
 
   function handleFiles(files, user) {
@@ -543,14 +552,58 @@ $(function() {
 
   $('#startVideo').click(function(e) {
     var toUser = $contextMenu.data('toUser')
-    sendInfo(toUser, username + ' has initiated a video chat. Please allow the use of camera.')
-    mediaChannel.startVideo(toUser, username)
+    log('initiating video connection with ' + toUser)
+    socket.emit('start video request', {
+      to: toUser
+    })
   })
 
   $('#startAudio').click(function(e) {
     var toUser = $contextMenu.data('toUser')
-    sendInfo(toUser, username + ' has initiated an audio chat. Please allow the use of microphone.')
-    mediaChannel.startAudio(toUser, username)
+    log('initiating audio connection with ' + toUser)
+    socket.emit('start audio request', {
+      to: toUser
+    })
+  })
+
+  socket.on('start video response', function(data) {
+    if (!!data && !!data.to) {
+      var toUser = data.to
+      if (data.permitted) {
+        sendInfo(toUser, username + ' has initiated a video chat. Please allow the use of camera.')
+        mediaChannel.startVideo(toUser, username)
+      }
+      else {
+        log('failed to start video with ' + toUser + '. ' + data.message)
+      }
+    }
+  })
+
+  socket.on('start audio response', function(data) {
+    if (!!data && !!data.to) {
+      var toUser = data.to
+      if (data.permitted) {
+        sendInfo(toUser, username + ' has initiated an audio chat. Please allow the use of microphone.')
+        mediaChannel.startAudio(toUser, username)
+      }
+      else {
+        log('failed to start audio with ' + toUser + '. ' + data.message)
+      }
+    }
+  })
+
+  socket.on('start file response', function(data) {
+    if (!!data && !!data.to) {
+      var toUser = data.to
+      if (data.permitted) {
+        var files = filesToSend[data.to]
+        delete filesToSend[data.to]
+        handleFiles(files, toUser);
+      }
+      else {
+        log('failed to start file transfer with ' + toUser + '. ' + data.message)
+      }
+    }
   })
 
   $('#sendFile').click(function(e) {

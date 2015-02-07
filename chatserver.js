@@ -63,11 +63,18 @@ module.exports.start = function(server) {
         });
       }
       else {
-        sockets[data.toUser].emit('new message', {
-          username: socket.username,
-          message: data.msg,
-          toUser: data.toUser
-        })
+        if (users[socket.roomname].indexOf(data.toUser) > -1) {
+          sockets[data.toUser].emit('new message', {
+            username: socket.username,
+            message: data.msg,
+            toUser: data.toUser
+          })
+        }
+        else {
+          socket.emit('new info', {
+            message: 'Action failed. User does not exist.'
+          })
+        }
       }
     });
 
@@ -90,7 +97,7 @@ module.exports.start = function(server) {
       // remove the username from global users list
       if (addedUser) {
         users[socket.roomname].remove(socket.username);
-
+        socket.leave(socket.roomname)
         console.log(socket.username + ' left ' + socket.roomname);
 
         // echo globally that this client has left
@@ -98,6 +105,10 @@ module.exports.start = function(server) {
           username: socket.username,
           numUsers: users[socket.roomname].length
         });
+
+        delete socket.roomname
+        delete sockets[socket.username]
+        delete socket.username
       }
     });
 
@@ -137,16 +148,67 @@ module.exports.start = function(server) {
         });
       }
       else {
-        //console.log('from:' + socket.username)
-        //console.log('to:' + data.toUser)
-        sockets[data.toUser].emit('new poke', {
-          username: socket.username,
-          toUser: data.toUser
-        })
+        if (users[socket.roomname].indexOf(data.toUser) > -1) {
+          sockets[data.toUser].emit('new poke', {
+            username: socket.username,
+            toUser: data.toUser
+          })
+        }
+        else {
+          socket.emit('new info', {
+            message: 'Action failed. User does not exist.'
+          })
+        }
       }
     });
 
-  });
+    socket.on('start audio request', function(data) {
+      if (users[socket.roomname].indexOf(data.to) > -1) {
+        socket.emit('start audio response', {
+          permitted: true,
+          to: data.to
+        })
+      }
+      else {
+        socket.emit('start audio response', {
+          message: 'User does not exist.',
+          to: data.to
+        })
+      }
+    })
+
+    socket.on('start video request', function(data) {
+      if (users[socket.roomname].indexOf(data.to) > -1) {
+        socket.emit('start video response', {
+          permitted: true,
+          to: data.to
+        })
+      }
+      else {
+        socket.emit('start video response', {
+          message: 'User does not exist.',
+          to: data.to
+        })
+      }
+    })
+
+    socket.on('start file request', function(data) {
+      if (users[socket.roomname].indexOf(data.to) > -1) {
+        socket.emit('start file response', {
+          permitted: true,
+          to: data.to
+        })
+      }
+      else {
+        socket.emit('start file response', {
+          message: 'User does not exist.',
+          to: data.to
+        })
+      }
+    })
+
+  })
+
 
   Array.prototype.remove = function() {
     var what, a = arguments, L = a.length, ax;
