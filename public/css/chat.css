@@ -50,6 +50,7 @@ ul {
 
 .login.page {
   background-color: #000;
+  display: none;
 }
 
 .login.page .form {
@@ -336,11 +337,11 @@ ul {
 }
 
 .blinkOnAppear {
-  -webkit-animation: blink 9s;
-  animation: blink 9s;
+  -webkit-animation: blink7 9s;
+  animation: blink7 9s;
 }
 
-@-webkit-keyframes blink {
+@-webkit-keyframes blink7 {
   0%  {opacity: 1}
   8%  {opacity: 0}
   16%  {opacity: 1}
@@ -356,7 +357,7 @@ ul {
   100%  {opacity: 1}
 }
 
-@keyframes blink {
+@keyframes blink7 {
   0%  {opacity: 1}
   8%  {opacity: 0}
   16%  {opacity: 1}
@@ -369,5 +370,30 @@ ul {
   75% {opacity: 0}
   83% {opacity: 1}
   92% {opacity: 0}
+  100%  {opacity: 1}
+}
+
+.blinkOnAppearShort {
+  -webkit-animation: blink4 5s;
+  animation: blink4 5s;
+}
+
+@-webkit-keyframes blink4 {
+  0%  {opacity: 1}
+  16%  {opacity: 0}
+  33%  {opacity: 1}
+  49% {opacity: 0}
+  66% {opacity: 1}
+  83% {opacity: 0}
+  100%  {opacity: 1}
+}
+
+@keyframes blink4 {
+  0%  {opacity: 1}
+  16%  {opacity: 0}
+  33%  {opacity: 1}
+  49% {opacity: 0}
+  66% {opacity: 1}
+  83% {opacity: 0}
   100%  {opacity: 1}
 }

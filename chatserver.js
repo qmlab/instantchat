@@ -14,7 +14,7 @@ module.exports.start = function(server) {
       // we store the username in the socket session for this client
       if (data.username && data.roomname) {
         if (users[data.roomname] && users[data.roomname].indexOf(data.username) >= 0) {
-          socket.emit('error message', {
+          socket.emit('login error', {
             msg: 'user already exists in this room'
           })
           return;
@@ -47,7 +47,7 @@ module.exports.start = function(server) {
         });
       }
       else {
-        socket.emit('error message', {
+        socket.emit('login error', {
           msg: 'empty username or roomname'
         })
       }

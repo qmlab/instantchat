@@ -104,6 +104,9 @@ $(function() {
   if (cUserName.length > 0 && cRoomName.length > 0) {
     setUserName(cUserName, cRoomName)
   }
+  else {
+    $loginPage.show()
+  }
 
 
   function addParticipantsMessage (data) {
@@ -135,6 +138,7 @@ $(function() {
     }
     else {
       bootbox.alert('Error: Invalid user name or room name')
+      $loginPage.show()
     }
   }
 
@@ -201,7 +205,7 @@ $(function() {
   // Log a message
   function log (message, options) {
     options = options || {};
-    var $el = $('<li>').addClass('log').text(message);
+    var $el = $('<li>').addClass('log blinkOnAppearShort').text(message);
     if (typeof options.scrollToBottom == 'undefined') {
       options.scrollToBottom = true;
     }
@@ -470,8 +474,9 @@ $(function() {
     removeChatTyping(data);
   });
 
-  socket.on('error message', function(e) {
+  socket.on('login error', function(e) {
     bootbox.alert('Error: ' + e.msg)
+    $loginPage.show()
   })
 
   // Show and hide context menu
