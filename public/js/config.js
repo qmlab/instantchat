@@ -9,10 +9,11 @@ window.contraints = {
 window.moz = !!navigator.mozGetUserMedia;
 window.IsDataChannelSupported = !((moz && !navigator.mozGetUserMedia) || (!moz && !navigator.webkitGetUserMedia));
 
+window.isMobileDevice = navigator.userAgent.match(/Android|iPhone|iPad|iPod|BlackBerry|IEMobile/i);
+window.isChrome = !!navigator.webkitGetUserMedia;
+window.isFirefox = !!navigator.mozGetUserMedia;
+
 function initConfigs(preferSCTP) {
-  var isMobileDevice = navigator.userAgent.match(/Android|iPhone|iPad|iPod|BlackBerry|IEMobile/i);
-  var isChrome = !!navigator.webkitGetUserMedia;
-  var isFirefox = !!navigator.mozGetUserMedia;
   var chromeVersion
 
   if (isFirefox) {

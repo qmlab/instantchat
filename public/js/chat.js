@@ -111,6 +111,9 @@ $(function() {
   }
 
 
+  // ---------- Functions -----------
+
+
   function addParticipantsMessage (data) {
     var message = '';
     if (data.numUsers === 1) {
@@ -210,6 +213,9 @@ $(function() {
     var $el = $('<li>').addClass('log blinkOnAppearShort').text(message);
     if (typeof options.scrollToBottom == 'undefined') {
       options.scrollToBottom = true;
+    }
+    if (!!options.color) {
+      $el = $el.css('color', options.color)
     }
     Common.addElement($el, $messages, $window, options);
   }
@@ -419,11 +425,14 @@ $(function() {
     $chatPage.show();
     $inputMessage.focus();
 
+    // Detect browser type and version
+    if (!isChrome || parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10) < 29) {
+      log('[Please use Chrome 29+ for video/audio chats and file transfer]', { color: 'orange' })
+    }
+
     // Display the welcome message
     var message = "Welcome " + data.username + " to " + "Room \"" + data.roomname + "\"";
-    log(message, {
-      prepend: true
-    });
+    log(message);
     addParticipantsMessage(data);
 
     // Add users to the user list for current user
