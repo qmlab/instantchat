@@ -397,3 +397,9 @@ ul {
   83% {opacity: 0}
   100%  {opacity: 1}
 }
+
+#pageLogo {
+  float: left;
+  margin-top: 10px;
+  margin-left: 10px;
+}
