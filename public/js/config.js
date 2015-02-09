@@ -1,3 +1,5 @@
+// Global configs
+
 window.configs = {
   iceServers: []
 }

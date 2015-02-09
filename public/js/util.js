@@ -1,9 +1,14 @@
-(function (exports) {
+// Sub-module of Common
+// Include functions for coding convertions and other data utils
+
+var Common = Common || {}
+Common.util = (function () {
     //NOTE! we use '-' and not '+'
     //I did it so we can put '-' delimited strings
     var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-/=';
 
-    var Base64Binary = {
+    return {
+      convert : {
         decode:function (input) {
             //get last chars to see if are valid
             var padding1 = encodings.indexOf(input.charAt(input.length - 1));
@@ -94,7 +99,7 @@
 
             return base64
         }
-    };
+      }
+    }
 
-    exports.convert = Base64Binary;
-})(typeof exports === 'undefined' ? common.util : exports);
+})();

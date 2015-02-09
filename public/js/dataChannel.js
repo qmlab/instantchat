@@ -1,15 +1,17 @@
-var CHUNK_SIZE = 1200;
-var CHUNK_BUFFER_SIZE = 100;
-var CACHE_SIZE = 100000000;
-var CALLBACK_DELAY = 100;
-var MIME = 'text/html'
-
-//read a slice the size not bigger than CACHE_SIZE,100MB since ~100MB is the limit for read size of file api (in chrome).
-var chunksPerSlice = Math.floor(Math.min(1024000,CACHE_SIZE,100000000)/CHUNK_SIZE);
-//var swID;
-var sliceSize = chunksPerSlice * CHUNK_SIZE;
+// Class for WebRTC data channel
 
 var DataChannel = function(configs, constraints, socket) {
+  var CHUNK_SIZE = 1200;
+  var CHUNK_BUFFER_SIZE = 100;
+  var CACHE_SIZE = 100000000;
+  var CALLBACK_DELAY = 100;
+  var MIME = 'text/html'
+
+  //read a slice the size not bigger than CACHE_SIZE,100MB since ~100MB is the limit for read size of file api (in chrome).
+  var chunksPerSlice = Math.floor(Math.min(1024000,CACHE_SIZE,100000000)/CHUNK_SIZE);
+  //var swID;
+  var sliceSize = chunksPerSlice * CHUNK_SIZE;
+
   var type = 'data'
 
   this.configs = configs
@@ -29,7 +31,7 @@ var DataChannel = function(configs, constraints, socket) {
   this.onchannelerror
   this.onchannelmessage = function (event) {
     var data = JSON.parse(event.data);
-    var content = common.util.convert.decode(data.message)
+    var content = Common.util.convert.decode(data.message)
     this.chunks = this.chunks.concat(content); // pushing chunks in array
     if (this.chunks.length > CHUNK_BUFFER_SIZE || data.last) {
       this.blobs.push(new Blob(this.chunks, {type: MIME}))
@@ -40,7 +42,7 @@ var DataChannel = function(configs, constraints, socket) {
     if (data.last) {
       var finalBlob = new Blob(this.blobs, {type: MIME})
       console.log('final blob created')
-      saveToDisk(URL.createObjectURL(finalBlob), data.filename);
+      Common.saveToDisk(URL.createObjectURL(finalBlob), data.filename);
       this.blobs = []
       this.stopSession(true)
     }
@@ -57,10 +59,10 @@ var DataChannel = function(configs, constraints, socket) {
   this.blob
 
   this.localDescCreated = function(desc) {
-    desc.sdp = setSDPBandwidth(desc.sdp, 1024 * 1024)
+    desc.sdp = Common.setSDPBandwidth(desc.sdp, 1024 * 1024)
     this.pc.setLocalDescription(desc, (function () {
       this.signalingChannel.send({ 'type': type, 'sdp': this.pc.localDescription, 'to': this.p2pOptions.to, 'from': this.p2pOptions.from, 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video})
-    }).bind(this), logError)
+    }).bind(this), Common.logError)
   }
 
   // Data channel
@@ -128,7 +130,7 @@ var DataChannel = function(configs, constraints, socket) {
     var text
     reader.onloadend = (function (evt) {
       if (evt) {
-        text = common.util.convert.encode(evt.target.result); // on first invocation
+        text = Common.util.convert.encode(evt.target.result); // on first invocation
       }
       if (evt.target.readyState == FileReader.DONE) { // DONE == 2
         fails = 0
@@ -176,7 +178,7 @@ var DataChannel = function(configs, constraints, socket) {
 
     // let the 'negotiationneeded' event trigger offer generation
     this.pc.onnegotiationneeded = (function () {
-      this.pc.createOffer(this.localDescCreated.bind(this), logError)
+      this.pc.createOffer(this.localDescCreated.bind(this), Common.logError)
     }).bind(this)
 
     this.pc.oniceconnectionstatechange = (function (evt) {
@@ -282,12 +284,12 @@ DataChannel.prototype.onmessage = function(message) {
     this.pc.setRemoteDescription(new RTCSessionDescription(message.sdp), (function () {
       // if we received an offer, we need to answer
       if (this.pc.remoteDescription.type == 'offer') {
-        this.pc.createAnswer(this.localDescCreated.bind(this), logError)
+        this.pc.createAnswer(this.localDescCreated.bind(this), Common.logError)
       }
-    }).bind(this), logError)
+    }).bind(this), Common.logError)
   }
   else if (!!message.candidate){
-    this.pc.addIceCandidate(new RTCIceCandidate(message.candidate), logSuccess, logError)
+    this.pc.addIceCandidate(new RTCIceCandidate(message.candidate), Common.logSuccess, Common.logError)
   }
 }
 

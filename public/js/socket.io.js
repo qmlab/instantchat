@@ -3565,7 +3565,7 @@ exports.enable(load());
 },{"./debug":22}],22:[function(_dereq_,module,exports){
 
 /**
- * This is the common logic for both the Node.js and web browser
+ * This is the Common logic for both the Node.js and web browser
  * implementations of `debug()`.
  *
  * Expose `debug()` as the module.
@@ -6463,7 +6463,7 @@ module.exports=_dereq_(36)
                   }
                   charCode = source.charCodeAt(Index);
                   begin = Index;
-                  // Optimize for the common case where a string is valid.
+                  // Optimize for the Common case where a string is valid.
                   while (charCode >= 32 && charCode != 92 && charCode != 34) {
                     charCode = source.charCodeAt(++Index);
                   }

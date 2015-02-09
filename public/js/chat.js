@@ -40,7 +40,7 @@ $(function() {
   , username
   , roomname
   , lastPoke = new Date('1970-01-01')
-  , socket = io.connect(getBaseUrl())
+  , socket = io.connect(Common.getBaseUrl())
   , filesToSend = {}  // Files to send out by receiver
 
   // Set up RTC connections
@@ -101,8 +101,8 @@ $(function() {
   })
 
   // Cookies
-  var cUserName = getCookie('username')
-  var cRoomName = getCookie('roomname')
+  var cUserName = Common.getCookie('username')
+  var cRoomName = Common.getCookie('roomname')
   if (cUserName.length > 0 && cRoomName.length > 0) {
     setUserName(cUserName, cRoomName)
   }
@@ -176,7 +176,7 @@ $(function() {
     }
 
     // Prevent markup from being injected into the message
-    message = cleanInput(message);
+    message = Common.cleanInput(message);
 
     // if there is a non-empty message and a socket connection
     if (message && connected) {
@@ -211,7 +211,7 @@ $(function() {
     if (typeof options.scrollToBottom == 'undefined') {
       options.scrollToBottom = true;
     }
-    addElement($el, $messages, $window, options);
+    Common.addElement($el, $messages, $window, options);
   }
 
   // Add the user to the current user list
@@ -222,7 +222,7 @@ $(function() {
     .css('color', getUsernameColor(theusername));
 
     options.scrollToBottom = false;
-    addElement($usernameDiv, list, $window, options);
+    Common.addElement($usernameDiv, list, $window, options);
   }
 
   // Adds the visual chat message to the message list
@@ -239,14 +239,14 @@ $(function() {
     var $messageTypeDiv = $('<span class="messageType"/>')
 
     var $dateTimeDiv = $('<span class="datetime"/>')
-    .text(getTime())
+    .text(Common.getTime())
 
     var $usernameDiv = $('<span class="username"/>')
     .text(data.username)
     .css('color', getUsernameColor(data.username));
 
     var $messageBodyDiv = $('<span class="messageBody"/>')
-    .html(replaceNewLines(data.message));
+    .html(Common.replaceNewLines(data.message));
 
     if (data.toUser) {
       if (data.username === username)
@@ -267,11 +267,11 @@ $(function() {
 
     // Add the new message and scroll to bottom
     options.scrollToBottom = true;
-    addElement($messageDiv, $messages, $window, options);
+    Common.addElement($messageDiv, $messages, $window, options);
 
     if (data.username !== username && !data.typing) {
       newMsgCancellationToken.isCancelled = false;
-      scrollTitle("You have new messages ", newMsgCancellationToken)
+      Common.newMsgTitle("New messages", newMsgCancellationToken)
     }
   }
 
@@ -291,7 +291,7 @@ $(function() {
       $messageDiv = $messageDiv.append($usernameDiv)
     })
 
-    addElement($messageDiv, $messages, $window, options)
+    Common.addElement($messageDiv, $messages, $window, options)
   }
 
   // Adds the visual chat typing message
@@ -349,7 +349,7 @@ $(function() {
 
   // Keyboard events
   $('#enterRoom').click(function (e) {
-    setUserName(cleanInput($usernameInput.val().trim()), cleanInput($roomnameInput.val().trim()));
+    setUserName(Common.cleanInput($usernameInput.val().trim()), Common.cleanInput($roomnameInput.val().trim()));
   });
 
   $('.usernameInput').keydown(processsetUserName)
@@ -358,7 +358,7 @@ $(function() {
   function processsetUserName(e) {
     if (!username && e.which === 13)
     {
-      setUserName(cleanInput($usernameInput.val().trim()), cleanInput($roomnameInput.val().trim()));
+      setUserName(Common.cleanInput($usernameInput.val().trim()), Common.cleanInput($roomnameInput.val().trim()));
     }
   }
 
@@ -432,8 +432,8 @@ $(function() {
     })
 
     // Set cookies for the last successful login
-    setCookie('username', username, 7)
-    setCookie('roomname', roomname, 7)
+    Common.setCookie('username', username, 7)
+    Common.setCookie('roomname', roomname, 7)
   });
 
   // Whenever the server emits 'new message', update the chat body
@@ -672,8 +672,8 @@ $(function() {
   $('#quit').click(function(e) {
     bootbox.confirm('Are you sure to quit?', function(result) {
       if (true === result) {
-        deleteCookie('username')
-        deleteCookie('roomname')
+        Common.deleteCookie('username')
+        Common.deleteCookie('roomname')
         window.location.reload(true)
       }
     })
@@ -699,6 +699,7 @@ $(function() {
   })
 
   $('.mute').on('switchChange.bootstrapSwitch', function(evt, state) {
+    $('.mute').attr('checked', state)
     var toUser = mediaChannel.getPeer()
     if (!!toUser) {
       if (!state) {

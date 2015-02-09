@@ -1,3 +1,4 @@
+// Class for WebRTC video/audio channel
 
 var MediaChannel = function(configs, constraints, socket) {
   var type = 'media'
@@ -24,14 +25,14 @@ var MediaChannel = function(configs, constraints, socket) {
   this.createSrc = window.URL ? window.URL.createObjectURL : function(stream) {return stream}
 
   this.localDescCreated = function(desc) {
-    desc.sdp = preferOpus(desc.sdp)
+    desc.sdp = Common.preferOpus(desc.sdp)
     this.pc.setLocalDescription(desc, (function () {
       this.signalingChannel.send({ 'type': type, 'sdp': this.pc.localDescription, 'to': this.p2pOptions.to, 'from': this.p2pOptions.from, 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video})
-    }).bind(this), logError)
+    }).bind(this), Common.logError)
   }
 
   this.loadMediaError = function(e) {
-    logError(e)
+    Common.logError(e)
     if (this.p2pOptions.video) {
       this.onVideoStreamclose()
     }
@@ -71,7 +72,7 @@ var MediaChannel = function(configs, constraints, socket) {
 
     // let the 'negotiationneeded' event trigger offer generation
     this.pc.onnegotiationneeded = (function () {
-      this.pc.createOffer(this.localDescCreated.bind(this), logError)
+      this.pc.createOffer(this.localDescCreated.bind(this), Common.logError)
     }).bind(this)
 
     // once remote stream arrives, show it in the remote video element
@@ -204,12 +205,12 @@ MediaChannel.prototype.onmessage = function(message) {
     this.pc.setRemoteDescription(new RTCSessionDescription(message.sdp), (function () {
       // if we received an offer, we need to answer
       if (this.pc.remoteDescription.type == 'offer') {
-        this.pc.createAnswer(this.localDescCreated.bind(this), logError)
+        this.pc.createAnswer(this.localDescCreated.bind(this), Common.logError)
       }
-    }).bind(this), logError)
+    }).bind(this), Common.logError)
   }
   else if (!!message.candidate){
-    this.pc.addIceCandidate(new RTCIceCandidate(message.candidate), logSuccess, logError)
+    this.pc.addIceCandidate(new RTCIceCandidate(message.candidate), Common.logSuccess, Common.logError)
   }
 }
 
