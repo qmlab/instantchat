@@ -35,7 +35,7 @@ $(function() {
   var connected = false
   , typing = false
   , lastTypingTime
-  , defaultTitle = 'InstantChat'
+  , defaultTitle = _('InstantChat')
   , newMsgCancellationToken = { isCancelled: false }
   , username
   , roomname
@@ -117,9 +117,9 @@ $(function() {
   function addParticipantsMessage (data) {
     var message = '';
     if (data.numUsers === 1) {
-      message += "there's 1 participant";
+      message += _("there's 1 participant");
     } else {
-      message += "there are " + data.numUsers + " participants";
+      message += _("there are ") + data.numUsers + _(" participants");
     }
 
     // Log the total number of current users
@@ -431,7 +431,7 @@ $(function() {
     }
 
     // Display the welcome message
-    var message = "Welcome " + data.username + " to " + "Room \"" + data.roomname + "\"";
+    var message = _("Welcome ") + data.username + _(" to Room ") + "\"" + data.roomname + "\"";
     log(message);
     addParticipantsMessage(data);
 
