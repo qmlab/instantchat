@@ -24,9 +24,9 @@ $(function() {
   var $privateModal = $('#privateChannel')
   var $videoModal = $('#videoChannel')
 
-  videoNode = $('.remoteVideo').get(0)
-  myVideoNode = $('.localVideo').get(0)
-  audioNode = $('.remoteAudio').get(0)
+  var $videoNode = $('.remoteVideo').get(0)
+  var $myVideoNode = $('.localVideo').get(0)
+  var $audioNode = $('.remoteAudio').get(0)
 
   $('.mute').bootstrapSwitch('state')
   $('[data-toggle="tooltip"]').tooltip()
@@ -49,9 +49,9 @@ $(function() {
   }
   var dataChannel = new DataChannel(window.configs, window.constraints, socket)
   var mediaChannel = new MediaChannel(window.configs, window.constraints, socket)
-  mediaChannel.videoNode = videoNode
-  mediaChannel.myVideoNode = myVideoNode
-  mediaChannel.audioNode = audioNode
+  mediaChannel.videoNode = $videoNode
+  mediaChannel.myVideoNode = $myVideoNode
+  mediaChannel.audioNode = $audioNode
 
   dataChannel.onchannelopen = function() {
     console.log('channel onopen')
@@ -720,5 +720,30 @@ $(function() {
     }
   })
 
+
+  // Full screem mode
+  $('.remoteVideo').dblclick(function(evt) {
+    if (!document.fullscreenElement &&    // alternative standard method
+      !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {  // current working m
+        if ($videoNode.requestFullscreen) {
+          $videoNode.requestFullscreen();
+        } else if ($videoNode.mozRequestFullScreen) {
+          $videoNode.mozRequestFullScreen(); // Firefox
+        } else if ($videoNode.webkitRequestFullscreen) {
+          $videoNode.webkitRequestFullscreen(); // Chrome and Safari
+        }
+      }
+    else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
+  })
 
 });
