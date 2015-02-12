@@ -31,7 +31,7 @@ $(function() {
   $('.mute').bootstrapSwitch('state')
   $('[data-toggle="tooltip"]').tooltip()
 
-  i18n.init(/*{ lng: "zh" }*/, function(t) {
+  i18n.init(/*{ lng: "zh" },*/ function(t) {
 
     $('.pages').i18n()
 
