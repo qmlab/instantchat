@@ -1,88 +1,29 @@
 0 info it worked if it ends with ok
 1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
 1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
-1 verbose cli   'install' ]
+1 verbose cli   'start' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.33
 4 verbose node symlink C:\Program Files\nodejs\\node.exe
-5 verbose readDependencies using package.json deps
-6 verbose install where, deps [ 'C:\\Users\\Maine\\instantchat',
-6 verbose install   [ 'express', 'socket.io', 'ejs', 'i18next' ] ]
-7 info preinstall interchat@0.1.0
-8 verbose readDependencies using package.json deps
-9 verbose already installed skipping express@4.10.7 C:\Users\Maine\instantchat
-10 verbose already installed skipping socket.io@1.2.1 C:\Users\Maine\instantchat
-11 verbose already installed skipping ejs@2.1.4 C:\Users\Maine\instantchat
-12 verbose cache add [ 'i18next@1.7.7', null ]
-13 verbose cache add name=undefined spec="i18next@1.7.7" args=["i18next@1.7.7",null]
-14 verbose parsed url { protocol: null,
-14 verbose parsed url   slashes: null,
-14 verbose parsed url   auth: null,
-14 verbose parsed url   host: null,
-14 verbose parsed url   port: null,
-14 verbose parsed url   hostname: null,
-14 verbose parsed url   hash: null,
-14 verbose parsed url   search: null,
-14 verbose parsed url   query: null,
-14 verbose parsed url   pathname: 'i18next@1.7.7',
-14 verbose parsed url   path: 'i18next@1.7.7',
-14 verbose parsed url   href: 'i18next@1.7.7' }
-15 verbose cache add name="i18next" spec="1.7.7" args=["i18next","1.7.7"]
-16 verbose parsed url { protocol: null,
-16 verbose parsed url   slashes: null,
-16 verbose parsed url   auth: null,
-16 verbose parsed url   host: null,
-16 verbose parsed url   port: null,
-16 verbose parsed url   hostname: null,
-16 verbose parsed url   hash: null,
-16 verbose parsed url   search: null,
-16 verbose parsed url   query: null,
-16 verbose parsed url   pathname: '1.7.7',
-16 verbose parsed url   path: '1.7.7',
-16 verbose parsed url   href: '1.7.7' }
-17 verbose addNamed [ 'i18next', '1.7.7' ]
-18 verbose addNamed [ '1.7.7', '1.7.7' ]
-19 silly lockFile 786720c2-i18next-1-7-7 i18next@1.7.7
-20 verbose lock i18next@1.7.7 C:\Users\Maine\AppData\Roaming\npm-cache\786720c2-i18next-1-7-7.lock
-21 verbose request where is /i18next
-22 verbose request registry https://registry.npmjs.org/
-23 verbose request id 0a2860a66f032857
-24 verbose url raw /i18next
-25 verbose url resolving [ 'https://registry.npmjs.org/', './i18next' ]
-26 verbose url resolved https://registry.npmjs.org/i18next
-27 verbose request where is https://registry.npmjs.org/i18next
-28 info trying registry request attempt 1 at 11:05:12
-29 http GET https://registry.npmjs.org/i18next
-30 http 200 https://registry.npmjs.org/i18next
-31 silly registry.get cb [ 200,
-31 silly registry.get   { date: 'Thu, 12 Feb 2015 19:05:09 GMT',
-31 silly registry.get     server: 'CouchDB/1.6.1 (Erlang OTP/R14B04)',
-31 silly registry.get     etag: '"34N0UDYBCC7MGXHB3YHYIJFFO"',
-31 silly registry.get     'content-type': 'application/json',
-31 silly registry.get     'cache-control': 'max-age=60',
-31 silly registry.get     'content-length': '46848',
-31 silly registry.get     'accept-ranges': 'bytes',
-31 silly registry.get     via: '1.1 varnish',
-31 silly registry.get     age: '0',
-31 silly registry.get     'x-served-by': 'cache-lax1433-LAX',
-31 silly registry.get     'x-cache': 'MISS',
-31 silly registry.get     'x-cache-hits': '0',
-31 silly registry.get     'x-timer': 'S1423767909.483616,VS0,VE72',
-31 silly registry.get     vary: 'Accept',
-31 silly registry.get     'keep-alive': 'timeout=10, max=50',
-31 silly registry.get     connection: 'Keep-Alive' } ]
-32 silly lockFile 786720c2-i18next-1-7-7 i18next@1.7.7
-33 silly lockFile 786720c2-i18next-1-7-7 i18next@1.7.7
-34 error Error: version not found: i18next@1.7.7
-34 error     at C:\Program Files\nodejs\node_modules\npm\lib\cache\add-named.js:125:12
-34 error     at saved (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\get.js:167:7)
-34 error     at Object.oncomplete (fs.js:107:15)
-35 error If you need help, you may report this *entire* log,
-35 error including the npm and node versions, at:
-35 error     <http://github.com/npm/npm/issues>
-36 error System Windows_NT 6.1.7601
-37 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install"
-38 error cwd C:\Users\Maine\instantchat
-39 error node -v v0.10.33
-40 error npm -v 1.4.28
-41 verbose exit [ 1, true ]
+5 verbose run-script [ 'prestart', 'start', 'poststart' ]
+6 info prestart interchat@0.1.0
+7 info start interchat@0.1.0
+8 verbose unsafe-perm in lifecycle true
+9 info interchat@0.1.0 Failed to exec start script
+10 error interchat@0.1.0 start: `node index.js`
+10 error Exit status 8
+11 error Failed at the interchat@0.1.0 start script.
+11 error This is most likely a problem with the interchat package,
+11 error not with npm itself.
+11 error Tell the author that this fails on your system:
+11 error     node index.js
+11 error You can get their info via:
+11 error     npm owner ls interchat
+11 error There is likely additional logging output above.
+12 error System Windows_NT 6.2.9200
+13 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "start"
+14 error cwd C:\Users\maqin\instantchat
+15 error node -v v0.10.33
+16 error npm -v 1.4.28
+17 error code ELIFECYCLE
+18 verbose exit [ 1, true ]

@@ -31,6 +31,10 @@ $(function() {
   $('.mute').bootstrapSwitch('state')
   $('[data-toggle="tooltip"]').tooltip()
 
+  if (!isChrome || chromeVersion < 28) {
+    $('.rtcAction').css('opacity', 0.5)
+  }
+
   i18n.init(/*{ lng: "zh" },*/ function(t) {
 
     $('.pages').i18n()
@@ -581,20 +585,42 @@ $(function() {
     })
 
     $('#startVideo').click(function(e) {
-      var toUser = $contextMenu.data('toUser')
-      log(t('initiating video connection with ') + toUser)
-      socket.emit('start video request', {
-        to: toUser
-      })
+      if (isChrome && chromeVersion >= 28) {
+        var toUser = $contextMenu.data('toUser')
+        log(t('initiating video connection with ') + toUser)
+        socket.emit('start video request', {
+          to: toUser
+        })
+      }
+      else {
+        e.preventDefault()
+        e.stopPropagation()
+      }
     })
 
     $('#startAudio').click(function(e) {
-      var toUser = $contextMenu.data('toUser')
-      log(t('initiating audio connection with ') + toUser)
-      socket.emit('start audio request', {
-        to: toUser
-      })
+      if (isChrome && chromeVersion >= 28) {
+        var toUser = $contextMenu.data('toUser')
+        log(t('initiating audio connection with ') + toUser)
+        socket.emit('start audio request', {
+          to: toUser
+        })
+      }
+      else {
+        e.preventDefault()
+        e.stopPropagation()
+      }
     })
+
+    $('#sendFile').click(function(e) {
+      e.preventDefault()
+      e.stopPropagation()
+      if (isChrome && chromeVersion >= 28) {
+        $('#fileInput').trigger('click')
+      }
+    })
+
+    $('#fileInput').change(handleFileSelector)
 
     socket.on('start video response', function(data) {
       if (!!data && !!data.to) {
@@ -635,14 +661,6 @@ $(function() {
         }
       }
     })
-
-    $('#sendFile').click(function(e) {
-      e.preventDefault()
-      e.stopPropagation()
-      $('#fileInput').trigger('click')
-    })
-
-    $('#fileInput').change(handleFileSelector)
 
     $('#poke').click(function(e) {
       var toUser = $contextMenu.data('toUser')

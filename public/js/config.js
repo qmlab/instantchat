@@ -12,24 +12,21 @@ window.IsDataChannelSupported = !((moz && !navigator.mozGetUserMedia) || (!moz &
 window.isMobileDevice = navigator.userAgent.match(/Android|iPhone|iPad|iPod|BlackBerry|IEMobile/i);
 window.isChrome = !!navigator.webkitGetUserMedia;
 window.isFirefox = !!navigator.mozGetUserMedia;
+window.chromeVersion = isChrome ? parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]) : 0
 
 function initConfigs(preferSCTP) {
-  var chromeVersion
-
   if (isFirefox) {
     /*
     configs.iceServers.push({
       url: 'stun:23.21.150.121'
     });
     */
-    chromeVersion = 0
     configs.iceServers.push({
       url: 'stun:stun.services.mozilla.com'
     });
   }
 
   if (isChrome) {
-    chromeVersion = parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]);
     configs.iceServers.push({
       url: 'stun:stun.l.google.com:19302'
     });

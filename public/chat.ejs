@@ -6,8 +6,8 @@
   <meta name="author" content="QM">
   <title>InstantChat</title>
 
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
-  <link href="//www.bootstrap-switch.org/dist/css/bootstrap3/bootstrap-switch.css" rel="stylesheet">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/bootstrap-switch.css" rel="stylesheet">
   <link rel="stylesheet" href="css/chat.css">
 
   <link rel="icon" type="image/png" href="/favicon-16.png" sizes="16x16">
@@ -15,8 +15,8 @@
 </head>
 <body>
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-  <script src="//www.bootstrap-switch.org/dist/js/bootstrap-switch.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/bootstrap-switch.js"></script>
   <script src="/js/adapter.js"></script>
   <script src="/js/i18next-1.7.7.js"></script>
   <script src="/js/socket.io.js"></script>
@@ -114,9 +114,9 @@
   <div id="contextMenu" class="dropdown clearfix">
     <ul class="dropdown-menu context-dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
       <li><a tabindex="-1" id="sendMsg" href="#" data-i18n="Send message">Send message</a></li>
-      <li><a tabindex="-1" id="startAudio" href="#" data-i18n="Voice chat">Voice chat</a></li>
-      <li><a tabindex="-1" id="startVideo" href="#" data-i18n="Video chat">Video chat</a></li>
-      <li><a tabindex="-1" id="sendFile" href="#" data-i18n="Send file">Send file</a></li>
+      <li><a tabindex="-1" class="rtcAction" id="startAudio" href="#" data-i18n="Voice chat">Voice chat</a></li>
+      <li><a tabindex="-1" class="rtcAction" id="startVideo" href="#" data-i18n="Video chat">Video chat</a></li>
+      <li><a tabindex="-1" class="rtcAction" id="sendFile" href="#" data-i18n="Send file">Send file</a></li>
       <li><a tabindex="-1" id="poke" href="#" data-i18n="Poke user">Poke user</a></li>
     </ul>
   </div>

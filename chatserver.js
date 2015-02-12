@@ -63,7 +63,7 @@ module.exports.start = function(server) {
         });
       }
       else {
-        if (users[socket.roomname].indexOf(data.toUser) > -1) {
+        if (users[socket.roomname].indexOf(data.toUser) > -1 && typeof sockets[data.toUser] !== 'undefined') {
           sockets[data.toUser].emit('new message', {
             username: socket.username,
             message: data.msg,
@@ -115,7 +115,7 @@ module.exports.start = function(server) {
     socket.on('send signal', function(data) {
       //console.log('from:' + data.from + ' to:' + data.to)
       //console.log(JSON.stringify(data))
-      if (!!data.to && !!data.from) {
+      if (!!data.to && !!data.from && typeof sockets[data.to] !== 'undefined') {
         sockets[data.to].emit('receive signal ' + data.type || 'general', data)
       }
     })
@@ -130,11 +130,13 @@ module.exports.start = function(server) {
         });
       }
       else {
-        sockets[data.toUser].emit('new info', {
-          username: socket.username,
-          message: data.msg,
-          toUser: data.toUser
-        })
+        if (typeof sockets[data.toUser] !== 'undefined') {
+          sockets[data.toUser].emit('new info', {
+            username: socket.username,
+            message: data.msg,
+            toUser: data.toUser
+          })
+        }
       }
     });
 
@@ -148,7 +150,7 @@ module.exports.start = function(server) {
         });
       }
       else {
-        if (users[socket.roomname].indexOf(data.toUser) > -1) {
+        if (users[socket.roomname].indexOf(data.toUser) > -1 && typeof sockets[data.toUser] !== 'undefined') {
           sockets[data.toUser].emit('new poke', {
             username: socket.username,
             toUser: data.toUser
