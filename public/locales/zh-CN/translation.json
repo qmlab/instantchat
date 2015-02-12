@@ -19,7 +19,6 @@
     "Sending file \"": "发送文件\"",
     "\" to \"": "\"给\"",
     "\". FileSize: ": "\"。文件大小：",
-    " is sending \"": "正在发送\"",
     "initiating video connection with ": "发送视频通话请求给",
     "initiating audio connection with ": "发送音频通话请求给",
     "has initiated a video chat": "发送了视频通话请求，请允许使用摄像头。",

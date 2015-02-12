@@ -524,19 +524,25 @@ $(function() {
     }
 
     function dragDrop(evt) {
-      var toUser = $(this).text()
-      if(evt.originalEvent.dataTransfer){
-        if (toUser !== username) {
-          if(evt.originalEvent.dataTransfer.files.length) {
-            evt.preventDefault();
-            evt.stopPropagation();
-            filesToSend[toUser] = evt.originalEvent.dataTransfer.files
-            log(t('initiating file transfer with ') + toUser)
-            socket.emit('start file request', {
-              to: toUser
-            })
+      if (isChrome && chromeVersion >= 28) {
+        var toUser = $(this).text()
+        if(evt.originalEvent.dataTransfer){
+          if (toUser !== username) {
+            if(evt.originalEvent.dataTransfer.files.length) {
+              evt.preventDefault();
+              evt.stopPropagation();
+              filesToSend[toUser] = evt.originalEvent.dataTransfer.files
+              log(t('initiating file transfer with ') + toUser)
+              socket.emit('start file request', {
+                to: toUser
+              })
+            }
           }
         }
+      }
+      else {
+        evt.preventDefault()
+        evt.stopPropagation()
       }
     }
 
@@ -556,7 +562,7 @@ $(function() {
         log(msg)
         dataChannel.p2pOptions.to = user
         dataChannel.p2pOptions.from = username
-        sendInfo(user, username + t(' is sending "') + file.name + '"')
+        sendInfo(user, username + ' =====>>> ' + user + ' : "' + file.name + '"')
         dataChannel.sendFile(file, logFileComplete, logFileFailed)
       })
     }
