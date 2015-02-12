@@ -18,7 +18,7 @@
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <script src="//www.bootstrap-switch.org/dist/js/bootstrap-switch.js"></script>
   <script src="/js/adapter.js"></script>
-  <script src="/js/i18next-1.7.7.min.js"></script>
+  <script src="/js/i18next-1.7.7.js"></script>
   <script src="/js/socket.io.js"></script>
   <script src="/js/bootbox.js"></script>
   <script src="/js/common.js"></script>
@@ -67,7 +67,7 @@
         </div>
         <div class="hidden-xs hidden-sm col-md-4">
           <div class="userArea">
-            <h3 data-i18n="Users:">Users:</h3>
+            <h3 data-i18n="Users">Users</h3>
             <ul class="users"></ul>
           </div>
         </div>
@@ -91,23 +91,23 @@
       </div>
       <footer class="footer">
         <div class="container">
-          <textarea class="inputMessage form-control" placeholder="Say something..."></textarea>
+          <textarea class="inputMessage form-control" data-i18n="[placeholder]Say something"></textarea>
         </div>
       </footer>
     </li>
     <li class="login page">
       <div class="form">
-        <input class="usernameInput" type="text" maxlength="64" placeholder="User name" />
+        <input class="usernameInput" type="text" maxlength="64" data-i18n="[placeholder]User name" />
         <br>
         <br>
         <br>
         <br>
-        <input class="roomnameInput" type="text" maxlength="64" placeholder="Room name" />
+        <input class="roomnameInput" type="text" maxlength="64" data-i18n="[placeholder]Room name" />
         <br>
         <br>
         <br>
         <br>
-        <button id="enterRoom" type="submit" class="btn btn-1 btn-1a">Enter</button>
+        <button id="enterRoom" type="submit" class="btn btn-1 btn-1a" data-i18n="Enter">Enter</button>
       </div>
     </li>
   </ul>
@@ -132,7 +132,7 @@
         <div class="modal-body">
           <ul class="messages" id="privateMessages"></ul>
           <div class="container">
-            <textarea class="privateMessage form-control" placeholder="Whisper something..."></textarea>
+            <textarea class="privateMessage form-control" data-i18n="[placeholder]Whisper something"></textarea>
           </div>
         </div>
         <div class="modal-footer">

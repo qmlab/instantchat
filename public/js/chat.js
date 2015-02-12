@@ -31,11 +31,9 @@ $(function() {
   $('.mute').bootstrapSwitch('state')
   $('[data-toggle="tooltip"]').tooltip()
 
-  i18n.init(function(t) {
-//  i18n.setLng('zh', function(t) {
+  i18n.init({ lng: "zh" }, function(t) {
 
     $('.pages').i18n()
-    $('.userArea').i18n()
 
     // Variables
     var connected = false
@@ -70,9 +68,9 @@ $(function() {
       console.error('channel error:' + e)
     }
     mediaChannel.onVideoStreamopen = function(evt) {
-      //$('.videoIcon').show()
       $('.videos').show()
       $('.stopVideo').show()
+      $('.stopVideo').i18n()
       $('.mediaControls').show()
       $('.callStatus').text('In Video Call')
       $('.callStatus').show()
@@ -148,7 +146,7 @@ $(function() {
         });
       }
       else {
-        bootbox.alert(t('Error: Invalid user name or room name'))
+        bootbox.alert(t('Error') + ':' + t('Invalid user name or room name'))
         $loginPage.show()
       }
     }
@@ -226,6 +224,15 @@ $(function() {
       Common.addElement($el, $messages, $window, options);
     }
 
+    function logFileComplete(filename, elapsedTime) {
+      var msg = t('file') + ' "' + filename + '" ' + t('transfer completed in ') + elapsedTime + t('s')
+      log(msg)
+    }
+
+    function logFileFailed() {
+      log(t('already sending receiving a file'))
+    }
+
     // Add the user to the current user list
     function addUser (theusername, list, options) {
       options = options || {};
@@ -292,7 +299,7 @@ $(function() {
       options.scrollToBottom = true;
 
       var $messageDiv = $('<li class="message"/>')
-      var $start = $('<span class="log"/>').text('Current people in the room:');
+      var $start = $('<span class="log"/>').text(t('Current people in the room') + ':');
       $messageDiv.html($start)
 
       var namelist = $('ul.users li').each(function() {
@@ -492,7 +499,7 @@ $(function() {
     });
 
     socket.on('login error', function(e) {
-      bootbox.alert(t('Error: ') + e.msg)
+      bootbox.alert(t('Error') + ':' + t(e.msg))
       $loginPage.show()
     })
 
@@ -546,7 +553,7 @@ $(function() {
         dataChannel.p2pOptions.to = user
         dataChannel.p2pOptions.from = username
         sendInfo(user, username + t(' is sending "') + file.name + '"')
-        dataChannel.sendFile(file, log)
+        dataChannel.sendFile(file, logFileComplete, logFileFailed)
       })
     }
 
@@ -560,6 +567,7 @@ $(function() {
 
         // Put the user into the data storage of the menu
         $contextMenu.data('toUser', $(this).text())
+        $contextMenu.i18n()
       }
 
       return false;
@@ -592,7 +600,7 @@ $(function() {
       if (!!data && !!data.to) {
         var toUser = data.to
         if (data.permitted) {
-          sendInfo(toUser, username + t(' has initiated a video chat. Please allow the use of camera.'))
+          sendInfo(toUser, username + t('has initiated a video chat'))
           mediaChannel.startVideo(toUser, username)
         }
         else {
@@ -605,7 +613,7 @@ $(function() {
       if (!!data && !!data.to) {
         var toUser = data.to
         if (data.permitted) {
-          sendInfo(toUser, username + t(' has initiated an audio chat. Please allow the use of microphone.'))
+          sendInfo(toUser, username + t('has initiated an audio chat'))
           mediaChannel.startAudio(toUser, username)
         }
         else {
@@ -670,7 +678,7 @@ $(function() {
 
     $('#about').click(function(e) {
       bootbox.dialog({
-        message: t('<b>InstantChat <i>Version 1.0</i></b><br><br> by QM<br> @ 2015'),
+        message: t('About Content'),
         title: t('About InstantChat'),
         onEscape: function() {},
         show: true,
@@ -698,7 +706,7 @@ $(function() {
     $('.stopVideo').click(function(e) {
       var toUser = mediaChannel.getPeer()
       if (!!toUser) {
-        sendInfo(toUser, username + t(' has stopped video chat.'))
+        sendInfo(toUser, username + t('has stopped video chat'))
         mediaChannel.stopVideo()
         $('.mute').attr('checked', true)
       }
@@ -707,7 +715,7 @@ $(function() {
     $('.stopAudio').click(function(e) {
       var toUser = mediaChannel.getPeer()
       if (!!toUser) {
-        sendInfo(toUser, username + t(' has stopped audio chat.'))
+        sendInfo(toUser, username + t('has stopped audio chat'))
         mediaChannel.stopAudio()
         $('.mute').attr('checked', true)
       }
@@ -718,9 +726,9 @@ $(function() {
       var toUser = mediaChannel.getPeer()
       if (!!toUser) {
         if (!state) {
-          sendInfo(toUser, username + t(' has muted their mic'))
+          sendInfo(toUser, username + t('has muted their mic'))
         } else {
-          sendInfo(toUser, username + t(' has unmuted their mic'))
+          sendInfo(toUser, username + t('has unmuted their mic'))
         }
         mediaChannel.muteMe(state)
       }
@@ -752,7 +760,6 @@ $(function() {
         }
       })
 
-    //})
     }) // End of i18n.init
 
 });

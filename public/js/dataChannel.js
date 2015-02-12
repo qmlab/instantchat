@@ -113,9 +113,8 @@ var DataChannel = function(configs, constraints, socket) {
   this.finishedLoadingFile = function(file, log) {
     var endTime = new Date()
     var elapsedTime = (endTime - this.startTimes[file.name]) / 1000
-    var msg = 'file "' + file.name + '" transfer completed in ' + elapsedTime + 's.'
     if (!!log) {
-      log(msg)
+      log(file.name, elapsedTime)
     }
     this.stopSession(true)
   }
@@ -216,9 +215,9 @@ DataChannel.prototype.sendData = function(data, callback) {
 }
 
 // evt - FileReader onload event
-DataChannel.prototype.sendFile = function(file, log) {
+DataChannel.prototype.sendFile = function(file, logComplete, logFailed) {
   if (this.inSession) {
-    log('File transfer failed - already sending/receiving a file')
+    logFailed()
     return
   }
   else {
@@ -232,7 +231,7 @@ DataChannel.prototype.sendFile = function(file, log) {
         console.log('channel onclose:' + e)
         this.onchannelopen = (function() {
           console.log('channel onopen')
-          this.sendFileInternal(file, log)
+          this.sendFileInternal(file, logComplete)
         }).bind(this)
         this.start()
         this.onchannelclose = function(e) {
@@ -249,21 +248,21 @@ DataChannel.prototype.sendFile = function(file, log) {
       // Keep alive for traffic in the same channel
       this.stopSession(true)
       this.p2pOptions.isCaller = true
-      this.sendFileInternal(file, log)
+      this.sendFileInternal(file, logComplete)
     }
   }
   else if (!this.channel) {
     this.p2pOptions.isCaller = true
     this.onchannelopen = (function() {
       console.log('channel onopen')
-      this.sendFileInternal(file, log)
+      this.sendFileInternal(file, logComplete)
     }).bind(this)
 
     this.start()
   }
   else {
     this.p2pOptions.isCaller = true
-    this.sendFileInternal(file, log)
+    this.sendFileInternal(file, logComplete)
   }
 }
 
