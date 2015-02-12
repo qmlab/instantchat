@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,9 +17,8 @@
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <script src="//www.bootstrap-switch.org/dist/js/bootstrap-switch.js"></script>
-  <script src="//apprtc.appspot.com/js/adapter.js"></script>
-  <script src="//www.localeplanet.com/api/auto/icu.js"></script>
-  <script src="//www.localeplanet.com/api/translate.js"></script>
+  <script src="/js/adapter.js"></script>
+  <script src="/js/i18next-1.7.7.min.js"></script>
   <script src="/js/socket.io.js"></script>
   <script src="/js/bootbox.js"></script>
   <script src="/js/common.js"></script>
@@ -35,7 +34,7 @@
       <div class="navbar navbar-fixed-top navbar-default">
         <div class="navbar-header">
           <img id="pageLogo" src="/favicon-32.png" alt="'Origami Colored Pencil Icons' by Double-J Design. CC Attribution 4.0. http://www.doublejdesign.co.uk" title="'Origami Colored Pencil Icons' by Double-J Design. CC Attribution 4.0. http://www.doublejdesign.co.uk"/>
-          <a class="navbar-brand">InstantChat</a>
+          <a class="navbar-brand" data-i18n="InstantChat">InstantChat</a>
           <a href="#" class="glyphicon glyphicon-facetime-video sessionType-icon videoIcon blinkOnAppear" data-toggle="modal" data-target="#videoChannel"></a>
           <a href="#" class="glyphicon glyphicon-volume-up sessionType-icon audioIcon"></a>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
@@ -48,13 +47,13 @@
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
               <li>
-                <a href="#" class="navbarItem" id="listroommates">List Chatters</a>
+                <a href="#" class="navbarItem" id="listroommates" data-i18n="List Chatters">List Chatters</a>
               </li>
               <li>
-                <a href="#" class="navbarItem" id="about">About</a>
+                <a href="#" class="navbarItem" id="about" data-i18n="About">About</a>
               </li>
               <li>
-                <a href="#" class="navbarItem" id="quit">Quit</a>
+                <a href="#" class="navbarItem" id="quit" data-i18n="Quit">Quit</a>
               </li>
             </ul>
           </div>
@@ -68,7 +67,7 @@
         </div>
         <div class="hidden-xs hidden-sm col-md-4">
           <div class="userArea">
-            <h3>Users:</h3>
+            <h3 data-i18n="Users:">Users:</h3>
             <ul class="users"></ul>
           </div>
         </div>
@@ -80,10 +79,10 @@
         </div>
         <div class="control-panel">
           <div class="mediaControls">
-            <button type="button" class="btn btn-danger chatoption stopAudio" data-toggle="tooltip" data-placement="top" title="Stop the call">
+            <button type="button" class="btn btn-danger chatoption stopAudio" data-toggle="tooltip" data-placement="top" title="Stop the call" data-i18n="Stop">
               STOP
             </button>
-            <button type="button" class="btn btn-danger chatoption stopVideo" data-toggle="tooltip" data-placement="top" title="Stop the call">
+            <button type="button" class="btn btn-danger chatoption stopVideo" data-toggle="tooltip" data-placement="top" title="Stop the call" data-i18n="Stop">
               STOP
             </button>
             <input type="checkbox" data-off-text="Muted" data-on-text="Unmuted" checked="true" class="BSswitch mute">
@@ -98,12 +97,12 @@
     </li>
     <li class="login page">
       <div class="form">
-        <input class="usernameInput" type="text" maxlength="64" placeholder="Your name"/>
+        <input class="usernameInput" type="text" maxlength="64" placeholder="User name" />
         <br>
         <br>
         <br>
         <br>
-        <input class="roomnameInput" type="text" maxlength="64" placeholder="Room name"/>
+        <input class="roomnameInput" type="text" maxlength="64" placeholder="Room name" />
         <br>
         <br>
         <br>
@@ -114,11 +113,11 @@
   </ul>
   <div id="contextMenu" class="dropdown clearfix">
     <ul class="dropdown-menu context-dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-      <li><a tabindex="-1" id="sendMsg" href="#">Send message</a></li>
-      <li><a tabindex="-1" id="startAudio" href="#">Voice chat</a></li>
-      <li><a tabindex="-1" id="startVideo" href="#">Video chat</a></li>
-      <li><a tabindex="-1" id="sendFile" href="#">Send file</a></li>
-      <li><a tabindex="-1" id="poke" href="#">Poke user</a></li>
+      <li><a tabindex="-1" id="sendMsg" href="#" data-i18n="Send message">Send message</a></li>
+      <li><a tabindex="-1" id="startAudio" href="#" data-i18n="Voice chat">Voice chat</a></li>
+      <li><a tabindex="-1" id="startVideo" href="#" data-i18n="Video chat">Video chat</a></li>
+      <li><a tabindex="-1" id="sendFile" href="#" data-i18n="Send file">Send file</a></li>
+      <li><a tabindex="-1" id="poke" href="#" data-i18n="Poke user">Poke user</a></li>
     </ul>
   </div>
   <input type="file" id="fileInput" />
@@ -128,7 +127,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="privateMessagesTitle">Private Chat</h4>
+          <h4 class="modal-title" id="privateMessagesTitle" data-i18n="Private Chat">Private Chat</h4>
         </div>
         <div class="modal-body">
           <ul class="messages" id="privateMessages"></ul>
@@ -137,7 +136,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="Close">Close</button>
         </div>
       </div>
     </div>
@@ -148,7 +147,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Video chat</h4>
+          <h4 class="modal-title" data-i18n="Video chat">Video chat</h4>
         </div>
         <div class="modal-body">
           <div class="media-panel">
@@ -159,7 +158,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger stopVideo" data-dismiss="modal">STOP</button>
+          <button type="button" class="btn btn-danger stopVideo" data-dismiss="modal" data-i18n="Stop">STOP</button>
           <input type="checkbox" data-off-text="Muted" data-on-text="Unmuted" checked="true" class="BSswitch mute">
         </div>
       </div>

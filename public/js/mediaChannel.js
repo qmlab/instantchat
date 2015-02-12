@@ -116,7 +116,7 @@ var MediaChannel = function(configs, constraints, socket) {
 
     if (this.p2pOptions.audio) {
       if (this.p2pOptions.video) {
-        navigator.getUserMedia({ 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video }, (function (stream) {
+        getUserMedia({ 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video }, (function (stream) {
           this.inSession = true
           if (this.p2pOptions.video) {
             // get a local stream, show it in a self-view and add it to be sent
@@ -130,7 +130,7 @@ var MediaChannel = function(configs, constraints, socket) {
           this.localStream = stream
           this.pc.addStream(stream)
         }).bind(this), /*(function () {
-          navigator.getUserMedia({ 'audio': this.p2pOptions.audio, 'video': false }, (function (stream) {
+          getUserMedia({ 'audio': this.p2pOptions.audio, 'video': false }, (function (stream) {
             // If video is not available, fall back to audio chat
             this.localStream = stream
             this.pc.addStream(stream)
@@ -138,7 +138,7 @@ var MediaChannel = function(configs, constraints, socket) {
         }).bind(this)*/ this.loadMediaError)
       }
       else {
-        navigator.getUserMedia({ 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video }, (function (stream) {
+        getUserMedia({ 'audio': this.p2pOptions.audio, 'video': this.p2pOptions.video }, (function (stream) {
           this.localStream = stream
           this.pc.addStream(stream)
         }).bind(this), this.loadMediaError)

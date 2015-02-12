@@ -1,0 +1,158 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-11 17:14-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: chat.js:43
+msgid "InstantChat"
+msgstr ""
+
+#: chat.js:125
+msgid "there's 1 participant"
+msgstr ""
+
+#: chat.js:127
+msgid "there are "
+msgstr ""
+
+#: chat.js:127
+msgid " participants"
+msgstr ""
+
+#: chat.js:150
+msgid "Error: Invalid user name or room name"
+msgstr ""
+
+#: chat.js:165
+msgid "You poked "
+msgstr ""
+
+#: chat.js:172
+msgid "Sorry, you are poking too fast!"
+msgstr ""
+
+#: chat.js:285
+msgid "New messages"
+msgstr ""
+
+#: chat.js:311
+msgid "is typing"
+msgstr ""
+
+#: chat.js:435
+msgid "[Please use Chrome 29+ for video/audio chats and file transfer]"
+msgstr ""
+
+#: chat.js:439
+msgid "Welcome "
+msgstr ""
+
+#: chat.js:439
+msgid " to Room "
+msgstr ""
+
+#: chat.js:465
+msgid " has poked you!"
+msgstr ""
+
+#: chat.js:472
+msgid " has joined"
+msgstr ""
+
+#: chat.js:478
+msgid " has left"
+msgstr ""
+
+#: chat.js:494
+msgid "Error: "
+msgstr ""
+
+#: chat.js:522 chat.js:535
+msgid "initiating file transfer with "
+msgstr ""
+
+#: chat.js:543
+msgid "Sending file \""
+msgstr ""
+
+#: chat.js:543
+msgid "\" to \""
+msgstr ""
+
+#: chat.js:543
+msgid "\". FileSize: "
+msgstr ""
+
+#: chat.js:547
+msgid " is sending \""
+msgstr ""
+
+#: chat.js:576
+msgid "initiating video connection with "
+msgstr ""
+
+#: chat.js:584
+msgid "initiating audio connection with "
+msgstr ""
+
+#: chat.js:594
+msgid " has initiated a video chat. Please allow the use of camera."
+msgstr ""
+
+#: chat.js:598
+msgid "failed to start video with "
+msgstr ""
+
+#: chat.js:607
+msgid " has initiated an audio chat. Please allow the use of microphone."
+msgstr ""
+
+#: chat.js:611
+msgid "failed to start audio with "
+msgstr ""
+
+#: chat.js:625
+msgid "failed to start file transfer with "
+msgstr ""
+
+#: chat.js:672
+msgid "<b>InstantChat <i>Version 1.0</i></b><br><br> by QM<br> @ 2015"
+msgstr ""
+
+#: chat.js:673
+msgid "About InstantChat"
+msgstr ""
+
+#: chat.js:687
+msgid "Are you sure to quit?"
+msgstr ""
+
+#: chat.js:700
+msgid " has stopped video chat."
+msgstr ""
+
+#: chat.js:709
+msgid " has stopped audio chat."
+msgstr ""
+
+#: chat.js:720
+msgid " has muted their mic"
+msgstr ""
+
+#: chat.js:722
+msgid " has unmuted their mic"
+msgstr ""
