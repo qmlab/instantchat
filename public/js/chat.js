@@ -394,7 +394,7 @@ $(function() {
 
     function processInput(e) {
       if (username && e.which === 13) {
-        if (!(e.ctrlKey || e.metaKey || e.altKey)) {
+        if (!(e.ctrlKey || e.metaKey || e.altKey || e.shiftKey)) {
           if ($inputMessage.is(':focus')) {
             sendMessage();
             socket.emit('stop typing');
@@ -405,6 +405,8 @@ $(function() {
           }
         }
         else {
+          e.preventDefault()
+          e.stopPropagation()
           $(this).val(function(i, v) {
             return v + '\n'
           })
