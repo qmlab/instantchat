@@ -169,7 +169,7 @@ ul {
   height: 100%;
   padding-bottom: 60px;
   position: fixed;
-  right: 10%;
+  left: 2%;
 }
 
 .messages {
@@ -185,6 +185,7 @@ ul {
   opacity: 0.6;
   background-color: #FAFAFA;
   box-shadow: inset 0px 0px 35px 9px #CFCFCF;
+  max-width: 164px
 }
 
 .message.typing .messageBody {

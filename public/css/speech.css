@@ -51,6 +51,7 @@
 .bubble.you {
     background-color: #FFC83D;
     margin: 5px 30px 5px 5px;
+    text-align: left;
 }
 
 .bubble.you::before {
