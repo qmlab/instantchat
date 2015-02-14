@@ -1,5 +1,5 @@
 {
-    "InstantChat": "穷聊",
+    "TalkYet": "穷聊",
     "there's 1 participant": "这里有一个人",
     "there are ": "这里有",
     " participants": "个人",
@@ -27,7 +27,7 @@
     "failed to start audio with ": "未能成功发送音频通话给",
     "failed to start file transfer with ": "未能成功发送文件给",
     "About Content": "<b>穷聊 版本1.0</b><br><br> 制作者 QM<br>  于 2015",
-    "About InstantChat": "关于穷聊",
+    "About TalkYet": "关于穷聊",
     "Are you sure to quit?": "确定要退出？",
     "has stopped video chat": "停止了视频通话",
     "has stopped audio chat": "停止了音频通话",

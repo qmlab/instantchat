@@ -29,7 +29,7 @@ i18n.init(function(t) {
   });
 
   // Routing
-  app.get('/chat', function(req, res) {
+  app.get('/', function(req, res) {
     res.render('chat.ejs')
   })
 

@@ -4,7 +4,7 @@ module.exports.start = function(server) {
   // users which are currently connected to the chat
   var users = {};
   var sockets = {};
-  console.log('instantchat server started')
+  console.log('TalkYet server started')
 
   io.sockets.on('connection', function (socket) {
     var addedUser = false;

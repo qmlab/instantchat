@@ -1,5 +1,5 @@
 {
-    "InstantChat": "InstantChat",
+    "TalkYet": "TalkYet",
     "there's 1 participant": "there's 1 participant",
     "there are ": "there are ",
     " participants": " participants",
@@ -26,8 +26,8 @@
     "has initiated an audio chat": " has initiated an audio chat. Please allow the use of microphone.",
     "failed to start audio with ": "failed to start audio with ",
     "failed to start file transfer with ": "failed to start file transfer with ",
-    "About Content": "<b>InstantChat <i>Version 1.0</i></b><br><br> by QM<br> @ 2015",
-    "About InstantChat": "About InstantChat",
+    "About Content": "<b>TalkYet <i>Version 1.0</i></b><br><br> by QM<br> @ 2015",
+    "About TalkYet": "About TalkYet",
     "Are you sure to quit?": "Are you sure to quit?",
     "has stopped video chat": " has stopped video chat.",
     "has stopped audio chat": " has stopped audio chat.",

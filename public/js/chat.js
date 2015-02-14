@@ -43,7 +43,7 @@ $(function() {
     var connected = false
     , typing = false
     , lastTypingTime
-    , defaultTitle = t('InstantChat')
+    , defaultTitle = t('TalkYet')
     , newMsgCancellationToken = { isCancelled: false }
     , username
     , roomname
@@ -723,7 +723,7 @@ $(function() {
     $('#about').click(function(e) {
       bootbox.dialog({
         message: t('About Content'),
-        title: t('About InstantChat'),
+        title: t('About TalkYet'),
         onEscape: function() {},
         show: true,
         buttons: {

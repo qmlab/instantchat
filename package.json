@@ -1,7 +1,7 @@
 {
-  "name": "interchat",
+  "name": "TalkYet",
   "version": "0.1.0",
-  "description": "Simple chatter",
+  "description": "web chat",
   "main": "index.js",
   "author": "QM",
   "private": true,
