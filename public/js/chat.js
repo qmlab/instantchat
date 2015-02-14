@@ -268,25 +268,43 @@ $(function() {
       .text(data.username)
       .css('color', getUsernameColor(data.username));
 
-      var $messageBodyDiv = $('<span class="messageBody"/>')
+      var $messageBodyDiv = $('<span class="messageBody bubble"/>')
       .html(Common.replaceNewLines(data.message));
 
-      if (data.toUser) {
-        if (data.username === username)
-        {
-          $messageTypeDiv.html('[to <b>' + data.toUser + '</b>] ')
-        }
-        else if (data.toUser === username)
-        {
-          $messageTypeDiv.html('[from <b>' + data.username + '</b>] ')
-        }
+      if (data.username === username) {
+        $messageBodyDiv.addClass('me')
+      }
+      else {
+        $messageBodyDiv.addClass('you')
       }
 
       var typingClass = data.typing ? 'typing' : '';
       var $messageDiv = $('<li class="message"/>')
-      .data('username', data.username)
-      .addClass(typingClass)
-      .append($usernameDiv, data.typing ? null : $dateTimeDiv, $messageTypeDiv, $messageBodyDiv);
+        .data('username', data.username)
+        .addClass(typingClass)
+
+      if (!!data.toUser) {
+        $messageBodyDiv.addClass('private')
+        if (data.username === username)
+        {
+          //$messageTypeDiv.html('[to <b>' + data.toUser + '</b>] ')
+        }
+        else if (data.toUser === username)
+        {
+          //$messageTypeDiv.html('[<b>Private</b>] ')
+        }
+      }
+
+      if (data.username === username) {
+        $messageDiv
+        .addClass('me')
+        .append($usernameDiv, /*data.typing ? null : $dateTimeDiv,*/ $messageTypeDiv, $messageBodyDiv);
+      }
+      else {
+        $messageDiv
+        .addClass('you')
+        .append($messageBodyDiv, $usernameDiv, /*data.typing ? null : $dateTimeDiv,*/ $messageTypeDiv);
+      }
 
       // Add the new message and scroll to bottom
       options.scrollToBottom = true;

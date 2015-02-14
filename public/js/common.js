@@ -44,7 +44,7 @@ var Common = (function() {
     // options.prepend - If the element should prepend
     //   all other messages (default = false)
     addElement : function(el, list, window, options) {
-      var $el = $(el);
+      var $el = $(el)
 
       // Setup default options
       if (!options) {
