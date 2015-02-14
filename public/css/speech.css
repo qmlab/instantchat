@@ -21,20 +21,20 @@
     width:  20px;
 }
 
-.me.private {
-  background-color: #E8A700;
-}
-
-.me.private::before {
-  background-color: #E8A700;
-}
-
-.you.private {
+.bubble.me.private {
   background-color: #5CBB47;
 }
 
-.you.private::before {
+.bubble.me.private::before {
   background-color: #5CBB47;
+}
+
+.bubble.you.private {
+  background-color: #E8A700;
+}
+
+.bubble.you.private::before {
+  background-color: #E8A700;
 }
 .bubble.me {
     background-color: #9EF28B;
