@@ -185,7 +185,7 @@ ul {
   opacity: 0.6;
   background-color: #FAFAFA;
   box-shadow: inset 0px 0px 35px 9px #CFCFCF;
-  max-width: 164px
+  max-width: 200px; 
 }
 
 .message.typing .messageBody {
