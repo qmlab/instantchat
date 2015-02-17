@@ -60,6 +60,14 @@ i18n.init(function(t) {
     server.listen(port, function () {
       console.log('Server listening at port %d', port)
     })
+
+    var http = require('http').createServer(app)
+    http.get('*', function(req, res) {
+      res.redirect('https://' + req.headers.host + req.url)
+    })
+    http.listen('80', function() {
+      console.log('Http server listening at port 80')
+    })
   }
   else {
     server = require('http').createServer(app)
