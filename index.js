@@ -1,10 +1,11 @@
 // Setup basic express server
 var express = require('express')
 , app = express()
-, server = require('http').createServer(app)
+, https = require('https')
 , chatserver = require('./chatserver.js')
 , path = require('path')
 , i18n = require('i18next')
+, fs = require('fs')
 
 var port = 3000
 
@@ -24,13 +25,17 @@ i18n.registerAppHelper(app)
 
 //Init i18n
 i18n.init(function(t) {
-  server.listen(port, function () {
-    console.log('Server listening at port %d', port);
-  });
-
   // Routing
   app.get('/', function(req, res) {
     res.render('chat.ejs')
+  })
+
+  var privateKey  = fs.readFileSync('certs/apricot.pem', 'utf8')
+  var certificate = fs.readFileSync('certs/apricot.cer', 'utf8')
+  var credentials = {key: privateKey, cert: certificate}
+  var server = https.createServer(credentials, app)
+  server.listen(port, function () {
+    console.log('Server listening at port %d', port);
   })
 
   // Server

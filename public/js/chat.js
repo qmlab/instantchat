@@ -48,7 +48,7 @@ $(function() {
     , username
     , roomname
     , lastPoke = new Date('1970-01-01')
-    , socket = io.connect(Common.getBaseUrl())
+    , socket = io.connect(Common.getBaseUrl(), { secure: true })
     , filesToSend = {}  // Files to send out by receiver
 
     // Set up RTC connections
