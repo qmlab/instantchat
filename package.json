@@ -1,16 +1,18 @@
 {
   "name": "TalkYet",
-  "version": "0.1.0",
-  "description": "web chat",
+  "version": "1.0.0",
+  "description": "Simple web chat",
   "main": "index.js",
-  "author": "QM",
+  "author": "QMLab",
   "private": true,
   "license": "MIT",
   "dependencies": {
     "express": "4.10.7",
     "socket.io": "1.2.1",
     "ejs": "2.1.4",
-    "i18next": "1.7.10"
+    "i18next": "1.7.10",
+    "nconf": "0.7.1",
+    "compression": "1.3.0"
   },
   "scripts": {
     "start": "node index.js"
