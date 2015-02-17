@@ -7,6 +7,8 @@ var express = require('express')
 , fs = require('fs')
 , nconf = require('nconf')
 , compress = require('compression')
+, http = require('http')
+, https = require('https')
 
 // First consider commandline arguments and environment variables, respectively.
 nconf.argv().env();
@@ -47,6 +49,15 @@ i18n.registerAppHelper(app)
 //Init i18n
 i18n.init(function(t) {
   // Routing
+  app.get('*', function(req, res, next) {
+    if (req.secure) {
+      return next()
+    }
+    else {
+      res.redirect('https://' + req.headers.host + req.url)
+    }
+  })
+
   app.get('/', function(req, res) {
     res.render('chat.ejs')
   })
@@ -56,21 +67,18 @@ i18n.init(function(t) {
     var privateKey  = fs.readFileSync('certs/talkyet.key', 'utf8')
     var certificate = fs.readFileSync('certs/talkyet.cer', 'utf8')
     var credentials = {key: privateKey, cert: certificate}
-    server = require('https').createServer(credentials, app)
+    server = https.createServer(credentials, app)
     server.listen(port, function () {
       console.log('Server listening at port %d', port)
     })
 
-    var http = require('http').createServer(app)
-    http.get('*', function(req, res) {
-      res.redirect('https://' + req.headers.host + req.url)
-    })
-    http.listen('80', function() {
+    var httpServer = http.createServer(app)
+    httpServer.listen('80', function() {
       console.log('Http server listening at port 80')
     })
   }
   else {
-    server = require('http').createServer(app)
+    server = http.createServer(app)
     server.listen(port, function() {
       console.log('Debug: server listening at port %d', port)
     })
