@@ -117,4 +117,5 @@ nbproject
 .idea
 .node_history
 
+certs/*.key
 certs/*.pem

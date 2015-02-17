@@ -30,8 +30,8 @@ i18n.init(function(t) {
     res.render('chat.ejs')
   })
 
-  var privateKey  = fs.readFileSync('certs/apricot.pem', 'utf8')
-  var certificate = fs.readFileSync('certs/apricot.cer', 'utf8')
+  var privateKey  = fs.readFileSync('certs/talkyet.key', 'utf8')
+  var certificate = fs.readFileSync('certs/talkyet.cer', 'utf8')
   var credentials = {key: privateKey, cert: certificate}
   var server = https.createServer(credentials, app)
   server.listen(port, function () {
