@@ -38,7 +38,7 @@ module.exports.start = function(server) {
             path: '/me?accesstoken=' + data.auth.accessToken,
             method: 'GET'
           }
-          https.request(options, function(res) {
+          var req = https.request(options, function(res) {
             console.log(res)
             if (res.verified && res.name === data.username) {
               console.log('server-side access token verification passed')
@@ -50,9 +50,13 @@ module.exports.start = function(server) {
                 msg: 'login verification failed'
               })
             }
-          }).end()
-          .error(function() {
+          })
+
+          req.end()
+
+          req.on('error', function(e) {
             console.log('failed to verify facebook access token')
+            console.error(e)
             socket.emit('login error', {
               msg: 'failed to verify facebook login info'
             })
