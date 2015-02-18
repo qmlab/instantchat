@@ -56,6 +56,11 @@ module.exports.start = function(server) {
             })
           })
         }
+        else {
+          socket.emit('login error', {
+            msg: 'please re-login'
+          })
+        }
       }
       else {
         socket.emit('login error', {
