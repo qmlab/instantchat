@@ -32,24 +32,24 @@ module.exports.start = function(server) {
         }
         else if (!!data.auth && data.auth.type === 'facebook') {
           console.log('verifying facebook')
-          var options = {
-            hostname: 'graph.facebook.com',
-            port: 443,
-            path: '/me?accesstoken=' + data.auth.accessToken,
-            method: 'GET'
-          }
-          var req = https.request(options, function(res) {
-            console.log(res)
-            if (res.verified && res.name === data.username) {
-              console.log('server-side access token verification passed')
-              addUser(data)
-            }
-            else {
-              console.log('server-side access token verification failed')
-              socket.emit('login error', {
-                msg: 'login verification failed'
-              })
-            }
+          var url = 'https://graph.facebook.com/me?access_token=' + data.auth.accessToken
+
+          var req = https.get(url, function(res) {
+            console.log("statusCode: ", res.statusCode);
+            console.log("headers: ", res.headers);
+            res.on('data', function(resultStr) {
+              var result = JSON.parse(resultStr)
+              if (result.verified && result.name === data.username) {
+                console.log('server-side access token verification passed')
+                addUser(data)
+              }
+              else {
+                console.log('server-side access token verification failed')
+                socket.emit('login error', {
+                  msg: 'login verification failed'
+                })
+              }
+            })
           })
 
           req.end()
