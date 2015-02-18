@@ -80,7 +80,7 @@ ul {
   outline: none;
   padding-bottom: 15px;
   text-align: center;
-  max-width: 100%;
+  max-width: 80%;
 }
 
 .login.page .title {
@@ -200,6 +200,7 @@ ul {
   font-weight: 700;
   overflow: hidden;
   padding-right: 15px;
+  font-size: 3vh;
 }
 
 .username:hover {
@@ -310,7 +311,7 @@ ul {
 
 .btn-1 {
   border: 3px solid #fff;
-  padding: 25px 80px;
+  padding: 25px 45px;
   margin: 15px 30px;
   color: #fff;
 }
@@ -441,7 +442,7 @@ ul {
   color: #fff;
   background-color: #3b5998;
   border-color: rgba(0,0,0,0.2);
-  padding: 25px 60px;
+  padding: 25px 20px;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;

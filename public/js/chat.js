@@ -143,7 +143,7 @@ $(function() {
 
     socket.on('return ip', function(ip) {
       if (!username || username.length === 0) {
-        username = "Guest_" + ip
+        guestname = "Guest_" + ip
       }
     })
 
@@ -153,14 +153,21 @@ $(function() {
       roomname = roomnameIn;
 
       // If the username is valid
-      if (username && roomname) {
-        //$loginPage.off('click');
-
-        // Tell the server your username
-        socket.emit('add user', {
-          username: username,
-          roomname: roomname
-        });
+      if (!!roomname) {
+        if (!username || username.length === 0) {
+          // Tell the server your username
+          socket.emit('add user', {
+            username: guestname,
+            roomname: roomname
+          });
+        }
+        else {
+          // Tell the server your username
+          socket.emit('add user', {
+            username: username,
+            roomname: roomname
+          });
+        }
       }
       else {
         bootbox.alert(t('Error') + ':' + t('Invalid user name or room name'))
@@ -417,9 +424,11 @@ $(function() {
         } else if (response.status === 'not_authorized') {
           // The person is logged into Facebook, but not your app.
           bootbox.alert(t('Error') + ':' + t('Failed to login'))
+          username = ''
         } else {
           // The person is not logged into Facebook, so we're not sure if
           // they are logged into this app or not.
+          username = ''
         }
       })
     })
