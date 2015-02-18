@@ -118,6 +118,9 @@ $(function() {
       $loginPage.show()
     }
 
+    // Obtain client IP and set username
+    getIP()
+
 
     // ---------- Functions -----------
 
@@ -133,6 +136,16 @@ $(function() {
       // Log the total number of current users
       log(message);
     }
+
+    function getIP () {
+      socket.emit('get ip')
+    }
+
+    socket.on('return ip', function(ip) {
+      if (!username || username.length === 0) {
+        username = "Guest_" + ip
+      }
+    })
 
     // Sets the client's username
     function setUserName (usernameIn, roomnameIn) {
@@ -390,7 +403,7 @@ $(function() {
 
     // Keyboard events
     $('#enterRoom').click(function (e) {
-      setUserName(Common.cleanInput($usernameInput.val().trim()), Common.cleanInput($roomnameInput.val().trim()));
+      setUserName(username, Common.cleanInput($roomnameInput.val().trim()));
     });
 
     $('#enterRoomFB').click(function (e) {

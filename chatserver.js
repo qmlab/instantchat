@@ -8,6 +8,11 @@ module.exports.start = function(server) {
 
   io.sockets.on('connection', function (socket) {
     var addedUser = false;
+    var address = socket.handshake.address;
+
+    socket.on('get ip', function() {
+      socket.emit('return ip', address)
+    })
 
     // when the client emits 'add user', this listens and executes
     socket.on('add user', function (data) {
