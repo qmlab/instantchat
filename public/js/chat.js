@@ -220,7 +220,7 @@ $(function() {
         if (toUser) {
           $privateMessage.val('');
           addChatMessage({
-            username: username,
+            username: username || guestname,
             message: message,
             toUser: toUser
           });
@@ -231,7 +231,7 @@ $(function() {
         else {
           $inputMessage.val('');
           addChatMessage({
-            username: username,
+            username: username || guestname,
             message: message
           });
 
@@ -297,7 +297,7 @@ $(function() {
       var $messageBodyDiv = $('<span class="messageBody bubble"/>')
       .html(Common.replaceNewLines(data.message));
 
-      if (data.username === username) {
+      if (data.username === (username || guestname)) {
         $messageBodyDiv.addClass('me')
       }
       else {
@@ -311,17 +311,17 @@ $(function() {
 
       if (!!data.toUser) {
         $messageBodyDiv.addClass('private')
-        if (data.username === username)
+        if (data.username === (username || guestname))
         {
           //$messageTypeDiv.html('[to <b>' + data.toUser + '</b>] ')
         }
-        else if (data.toUser === username)
+        else if (data.toUser === (username || guestname))
         {
           //$messageTypeDiv.html('[<b>Private</b>] ')
         }
       }
 
-      if (data.username === username) {
+      if (data.username === (username || guestname)) {
         $messageDiv
         .addClass('me')
         .append($usernameDiv, /*data.typing ? null : $dateTimeDiv,*/ $messageTypeDiv, $messageBodyDiv);
@@ -336,7 +336,7 @@ $(function() {
       options.scrollToBottom = true;
       Common.addElement($messageDiv, $messages, $window, options);
 
-      if (data.username !== username && !data.typing) {
+      if (data.username !== (username || guestname) && !data.typing) {
         newMsgCancellationToken.isCancelled = false;
         Common.newMsgTitle(t('New messages'), newMsgCancellationToken)
       }
@@ -450,9 +450,9 @@ $(function() {
     $('.roomnameInput').keydown(processsetUserName)
 
     function processsetUserName(e) {
-      if (!username && e.which === 13)
+      if (e.which === 13)
       {
-        setUserName(username, Common.cleanInput($roomnameInput.val().trim()));
+        setUserName(username || guestname, Common.cleanInput($roomnameInput.val().trim()));
       }
     }
 
@@ -464,7 +464,7 @@ $(function() {
     $privateMessage.keydown(processInput)
 
     function processInput(e) {
-      if (username && e.which === 13) {
+      if ((username || guestname) && e.which === 13) {
         if (!(e.ctrlKey || e.metaKey || e.altKey || e.shiftKey)) {
           if ($inputMessage.is(':focus')) {
             sendMessage();
