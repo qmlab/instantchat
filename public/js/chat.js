@@ -160,7 +160,7 @@ $(function() {
         socket.emit('add user', {
           username: usernameIn,
           roomname: roomnameIn,
-          authRes: authRes
+          auth: authRes
         });
       }
       else {
@@ -411,10 +411,12 @@ $(function() {
       FB.login(function(response) {
         if (response.status === 'connected') {
           // Logged into your app and Facebook.
-          FB.api('/me', function(response) {
-            console.log('Successful login for: ' + response.name);
-            username = response.name
-            setUserName(Common.cleanInput(response.name), Common.cleanInput($roomnameInput.val().trim()), response)
+          FB.api('/me', function(res) {
+            console.log('Successful login for: ' + res.name);
+            username = res.name
+            var auth = response.authResponse
+            auth.type = 'facebook'
+            setUserName(Common.cleanInput(res.name), Common.cleanInput($roomnameInput.val().trim()), auth)
           });
         } else if (response.status === 'not_authorized') {
           // The person is logged into Facebook, but not your app.

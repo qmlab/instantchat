@@ -1,3 +1,5 @@
+var https = require('https')
+
 module.exports.start = function(server) {
   var io = require('socket.io')(server)
 
@@ -25,6 +27,37 @@ module.exports.start = function(server) {
           return;
         }
 
+        if (data.username.indexOf('Guest_') === 0) {
+          addUser(data)
+        }
+        else if (!!data.auth && data.auth.type === 'facebook') {
+          var options = {
+            hostname: 'graph.facebook.com',
+            port: 443,
+            path: '/me?accesstoken=' + data.auth.accessToken,
+            method: 'GET'
+          }
+          https.request(options, function(res) {
+            if (res.verified && res.name === data.username) {
+              console.log('server-side access token verification passed')
+              addUser(data)
+            }
+            else {
+              socket.emit('login error', {
+                msg: 'login verification failed'
+              })
+            }
+          })
+        }
+      }
+      else {
+        socket.emit('login error', {
+          msg: 'empty username or roomname'
+        })
+      }
+    });
+
+    function addUser(data) {
         // Store the socket
         sockets[data.username] = socket;
 
@@ -50,13 +83,7 @@ module.exports.start = function(server) {
           username: socket.username,
           numUsers:users[socket.roomname].length
         });
-      }
-      else {
-        socket.emit('login error', {
-          msg: 'empty username or roomname'
-        })
-      }
-    });
+    }
 
     // when the client emits 'new message', this listens and executes
     socket.on('new message', function (data) {
