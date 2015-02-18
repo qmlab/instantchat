@@ -47,6 +47,7 @@ $(function() {
     , newMsgCancellationToken = { isCancelled: false }
     , username
     , roomname
+    , guestname
     , lastPoke = new Date('1970-01-01')
     , socket = io.connect(Common.getBaseUrl(), { secure: true })
     , filesToSend = {}  // Files to send out by receiver
@@ -154,7 +155,7 @@ $(function() {
 
       // If the username is valid
       if (!!roomname) {
-        if (!username || username.length === 0) {
+        if (!username || username.length === 0 || username === 'undefined') {
           // Tell the server your username
           socket.emit('add user', {
             username: guestname,
