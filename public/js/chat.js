@@ -415,11 +415,14 @@ $(function() {
     }
 
     // Keyboard events
-    $('#enterRoom').click(function (e) {
+    $('#enterRoomGuest').click(function (e) {
+      username = null
+      Common.deleteCookie('username')
+      Common.deleteCookie('authInfo')
       setUserName(guestname, Common.cleanInput($roomnameInput.val().trim()));
     });
 
-    $('#enterRoomFB').click(function (e) {
+    $('#enterRoomFacebook').click(function (e) {
       FB.login(function(response) {
         if (response.status === 'connected') {
           // Logged into your app and Facebook.
