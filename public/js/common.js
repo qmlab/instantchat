@@ -1,7 +1,11 @@
 // Module for common functions
-
 var Common = (function() {
   var FADE_TIME = 250; // ms
+  var COLORS = [
+  '#B51000', '#74460C', '#C68600', '#DE7D00',
+  '#235800', '#206200', '#659049', '#257462',
+  '#2F6DBC', '#2D1D88', '#7500B2', '#9400A2'
+  ];
 
   var extractSdp = function(sdpLine, pattern) {
     var result = sdpLine.match(pattern);
@@ -237,6 +241,18 @@ var Common = (function() {
 
     isGuest : function(name) {
       return (!!name && name.indexOf('Guest_') === 0)
+    },
+
+    // Gets the color of a username through our hash function
+    getUsernameColor : function(username) {
+      // Compute hash code
+      var hash = 7;
+      for (var i = 0; i < username.length; i++) {
+        hash = username.charCodeAt(i) + (hash << 5) - hash;
+      }
+      // Calculate color
+      var index = Math.abs(hash % COLORS.length);
+      return COLORS[index];
     }
   }
 })()

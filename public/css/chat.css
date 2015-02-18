@@ -207,6 +207,10 @@ ul {
   background: #f0f0f0;
 }
 
+.userlist {
+  font-size: 2vh;
+}
+
 /* Input */
 
 .form-control {

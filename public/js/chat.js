@@ -1,11 +1,6 @@
 $(function() {
   var TYPING_TIMER_LENGTH = 2000; // ms
   var MIN_POKE_INTERVAL = 5000; // ms
-  var COLORS = [
-  '#e21400', '#91580f', '#f8a700', '#f78b00',
-  '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
-  '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
-  ];
 
   // Initialize varibles
   var $window = $(window);
@@ -264,9 +259,9 @@ $(function() {
     // Add the user to the current user list
     function addUser (theusername, list, options) {
       options = options || {};
-      var $usernameDiv = $('<li class="username"/>')
+      var $usernameDiv = $('<li class="username userlist"/>')
       .text(theusername)
-      .css('color', getUsernameColor(theusername));
+      .css('color', Common.getUsernameColor(theusername));
 
       options.scrollToBottom = false;
       Common.addElement($usernameDiv, list, $window, options);
@@ -290,7 +285,7 @@ $(function() {
 
       var $usernameDiv = $('<span class="username"/>')
       .text(data.username)
-      .css('color', getUsernameColor(data.username));
+      .css('color', Common.getUsernameColor(data.username));
 
       var $messageBodyDiv = $('<span class="messageBody bubble"/>')
       .html(Common.replaceNewLines(data.message));
@@ -351,7 +346,7 @@ $(function() {
       var namelist = $('ul.users li').each(function() {
         var $usernameDiv = $('<span class="username"/>')
         .text($(this).text())
-        .css('color', getUsernameColor($(this).text()));
+        .css('color', Common.getUsernameColor($(this).text()));
 
         $messageDiv = $messageDiv.append($usernameDiv)
       })
@@ -398,18 +393,6 @@ $(function() {
       return $('.typing.message').filter(function (i) {
         return $(this).data('username') === data.username;
       });
-    }
-
-    // Gets the color of a username through our hash function
-    function getUsernameColor (username) {
-      // Compute hash code
-      var hash = 7;
-      for (var i = 0; i < username.length; i++) {
-        hash = username.charCodeAt(i) + (hash << 5) - hash;
-      }
-      // Calculate color
-      var index = Math.abs(hash % COLORS.length);
-      return COLORS[index];
     }
 
     // Keyboard events
