@@ -112,7 +112,7 @@ $(function() {
     // Cookies
     var cUserName = Common.getCookie('username')
     var cRoomName = Common.getCookie('roomname')
-    if (cUserName.length > 0 && cRoomName.length > 0) {
+    if (cUserName.length > 0 && cRoomName.length > 0 && cUsername !== 'undefined') {
       setUserName(cUserName, cRoomName)
     }
     else {
