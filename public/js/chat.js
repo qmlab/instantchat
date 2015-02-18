@@ -693,6 +693,35 @@ $(function() {
 
     $('#fileInput').change(handleFileSelector)
 
+    $(window).scroll(function() {
+      if (!Common.isScrolledToTop()) {        // If page is scrolled more than 50px
+        $('.scrollArrow.upArrow').css('opacity', 1);    // Fade in the arrow
+      } else {
+        $('.scrollArrow.upArrow').css('opacity', 0.5);   // Else fade out the arrow
+      }
+
+      if (!Common.isScrolledToBottom()) {        // If page is scrolled more than 50px
+        $('.scrollArrow.downArrow').css('opacity', 1);    // Fade in the arrow
+      } else {
+        $('.scrollArrow.downArrow').css('opacity', 0.5);   // Else fade out the arrow
+      }
+    });
+
+    $('.scrollArrow.upArrow').click(function() {      // When up arrow is clicked
+      $('body,html').animate({
+        scrollTop : 0                       // Scroll to top of body
+      }, 500);
+    });
+
+    $('.scrollArrow.downArrow').click(function() {      // When down arrow is clicked
+      $('body,html').animate({
+        scrollTop : $('.messages')[0].scrollHeight                       // Scroll to bottom of body
+      }, 500);
+    });
+
+
+    // Socket events
+
     socket.on('start video response', function(data) {
       if (!!data && !!data.to) {
         var toUser = data.to

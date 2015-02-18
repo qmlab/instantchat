@@ -200,7 +200,7 @@ ul {
   font-weight: 700;
   overflow: hidden;
   padding-right: 15px;
-  font-size: 3vh;
+  font-size: 2.5vh;
 }
 
 .username:hover {
@@ -437,6 +437,8 @@ ul {
   color: #212121;
   text-decoration: none;
   float: right;
+  position: fixed;
+  right: 0;
 }
 
 .loginPageText {
@@ -451,4 +453,57 @@ ul {
   padding: 25px;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+
+.scrollArrow {
+    position: fixed;
+    right: 1%;
+    background: rgb(0, 0, 0);
+    background: rgba(0, 0, 0, 0.3);
+    width: 50px;
+    height: 50px;
+    display: block;
+    text-decoration: none;
+    -webkit-border-radius: 35px;
+    -moz-border-radius: 35px;
+    border-radius: 35px;
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+.scrollArrow.upArrow {
+  top: 39%;
+  opacity: 0.5;
+}
+.scrollArrow.downArrow {
+  top: 52%;
+  opacity: 0.5;
+}
+.scrollArrow i {
+    color: #fff;
+    margin: 0;
+    position: relative;
+    left: 16px;
+    top: 13px;
+    font-size: 19px;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+.scrollArrow:hover {
+    background: rgba(0, 0, 0, 0.9);
+}
+.scrollArrow:hover i {
+    color: #fff;
+}
+.scrollArrow.upArrow:hover i {
+    top: 5px;
+}
+.scrollArrow.downArrow:hover i {
+    top: 21px;
 }

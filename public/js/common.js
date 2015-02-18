@@ -253,6 +253,14 @@ var Common = (function() {
       // Calculate color
       var index = Math.abs(hash % COLORS.length);
       return COLORS[index];
+    },
+
+    isScrolledToTop : function() {
+      return $(window).scrollTop() === 0
+    },
+
+    isScrolledToBottom : function() {
+      return $(window).scrollTop() + $(window).height() == $(document).height()
     }
   }
 })()
