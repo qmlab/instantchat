@@ -48,11 +48,6 @@ i18n.registerAppHelper(app)
 
 //Init i18n
 i18n.init(function(t) {
-  // Routing
-  app.get('/', function(req, res) {
-    res.render('chat.ejs')
-  })
-
   var server
   if (!isDebug) {
     app.get('*', function(req, res, next) {
@@ -61,7 +56,13 @@ i18n.init(function(t) {
       }
       else {
         res.redirect('https://' + req.headers.host + req.url)
+        console.log('redirected to https')
       }
+    })
+
+    // Routing, should be placed after redirect
+    app.get('/', function(req, res) {
+      res.render('chat.ejs')
     })
 
     var privateKey  = fs.readFileSync('certs/talkyet.key', 'utf8')
@@ -78,6 +79,11 @@ i18n.init(function(t) {
     })
   }
   else {
+    // Routing
+    app.get('/', function(req, res) {
+      res.render('chat.ejs')
+    })
+
     server = http.createServer(app)
     server.listen(port, function() {
       console.log('Debug: server listening at port %d', port)
