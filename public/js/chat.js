@@ -9,7 +9,6 @@ $(function() {
 
   // Initialize varibles
   var $window = $(window);
-  var $usernameInput = $('.usernameInput'); // Input for username
   var $roomnameInput = $('.roomnameInput'); // Input for username
   var $messages = $('#publicMessages'); // Messages area
   var $users = $('.users'); // User area
@@ -112,6 +111,9 @@ $(function() {
     // Cookies
     var cUserName = Common.getCookie('username')
     var cRoomName = Common.getCookie('roomname')
+    if (!!cRoomName && cRoomName !== '') {
+      $roomnameInput.val(cRoomName)
+    }
     if (cUserName.length > 0 && cRoomName.length > 0 && cUserName !== 'undefined') {
       setUserName(cUserName, cRoomName)
     }
@@ -434,13 +436,12 @@ $(function() {
       })
     })
 
-    $('.usernameInput').keydown(processsetUserName)
     $('.roomnameInput').keydown(processsetUserName)
 
     function processsetUserName(e) {
       if (!username && e.which === 13)
       {
-        setUserName(Common.cleanInput($usernameInput.val().trim()), Common.cleanInput($roomnameInput.val().trim()));
+        setUserName(username, Common.cleanInput($roomnameInput.val().trim()));
       }
     }
 
