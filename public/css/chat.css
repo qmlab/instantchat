@@ -311,9 +311,11 @@ ul {
 
 .btn-1 {
   border: 3px solid #fff;
-  padding: 25px 45px;
+  padding: 25px;
   margin: 15px 30px;
   color: #fff;
+  width: 300px;
+  max-width: 80%;
 }
 
 .btn-1a:hover,
@@ -442,7 +444,7 @@ ul {
   color: #fff;
   background-color: #3b5998;
   border-color: rgba(0,0,0,0.2);
-  padding: 25px 20px;
+  padding: 25px;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
