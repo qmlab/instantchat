@@ -112,7 +112,7 @@ $(function() {
     // Cookies
     var cUserName = Common.getCookie('username')
     var cRoomName = Common.getCookie('roomname')
-    var cAuthInfo = {}
+    var cAuthInfo = null
     var cAuthInfoStr = Common.getCookie('authInfo')
     if (cAuthInfoStr.length > 0) {
       cAuthInfo = JSON.parse(cAuthInfoStr)
@@ -122,7 +122,7 @@ $(function() {
       $roomnameInput.val(cRoomName)
     }
 
-    if (cUserName.length > 0 && cRoomName.length > 0 && cUserName !== 'undefined' && cAuthInfo.length > 0) {
+    if (cUserName.length > 0 && cRoomName.length > 0 && cUserName !== 'undefined' && !!cAuthInfo) {
       setUserName(cUserName, cRoomName, cAuthInfo)
     }
     else {
