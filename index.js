@@ -56,7 +56,6 @@ i18n.init(function(t) {
       }
       else {
         res.redirect('https://' + req.headers.host + req.url)
-        console.log('redirected to https')
       }
     })
 
