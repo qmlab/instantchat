@@ -49,21 +49,21 @@ i18n.registerAppHelper(app)
 //Init i18n
 i18n.init(function(t) {
   // Routing
-  app.get('*', function(req, res, next) {
-    if (req.secure) {
-      return next()
-    }
-    else {
-      res.redirect('https://' + req.headers.host + req.url)
-    }
-  })
-
   app.get('/', function(req, res) {
     res.render('chat.ejs')
   })
 
   var server
   if (!isDebug) {
+    app.get('*', function(req, res, next) {
+      if (req.secure) {
+        return next()
+      }
+      else {
+        res.redirect('https://' + req.headers.host + req.url)
+      }
+    })
+
     var privateKey  = fs.readFileSync('certs/talkyet.key', 'utf8')
     var certificate = fs.readFileSync('certs/talkyet.cer', 'utf8')
     var credentials = {key: privateKey, cert: certificate}

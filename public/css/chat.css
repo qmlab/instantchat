@@ -431,3 +431,19 @@ ul {
   text-decoration: none;
   float: right;
 }
+
+.loginPageText {
+  font-size: 150%;
+  color: white;
+}
+
+.btn-facebook {
+  color: #fff;
+  background-color: #3b5998;
+  border-color: rgba(0,0,0,0.2);
+  padding: 25px 60px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -393,6 +393,24 @@ $(function() {
       setUserName(Common.cleanInput($usernameInput.val().trim()), Common.cleanInput($roomnameInput.val().trim()));
     });
 
+    $('#enterRoomFB').click(function (e) {
+      FB.login(function(response) {
+        if (response.status === 'connected') {
+          // Logged into your app and Facebook.
+          FB.api('/me', function(response) {
+            console.log('Successful login for: ' + response.name);
+            setUserName(Common.cleanInput(response.name), Common.cleanInput($roomnameInput.val().trim()))
+          });
+        } else if (response.status === 'not_authorized') {
+          // The person is logged into Facebook, but not your app.
+          bootbox.alert(t('Error') + ':' + t('Failed to login'))
+        } else {
+          // The person is not logged into Facebook, so we're not sure if
+          // they are logged into this app or not.
+        }
+      })
+    })
+
     $('.usernameInput').keydown(processsetUserName)
     $('.roomnameInput').keydown(processsetUserName)
 
