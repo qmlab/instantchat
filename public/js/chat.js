@@ -700,7 +700,7 @@ $(function() {
         $('.scrollArrow.upArrow').css('opacity', 0.5);   // Else fade out the arrow
       }
 
-      if (!Common.isScrolledToBottom()) {        // If page is scrolled more than 50px
+      if (!Common.isScrolledToBottom()) {       // If page is scrolled more than 50px
         $('.scrollArrow.downArrow').css('opacity', 1);    // Fade in the arrow
       } else {
         $('.scrollArrow.downArrow').css('opacity', 0.5);   // Else fade out the arrow
