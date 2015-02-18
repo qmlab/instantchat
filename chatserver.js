@@ -31,6 +31,7 @@ module.exports.start = function(server) {
           addUser(data)
         }
         else if (!!data.auth && data.auth.type === 'facebook') {
+          console.log('verifying facebook')
           var options = {
             hostname: 'graph.facebook.com',
             port: 443,
@@ -38,11 +39,13 @@ module.exports.start = function(server) {
             method: 'GET'
           }
           https.request(options, function(res) {
+            console.log(res)
             if (res.verified && res.name === data.username) {
               console.log('server-side access token verification passed')
               addUser(data)
             }
             else {
+              console.log('server-side access token verification failed')
               socket.emit('login error', {
                 msg: 'login verification failed'
               })
