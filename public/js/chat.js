@@ -25,7 +25,7 @@ $(function() {
   $('.mute').bootstrapSwitch('state')
   $('[data-toggle="tooltip"]').tooltip()
 
-  if (!isChrome || chromeVersion < 28) {
+  if ((!isChrome || chromeVersion < 28) && !isFirefox) {
     $('.rtcAction').css('opacity', 0.5)
   }
 
@@ -603,7 +603,7 @@ $(function() {
     }
 
     function dragDrop(evt) {
-      if (isChrome && chromeVersion >= 28) {
+      if (isChrome && chromeVersion >= 28 || isFirefox) {
         var toUser = $(this).text()
         if(evt.originalEvent.dataTransfer){
           if (toUser !== username) {
@@ -670,7 +670,7 @@ $(function() {
     })
 
     $('#startVideo').click(function(e) {
-      if (isChrome && chromeVersion >= 28) {
+      if (isChrome && chromeVersion >= 28 || isFirefox) {
         var toUser = $contextMenu.data('toUser')
         log(t('initiating video connection with ') + toUser)
         socket.emit('start video request', {
@@ -684,7 +684,7 @@ $(function() {
     })
 
     $('#startAudio').click(function(e) {
-      if (isChrome && chromeVersion >= 28) {
+      if (isChrome && chromeVersion >= 28 || isFirefox) {
         var toUser = $contextMenu.data('toUser')
         log(t('initiating audio connection with ') + toUser)
         socket.emit('start audio request', {
@@ -700,7 +700,7 @@ $(function() {
     $('#sendFile').click(function(e) {
       e.preventDefault()
       e.stopPropagation()
-      if (isChrome && chromeVersion >= 28) {
+      if (isChrome && chromeVersion >= 28 || isFirefox) {
         $('#fileInput').trigger('click')
       }
     })
