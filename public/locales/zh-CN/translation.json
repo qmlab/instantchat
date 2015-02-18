@@ -56,5 +56,6 @@
     "file": "文件",
     "transfer completed in ": "传送完成，用时",
     "s": "秒",
-    "already sending receiving a file": "文件发送/接受文件失败 - 已在传送文件"
+    "already sending receiving a file": "文件发送/接受文件失败 - 已在传送文件",
+    "OR": "或者"
 }

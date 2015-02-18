@@ -57,5 +57,6 @@
     "file": "file",
     "transfer completed in ": "transfer completed in ",
     "s": "s",
-    "already sending receiving a file": "File transfer failed - already sending/receiving a file"
+    "already sending receiving a file": "File transfer failed - already sending/receiving a file",
+    "OR": "OR"
 }
