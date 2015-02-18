@@ -151,26 +151,17 @@ $(function() {
     })
 
     // Sets the client's username
-    function setUserName (usernameIn, roomnameIn) {
-      username = usernameIn;
-      roomname = roomnameIn;
+    function setUserName (usernameIn, roomnameIn, authRes) {
+      // If the username and roomname are valid
+      if (!!roomnameIn && !!usernameIn) {
+        roomname = roomnameIn;
 
-      // If the username is valid
-      if (!!roomname) {
-        if (!username || username.length === 0 || username === 'undefined') {
-          // Tell the server your username
-          socket.emit('add user', {
-            username: guestname,
-            roomname: roomname
-          });
-        }
-        else {
-          // Tell the server your username
-          socket.emit('add user', {
-            username: username,
-            roomname: roomname
-          });
-        }
+        // Tell the server your username
+        socket.emit('add user', {
+          username: usernameIn,
+          roomname: roomnameIn,
+          authRes: authRes
+        });
       }
       else {
         bootbox.alert(t('Error') + ':' + t('Invalid user name or room name'))
@@ -413,7 +404,7 @@ $(function() {
 
     // Keyboard events
     $('#enterRoom').click(function (e) {
-      setUserName(username, Common.cleanInput($roomnameInput.val().trim()));
+      setUserName(guestname, Common.cleanInput($roomnameInput.val().trim()));
     });
 
     $('#enterRoomFB').click(function (e) {
@@ -422,7 +413,8 @@ $(function() {
           // Logged into your app and Facebook.
           FB.api('/me', function(response) {
             console.log('Successful login for: ' + response.name);
-            setUserName(Common.cleanInput(response.name), Common.cleanInput($roomnameInput.val().trim()))
+            username = response.name
+            setUserName(Common.cleanInput(response.name), Common.cleanInput($roomnameInput.val().trim()), response)
           });
         } else if (response.status === 'not_authorized') {
           // The person is logged into Facebook, but not your app.
