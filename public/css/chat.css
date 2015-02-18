@@ -209,6 +209,8 @@ ul {
 
 .userlist {
   font-size: 2vh;
+  padding-right: 0;
+  padding-bottom: 10px;
 }
 
 /* Input */
