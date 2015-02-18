@@ -47,6 +47,7 @@ $(function() {
     , username
     , roomname
     , guestname
+    , authInfo
     , lastPoke = new Date('1970-01-01')
     , socket = io.connect(Common.getBaseUrl(), { secure: true })
     , filesToSend = {}  // Files to send out by receiver
@@ -111,17 +112,19 @@ $(function() {
     // Cookies
     var cUserName = Common.getCookie('username')
     var cRoomName = Common.getCookie('roomname')
+    var cAuthInfo = Common.getCookie('authInfo')
     if (!!cRoomName && cRoomName !== '') {
       $roomnameInput.val(cRoomName)
     }
+
     if (cUserName.length > 0 && cRoomName.length > 0 && cUserName !== 'undefined') {
-      setUserName(cUserName, cRoomName)
+      setUserName(cUserName, cRoomName, cAuthInfo)
     }
     else {
       $loginPage.show()
     }
 
-    // Obtain client IP and set username
+    // Obtain client IP and set guestname
     getIP()
 
 
@@ -160,8 +163,12 @@ $(function() {
         socket.emit('add user', {
           username: usernameIn,
           roomname: roomnameIn,
-          auth: authRes
+          auth: authRes || authInfo
         });
+
+        if (!!authRes) {
+          authInfo = authRes
+        }
       }
       else {
         bootbox.alert(t('Error') + ':' + t('Invalid user name or room name'))
@@ -421,11 +428,13 @@ $(function() {
         } else if (response.status === 'not_authorized') {
           // The person is logged into Facebook, but not your app.
           bootbox.alert(t('Error') + ':' + t('Failed to login'))
-          username = ''
+          username = null
+          authInfo = null
         } else {
           // The person is not logged into Facebook, so we're not sure if
           // they are logged into this app or not.
-          username = ''
+          username = null
+          authInfo = null
         }
       })
     })
@@ -515,10 +524,13 @@ $(function() {
 
       // Set cookies for the last successful login
       if (!!username && username !== 'undefined' && username !== '') {
-        Common.setCookie('username', username, 7)
+        Common.setCookie('username', username, 1)
       }
       if (!!roomname && roomname !== '') {
         Common.setCookie('roomname', roomname, 7)
+      }
+      if (!!authInfo) {
+        Common.setCookie('authInfo', authInfo, 1)
       }
     });
 
@@ -781,6 +793,7 @@ $(function() {
         if (true === result) {
           Common.deleteCookie('username')
           Common.deleteCookie('roomname')
+          Common.deleteCookie('authInfo')
           window.location.reload(true)
         }
       })
