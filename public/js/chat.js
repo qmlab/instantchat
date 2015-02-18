@@ -112,7 +112,7 @@ $(function() {
     // Cookies
     var cUserName = Common.getCookie('username')
     var cRoomName = Common.getCookie('roomname')
-    if (cUserName.length > 0 && cRoomName.length > 0 && cUsername !== 'undefined') {
+    if (cUserName.length > 0 && cRoomName.length > 0 && cUserName !== 'undefined') {
       setUserName(cUserName, cRoomName)
     }
     else {
@@ -519,8 +519,12 @@ $(function() {
       })
 
       // Set cookies for the last successful login
-      Common.setCookie('username', username, 7)
-      Common.setCookie('roomname', roomname, 7)
+      if (!!username && username !== 'undefined' && username !== '') {
+        Common.setCookie('username', username, 7)
+      }
+      if (!!roomname && roomname !== '') {
+        Common.setCookie('roomname', roomname, 7)
+      }
     });
 
     // Whenever the server emits 'new message', update the chat body
