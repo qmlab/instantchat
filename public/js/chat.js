@@ -153,9 +153,7 @@ $(function() {
     }
 
     socket.on('return ip', function(ip) {
-      if (!username || username.length === 0) {
-        guestname = "Guest_" + ip
-      }
+      guestname = "Guest_" + ip
     })
 
     // Sets the client's username
@@ -641,14 +639,14 @@ $(function() {
         var msg = t('Sending file "') + file.name + t('" to "') + user + t('". FileSize: ') + file.size;
         log(msg)
         dataChannel.p2pOptions.to = user
-        dataChannel.p2pOptions.from = username
-        sendInfo(user, username + ' =====>>> ' + user + ' : "' + file.name + '"')
+        dataChannel.p2pOptions.from = username || guestname
+        sendInfo(user, (username || guestname) + ' =====>>> ' + user + ' : "' + file.name + '"')
         dataChannel.sendFile(file, logFileComplete, logFileFailed)
       })
     }
 
     function showContextMenu(e) {
-      if ($(this).text() !== username) {
+      if ($(this).text() !== (username || guestname)) {
         $contextMenu.css({
           display: 'block',
           left: e.pageX,
@@ -712,8 +710,8 @@ $(function() {
       if (!!data && !!data.to) {
         var toUser = data.to
         if (data.permitted) {
-          sendInfo(toUser, username + t('has initiated a video chat'))
-          mediaChannel.startVideo(toUser, username)
+          sendInfo(toUser, (username || guestname) + t('has initiated a video chat'))
+          mediaChannel.startVideo(toUser, username || guestname)
         }
         else {
           log(t('failed to start video with ') + toUser + '. ' + data.message)
@@ -725,8 +723,8 @@ $(function() {
       if (!!data && !!data.to) {
         var toUser = data.to
         if (data.permitted) {
-          sendInfo(toUser, username + t('has initiated an audio chat'))
-          mediaChannel.startAudio(toUser, username)
+          sendInfo(toUser, (username || guestname) + t('has initiated an audio chat'))
+          mediaChannel.startAudio(toUser, username || guestname)
         }
         else {
           log(t('failed to start audio with ') + toUser + '. ' + data.message)
@@ -811,7 +809,7 @@ $(function() {
     $('.stopVideo').click(function(e) {
       var toUser = mediaChannel.getPeer()
       if (!!toUser) {
-        sendInfo(toUser, username + t('has stopped video chat'))
+        sendInfo(toUser, (username || guestname) + t('has stopped video chat'))
         mediaChannel.stopVideo()
         $('.mute').attr('checked', true)
       }
@@ -820,7 +818,7 @@ $(function() {
     $('.stopAudio').click(function(e) {
       var toUser = mediaChannel.getPeer()
       if (!!toUser) {
-        sendInfo(toUser, username + t('has stopped audio chat'))
+        sendInfo(toUser, (username || guestname) + t('has stopped audio chat'))
         mediaChannel.stopAudio()
         $('.mute').attr('checked', true)
       }
@@ -831,9 +829,9 @@ $(function() {
       var toUser = mediaChannel.getPeer()
       if (!!toUser) {
         if (!state) {
-          sendInfo(toUser, username + t('has muted their mic'))
+          sendInfo(toUser, (username || guestname) + t('has muted their mic'))
         } else {
-          sendInfo(toUser, username + t('has unmuted their mic'))
+          sendInfo(toUser, (username || guestname) + t('has unmuted their mic'))
         }
         mediaChannel.muteMe(state)
       }
