@@ -112,12 +112,17 @@ $(function() {
     // Cookies
     var cUserName = Common.getCookie('username')
     var cRoomName = Common.getCookie('roomname')
-    var cAuthInfo = JSON.parse(Common.getCookie('authInfo'))
+    var cAuthInfo = {}
+    var cAuthInfoStr = Common.getCookie('authInfo')
+    if (cAuthInfoStr.length > 0) {
+      cAuthInfo = JSON.parse(cAuthInfoStr)
+    }
+
     if (!!cRoomName && cRoomName !== '') {
       $roomnameInput.val(cRoomName)
     }
 
-    if (cUserName.length > 0 && cRoomName.length > 0 && cUserName !== 'undefined') {
+    if (cUserName.length > 0 && cRoomName.length > 0 && cUserName !== 'undefined' && cAuthInfo.length > 0) {
       setUserName(cUserName, cRoomName, cAuthInfo)
     }
     else {
