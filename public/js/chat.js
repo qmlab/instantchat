@@ -148,7 +148,21 @@ $(function() {
     }
 
     socket.on('return ip', function(ip) {
-      guestname = "Guest_" + ip
+      var parts = ip.split('.')
+      if (parts.length > 4) {
+        // IPv6
+        guestname = 'Guest_' + ip
+      }
+      else {
+        // IPv4
+        var affix = ''
+        for (var i = 0; i < 4; i++) {
+          var number = parseInt(parts[i])
+          var hexStr = number.toString(16)
+          affix += hexStr
+        }
+        guestname = 'Guest_' + affix
+      }
     })
 
     // Sets the client's username
