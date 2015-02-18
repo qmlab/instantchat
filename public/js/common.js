@@ -233,6 +233,10 @@ var Common = (function() {
 
     deleteCookie : function(cname) {
       document.cookie = cname + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC'
+    },
+
+    isGuest : function(name) {
+      return (!!name && name.indexOf('Guest_') === 0)
     }
   }
 })()

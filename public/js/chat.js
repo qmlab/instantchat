@@ -537,7 +537,7 @@ $(function() {
       if (!!roomname && roomname !== '') {
         Common.setCookie('roomname', roomname, 7)
       }
-      if (!!authInfo) {
+      if (!!authInfo && !!username) {
         Common.setCookie('authInfo', JSON.stringify(authInfo), 1)
       }
     });
