@@ -13,6 +13,20 @@ window.isMobileDevice = navigator.userAgent.match(/Android|iPhone|iPad|iPod|Blac
 window.isChrome = !!navigator.webkitGetUserMedia;
 window.isFirefox = !!navigator.mozGetUserMedia;
 window.chromeVersion = isChrome ? parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]) : 0
+window.firefoxVersion = isFirefox ? parseInt(navigator.userAgent.match(/Firefox\/([0-9]+)\./)[1]) : 0
+
+function supportRTC() {
+  if (isChrome) {
+    return chromeVersion >= 29
+  }
+  else if (isFirefox) {
+    // Mozilla bug #840728
+    return firefoxVersion >= 38
+  }
+  else {
+    return false
+  }
+}
 
 function initConfigs(preferSCTP) {
   if (isFirefox) {

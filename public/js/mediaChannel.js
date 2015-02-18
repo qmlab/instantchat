@@ -129,6 +129,13 @@ var MediaChannel = function(configs, constraints, socket) {
           }
           this.localStream = stream
           this.pc.addStream(stream)
+
+          if (window.isFirefox) {
+            // Firefox does not currently support onnegotiationneeded
+            setTimeout((function(){
+              this.pc.createOffer(this.localDescCreated.bind(this), Common.logError)
+            }).bind(this), 2000)
+          }
         }).bind(this), /*(function () {
           getUserMedia({ 'audio': this.p2pOptions.audio, 'video': false }, (function (stream) {
             // If video is not available, fall back to audio chat

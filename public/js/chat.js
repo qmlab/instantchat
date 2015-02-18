@@ -25,7 +25,7 @@ $(function() {
   $('.mute').bootstrapSwitch('state')
   $('[data-toggle="tooltip"]').tooltip()
 
-  if ((!isChrome || chromeVersion < 28) && !isFirefox) {
+  if (!supportRTC()) {
     $('.rtcAction').css('opacity', 0.5)
   }
 
@@ -149,9 +149,10 @@ $(function() {
 
     socket.on('return ip', function(ip) {
       var parts = ip.split('.')
+      var seconds = new Date().getTime() % 60
       if (parts.length > 4) {
         // IPv6
-        guestname = 'Guest_' + ip
+        guestname = 'Guest_' + ip + seconds
       }
       else {
         // IPv4
@@ -161,7 +162,7 @@ $(function() {
           var hexStr = number.toString(16)
           affix += hexStr
         }
-        guestname = 'Guest_' + affix
+        guestname = 'Guest_' + affix + seconds
       }
     })
 
@@ -513,8 +514,8 @@ $(function() {
       roomname = data.roomname
 
       // Detect browser type and version
-      if (!isChrome || parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10) < 29) {
-        log(t('[Please use Chrome 29+ for video/audio chats and file transfer]'), { color: 'orange' })
+      if (!supportRTC()) {
+        log(t('[Please use Chrome 29+ or Firefox 38+ for video/audio chats and file transfer]'), { color: 'orange' })
       }
 
       // Display the welcome message
@@ -603,7 +604,7 @@ $(function() {
     }
 
     function dragDrop(evt) {
-      if (isChrome && chromeVersion >= 28 || isFirefox) {
+      if (supportRTC()) {
         var toUser = $(this).text()
         if(evt.originalEvent.dataTransfer){
           if (toUser !== username) {
@@ -670,7 +671,7 @@ $(function() {
     })
 
     $('#startVideo').click(function(e) {
-      if (isChrome && chromeVersion >= 28 || isFirefox) {
+      if (supportRTC()) {
         var toUser = $contextMenu.data('toUser')
         log(t('initiating video connection with ') + toUser)
         socket.emit('start video request', {
@@ -684,7 +685,7 @@ $(function() {
     })
 
     $('#startAudio').click(function(e) {
-      if (isChrome && chromeVersion >= 28 || isFirefox) {
+      if (supportRTC()) {
         var toUser = $contextMenu.data('toUser')
         log(t('initiating audio connection with ') + toUser)
         socket.emit('start audio request', {
@@ -700,7 +701,7 @@ $(function() {
     $('#sendFile').click(function(e) {
       e.preventDefault()
       e.stopPropagation()
-      if (isChrome && chromeVersion >= 28 || isFirefox) {
+      if (supportRTC()) {
         $('#fileInput').trigger('click')
       }
     })

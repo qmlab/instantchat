@@ -127,7 +127,7 @@ var Common = (function() {
     },
 
     logError : function(error) {
-      console.log('error:' + error)
+      console.log('error:' + JSON.stringify(error))
     },
 
     logSuccess : function(msg) {
