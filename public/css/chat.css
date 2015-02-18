@@ -445,8 +445,6 @@ ul {
   background-color: #3b5998;
   border-color: rgba(0,0,0,0.2);
   padding: 25px;
-  text-align: left;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
