@@ -83,7 +83,7 @@ module.exports.start = function(server) {
         // add the client's username to the global list
         users[socket.roomname].push(socket.username);
         addedUser = true;
-        socket.emit('login', {
+        socket.emit('logged in', {
           numUsers: users[socket.roomname].length,
           users: users[socket.roomname],
           username: socket.username,

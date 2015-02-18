@@ -507,11 +507,13 @@ $(function() {
     })
 
     // Whenever the server emits 'login', log the login message
-    socket.on('login', function (data) {
+    socket.on('logged in', function (data) {
       connected = true;
       $loginPage.fadeOut();
       $chatPage.show();
       $inputMessage.focus();
+      username = data.username
+      roomname = data.roomname
 
       // Detect browser type and version
       if (!isChrome || parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10) < 29) {
