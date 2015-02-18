@@ -50,6 +50,12 @@ module.exports.start = function(server) {
                 msg: 'login verification failed'
               })
             }
+          }).end()
+          .error(function() {
+            console.log('failed to verify facebook access token')
+            socket.emit('login error', {
+              msg: 'failed to verify facebook login info'
+            })
           })
         }
       }
