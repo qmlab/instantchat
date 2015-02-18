@@ -49,7 +49,7 @@ ul {
 /* Login Page */
 
 .login.page {
-  background-color: #333;
+  background-color: #383838;
   display: none;
 }
 
@@ -496,7 +496,7 @@ ul {
     -ms-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
     transition: all 0.3s ease;
-    text-decoration:none; 
+    text-decoration:none;
 }
 .scrollArrow:hover {
     background: rgba(0, 0, 0, 0.9);
