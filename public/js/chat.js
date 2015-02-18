@@ -584,6 +584,8 @@ $(function() {
 
     socket.on('login error', function(e) {
       bootbox.alert(t('Error') + ':' + t(e.msg))
+      authInfo = null
+      username = null
       $loginPage.show()
     })
 
