@@ -524,11 +524,12 @@ $(function() {
     })
 
     socket.on('logged out', function(data) {
-      Common.deleteCookie('username')
-      Common.deleteCookie('roomname')
-      Common.deleteCookie('authInfo')
-      window.location.reload(true)
-      bootbox.alert(t('You are logged out') + '. ' + t(data.msg))
+      bootbox.alert(t('You are logged out') + '. ' + t(data.msg), {
+        Common.deleteCookie('username')
+        Common.deleteCookie('roomname')
+        Common.deleteCookie('authInfo')
+        window.location.reload(true)
+      })
     })
 
     // Whenever the server emits 'login', log the login message
