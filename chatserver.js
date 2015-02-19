@@ -9,7 +9,7 @@ module.exports.start = function(server) {
   console.log('TalkYet server started')
 
   io.sockets.on('connection', function (socket) {
-    var addedUser = false;
+    socket.addedUser = false;
     var address = socket.handshake.address;
 
     socket.on('get ip', function() {
@@ -21,10 +21,29 @@ module.exports.start = function(server) {
       // we store the username in the socket session for this client
       if (data.username && data.roomname) {
         if (users[data.roomname] && users[data.roomname].indexOf(data.username) >= 0) {
+          // In case of existing user in the room, log the previous user off and log the current one in
+          sockets[data.username].addedUser = false
+          sockets[data.username].emit('logged out', {
+            msg: 'user logged in from another location'
+          })
+          users[data.roomname].remove(data.username);
+          sockets[data.username].leave(data.roomname)
+          delete sockets[data.username]
+
+          console.log(data.username + ' left ' + data.roomname);
+
+          // echo globally that this client has left
+          socket.broadcast.to(data.roomname).emit('user left', {
+            username: data.username,
+            numUsers: users[data.roomname].length
+          });
+
+          /*
           socket.emit('login error', {
             msg: 'user already exists in this room'
           })
           return;
+          */
         }
 
         if (data.username.indexOf('Guest_') === 0) {
@@ -82,7 +101,7 @@ module.exports.start = function(server) {
 
         // add the client's username to the global list
         users[socket.roomname].push(socket.username);
-        addedUser = true;
+        socket.addedUser = true;
         socket.emit('logged in', {
           numUsers: users[socket.roomname].length,
           users: users[socket.roomname],
@@ -139,7 +158,7 @@ module.exports.start = function(server) {
     // when the user disconnects.. perform this
     socket.on('disconnect', function () {
       // remove the username from global users list
-      if (addedUser) {
+      if (socket.addedUser) {
         users[socket.roomname].remove(socket.username);
         socket.leave(socket.roomname)
         console.log(socket.username + ' left ' + socket.roomname);
@@ -166,7 +185,7 @@ module.exports.start = function(server) {
 
     // Non-message info
     socket.on('new info', function (data) {
-      if (typeof data.toUser == 'undefined') {
+      if (typeof data.toUser == 'undefined' || data.toUser.length === 0) {
         // we tell the client to execute 'new message'
         socket.broadcast.to(socket.roomname).emit('new info', {
           username: socket.username,

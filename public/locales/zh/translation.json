@@ -57,5 +57,9 @@
     "transfer completed in ": "传送完成，用时",
     "s": "秒",
     "already sending receiving a file": "文件发送/接受文件失败 - 已在传送文件",
-    "OR": "或者"
+    "OR": "或者",
+    "You are disconnected. Do you want to re-login?": "连接已断开，是否要重新登陆？",
+    "user logged in from another location": "用户已从其它地方登陆",
+    "You are logged out": "你已被登出",
+    "last message at": "最近一条消息发出时间"
 }

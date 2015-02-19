@@ -58,5 +58,9 @@
     "transfer completed in ": "transfer completed in ",
     "s": "s",
     "already sending receiving a file": "File transfer failed - already sending/receiving a file",
-    "OR": "OR"
+    "OR": "OR",
+    "You are disconnected. Do you want to re-login?": "You are disconnected. Do you want to re-login?",
+    "user logged in from another location": "user logged in from another location",
+    "You are logged out": "You are logged out",
+    "last message at": "last message at"
 }
