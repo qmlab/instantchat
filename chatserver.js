@@ -20,32 +20,6 @@ module.exports.start = function(server) {
     socket.on('add user', function (data) {
       // we store the username in the socket session for this client
       if (data.username && data.roomname) {
-        if (users[data.roomname] && users[data.roomname].indexOf(data.username) >= 0) {
-          // In case of existing user in the room, log the previous user off and log the current one in
-          sockets[data.username].addedUser = false
-          sockets[data.username].emit('logged out', {
-            msg: 'user logged in from another location'
-          })
-          users[data.roomname].remove(data.username);
-          sockets[data.username].leave(data.roomname)
-          delete sockets[data.username]
-
-          console.log(data.username + ' left ' + data.roomname);
-
-          // echo globally that this client has left
-          socket.broadcast.to(data.roomname).emit('user left', {
-            username: data.username,
-            numUsers: users[data.roomname].length
-          });
-
-          /*
-          socket.emit('login error', {
-            msg: 'user already exists in this room'
-          })
-          return;
-          */
-        }
-
         if (data.username.indexOf('Guest_') === 0) {
           addUser(data)
         }
@@ -89,31 +63,57 @@ module.exports.start = function(server) {
     });
 
     function addUser(data) {
-        // Store the socket
-        sockets[data.username] = socket;
-
-        socket.join(data.roomname);
-        socket.username = data.username;
-        socket.roomname = data.roomname;
-        console.log(socket.username + ' joined ' + socket.roomname);
-
-        users[socket.roomname] = users[socket.roomname] || []
-
-        // add the client's username to the global list
-        users[socket.roomname].push(socket.username);
-        socket.addedUser = true;
-        socket.emit('logged in', {
-          numUsers: users[socket.roomname].length,
-          users: users[socket.roomname],
-          username: socket.username,
-          roomname: socket.roomname
+      if (users[data.roomname] && users[data.roomname].indexOf(data.username) >= 0) {
+        // In case of existing user in the room, log the previous user off and log the current one in
+        sockets[data.username].addedUser = false
+        sockets[data.username].emit('logged out', {
+          msg: 'user logged in from another location'
         })
+        users[data.roomname].remove(data.username);
+        sockets[data.username].leave(data.roomname)
+        delete sockets[data.username]
 
-        // echo globally (all clients) that a person has connected
-        socket.broadcast.to(socket.roomname).emit('user joined', {
-          username: socket.username,
-          numUsers:users[socket.roomname].length
+        console.log(data.username + ' left ' + data.roomname);
+
+        // echo globally that this client has left
+        socket.broadcast.to(data.roomname).emit('user left', {
+          username: data.username,
+          numUsers: users[data.roomname].length
         });
+
+        /*
+        socket.emit('login error', {
+        msg: 'user already exists in this room'
+      })
+      return;
+      */
+      }
+
+      // Store the socket
+      sockets[data.username] = socket;
+
+      socket.join(data.roomname);
+      socket.username = data.username;
+      socket.roomname = data.roomname;
+      console.log(socket.username + ' joined ' + socket.roomname);
+
+      users[socket.roomname] = users[socket.roomname] || []
+
+      // add the client's username to the global list
+      users[socket.roomname].push(socket.username);
+      socket.addedUser = true;
+      socket.emit('logged in', {
+        numUsers: users[socket.roomname].length,
+        users: users[socket.roomname],
+        username: socket.username,
+        roomname: socket.roomname
+      })
+
+      // echo globally (all clients) that a person has connected
+      socket.broadcast.to(socket.roomname).emit('user joined', {
+        username: socket.username,
+        numUsers:users[socket.roomname].length
+      });
     }
 
     // when the client emits 'new message', this listens and executes
