@@ -524,7 +524,7 @@ $(function() {
     })
 
     socket.on('logged out', function(data) {
-      bootbox.alert(t('You are logged out') + '. ' + t(data.msg), {
+      bootbox.alert(t('You are logged out') + '. ' + t(data.msg), function() {
         Common.deleteCookie('username')
         Common.deleteCookie('roomname')
         Common.deleteCookie('authInfo')
