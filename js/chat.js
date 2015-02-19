@@ -351,8 +351,9 @@ $(function() {
       if (!!lastMsgTimeoutHandle) {
         window.clearTimeout(lastMsgTimeoutHandle)
       }
+      var currentTime = Common.getCurrentTime()
       lastMsgTimeoutHandle = window.setTimeout(function() {
-        log(t('last message at') + ' ' + Common.getCurrentTime())
+        log(t('last message at') + ' ' + currentTime)
       }, TIMEOUT_SHOW_MSG_TIME)
 
       if (data.username !== (username || guestname) && !data.typing) {
