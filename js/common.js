@@ -79,19 +79,19 @@ var Common = (function() {
     getCurrentTime : function() {
       var date = new Date()
       var month = new Array();
-      month[0] = 'Jan';
-      month[1] = 'Feb';
-      month[2] = 'Mar';
-      month[3] = 'Apr';
-      month[4] = 'May';
-      month[5] = 'Jun';
-      month[6] = 'Jul';
-      month[7] = 'Aug';
-      month[8] = 'Sep';
-      month[9] = 'Oct';
-      month[10] = 'Nov';
-      month[11] = 'Dec';
-      return month[date.getMonth()] + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+      month[0] = '1';
+      month[1] = '2';
+      month[2] = '3';
+      month[3] = '4';
+      month[4] = '5';
+      month[5] = '6';
+      month[6] = '7';
+      month[7] = '8';
+      month[8] = '9';
+      month[9] = '10';
+      month[10] = '11';
+      month[11] = '12';
+      return month[date.getMonth()] + '/' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
     },
 
     replaceNewLines : function(input) {
