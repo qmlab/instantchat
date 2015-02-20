@@ -1,0 +1,276 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    |
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    |
+    meta(name='author', content='QM')
+    |
+    title TalkYet
+    |
+    link(href='css/bootstrap.min.css', rel='stylesheet')
+    |
+    link(href='css/bootstrap-switch.css', rel='stylesheet')
+    |
+    link(href='//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css', rel='stylesheet')
+    |
+    link(rel='stylesheet', href='css/chat.css')
+    |
+    link(rel='stylesheet', href='css/speech.css')
+    |
+    link(rel='icon', type='image/png', href='/favicon-16.png', sizes='16x16')
+    |
+    link(rel='icon', type='image/png', href='/favicon-32.png', sizes='32x32')
+  body
+    script.
+      // This is called with the results from from FB.getLoginStatus().
+      function statusChangeCallback(response) {
+      console.log('statusChangeCallback');
+      console.log(response);
+      // The response object is returned with a status field that lets the
+      // app know the current login status of the person.
+      // Full docs on the response object can be found in the documentation
+      // for FB.getLoginStatus().
+      if (response.status === 'connected') {
+      // Logged into your app and Facebook.
+      getName()
+      } else if (response.status === 'not_authorized') {
+      // The person is logged into Facebook, but not your app.
+      document.getElementById('status').innerHTML = 'Please log ' +
+      'into this app.';
+      } else {
+      // The person is not logged into Facebook, so we're not sure if
+      // they are logged into this app or not.
+      document.getElementById('status').innerHTML = 'Please log ' +
+      'into Facebook.';
+      }
+      }
+      // This function is called when someone finishes with the Login
+      // Button.  See the onlogin handler attached to it in the sample
+      // code below.
+      function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+      });
+      }
+      window.fbAsyncInit = function() {
+      FB.init({
+      appId      : '347053215480232',
+      xfbml      : true,
+      version    : 'v2.2'
+      });
+      };
+      (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+      // Now that we've initialized the JavaScript SDK, we call
+      // FB.getLoginStatus().  This function gets the state of the
+      // person visiting this page and can return one of three states to
+      // the callback you provide.  They can be:
+      //
+      // 1. Logged into your app ('connected')
+      // 2. Logged into Facebook, but not your app ('not_authorized')
+      // 3. Not logged into Facebook and can't tell if they are logged into
+      //    your app or not.
+      //
+      // These three cases are handled in the callback function.
+      function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+      });
+      }
+      function getName() {
+      console.log('Welcome!  Fetching your information.... ');
+      FB.api('/me', function(response) {
+      console.log('Successful login for: ' + response.name);
+      });
+      }
+    |
+    script(src='//code.jquery.com/jquery-2.1.1.min.js')
+    |
+    script(src='/js/socket.io.js')
+    |
+    script(src='/js/bootstrap.min.js')
+    |
+    script(src='/js/bootstrap-switch.js')
+    |
+    script(src='/js/adapter.js')
+    |
+    script(src='/js/i18next-1.7.7.min.js')
+    |
+    script(src='/js/bootbox.js')
+    |
+    script(src='/js/common.js')
+    |
+    script(src='/js/util.js')
+    |
+    script(src='/js/config.js')
+    |
+    script(src='/js/signalingChannel.js')
+    |
+    script(src='/js/dataChannel.js')
+    |
+    script(src='/js/mediaChannel.js')
+    |
+    script(src='/js/chat.js')
+    //
+      <script src="/js/talkyet.min.js"></script>
+    ul.pages
+      li#chat_page.chat.page
+        .navbar.navbar-fixed-top.navbar-default
+          .navbar-header
+            img#pageLogo(src='/favicon-32.png', alt="'Origami Colored Pencil Icons' by Double-J Design. CC Attribution 4.0. http://www.doublejdesign.co.uk", title="'Origami Colored Pencil Icons' by Double-J Design. CC Attribution 4.0. http://www.doublejdesign.co.uk")
+            |
+            a.navbar-brand(data-i18n='TalkYet') TalkYet
+            |
+            a.glyphicon.glyphicon-facetime-video.sessionType-icon.videoIcon.blinkOnAppear(href='javascript:void(0);', data-toggle='modal', data-target='#videoChannel')
+            |
+            a.glyphicon.glyphicon-volume-up.sessionType-icon.audioIcon(href='javascript:void(0);')
+            |
+            button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+              span.icon-bar
+              |
+              span.icon-bar
+              |
+              span.icon-bar
+          |
+          .container.navbarContainer
+            .navbar-collapse.collapse
+              ul.nav.navbar-nav.navbar-right
+                li
+                  a#listroommates.navbarItem(href='javascript:void(0);', data-i18n='List Chatters') List Chatters
+                |
+                li
+                  a#about.navbarItem(href='javascript:void(0);', data-i18n='About') About
+                |
+                li
+                  a#quit.navbarItem(href='javascript:void(0);', data-i18n='Quit') Quit
+        |
+        .row.mainAreas
+          .hidden-xs.hidden-sm.col-md-3.col-lg-2
+            .userArea
+              h3(data-i18n='Users') Users
+              |
+              ul.users
+          |
+          .col-xs-12.col-sm-12.col-md-8.col-lg-8
+            .chatArea
+              ul#publicMessages.messages
+          |
+          .hidden-xs.hidden-sm.hidden-md
+            a.ssllogo(href='https://www.positivessl.com')
+              img(src='https://www.positivessl.com/images-new/PositiveSSL_tl_trans.png', alt='Positive SSL on a transparent background', title='Positive SSL on a transparent background', border='0')
+          // Return to Top
+          a.scrollArrow.upArrow(href='javascript:void(0);')
+            i.icon-chevron-up
+          // Return to Top
+          a.scrollArrow.downArrow(href='javascript:void(0);')
+            i.icon-chevron-down
+        |
+        .row-fluid
+          .statusbar
+            span.label.label-default.callStatus
+          |
+          .audios
+            audio.remoteAudio(autoplay='autoplay')
+          |
+          .control-panel
+            .mediaControls
+              button.btn.btn-danger.chatoption.stopAudio(type='button', data-toggle='tooltip', data-placement='top', title='Stop the call', data-i18n='Stop')
+                | STOP
+              |
+              button.btn.btn-danger.chatoption.stopVideo(type='button', data-toggle='tooltip', data-placement='top', title='Stop the call', data-i18n='Stop')
+                | STOP
+              |
+              input.BSswitch.mute(type='checkbox', data-off-text='Muted', data-on-text='Unmuted', checked='true')
+        |
+        footer.footer
+          .container
+            textarea.inputMessage.form-control(data-i18n='[placeholder]Say something')
+      |
+      li.login.page
+        .fb-like(data-share='true', data-width='450', data-show-faces='false')
+        |
+        div
+          .loginPageTitle
+            img(src='/favicon-32.png', alt="'Origami Colored Pencil Icons' by Double-J Design. CC Attribution 4.0. http://www.doublejdesign.co.uk", title="'Origami Colored Pencil Icons' by Double-J Design. CC Attribution 4.0. http://www.doublejdesign.co.uk")
+            |
+            h1.loginTitleText(data-i18n='TalkYet') TalkYet
+          |
+          .form
+            br
+            |
+            input.roomnameInput(type='text', maxlength='64', data-i18n='[placeholder]Room name')
+            |
+            br
+            |
+            br
+            |
+            br
+            |
+            br
+            |
+            button#enterRoomFacebook.btn.btn-1.btn-1a.btn-facebook(type='submit', data-i18n='EnterWithFB') Login with Facebook
+            |
+            p.loginPageText(data-i18n='OR') OR
+            |
+            button#enterRoomGuest.btn.btn-1.btn-1a(type='submit', data-i18n='EnterAsGuest') Login as guest
+    |
+    #contextMenu.dropdown.clearfix
+      ul.dropdown-menu.context-dropdown-menu(role='menu', aria-labelledby='dropdownMenu')
+        li
+          a#sendMsg(tabindex='-1', href='javascript:void(0);', data-i18n='Send message') Send message
+        |
+        li
+          a#startAudio.rtcAction(tabindex='-1', href='javascript:void(0);', data-i18n='Voice chat') Voice chat
+        |
+        li
+          a#startVideo.rtcAction(tabindex='-1', href='javascript:void(0);', data-i18n='Video chat') Video chat
+        |
+        li
+          a#sendFile.rtcAction(tabindex='-1', href='javascript:void(0);', data-i18n='Send file') Send file
+        |
+        li
+          a#poke(tabindex='-1', href='javascript:void(0);', data-i18n='Poke user') Poke user
+    |
+    input#fileInput(type='file')
+    |
+    #privateChannel.modal.fade
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+            |
+            h4#privateMessagesTitle.modal-title(data-i18n='Private Chat') Private Chat
+          |
+          .modal-body
+            .container
+              textarea.privateMessage.form-control(data-i18n='[placeholder]Whisper something')
+          |
+          .modal-footer
+            button.btn.btn-default(type='button', data-dismiss='modal', data-i18n='Close') Close
+    |
+    #videoChannel.modal.fade
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+            |
+            h4.modal-title(data-i18n='Video chat') Video chat
+          |
+          .modal-body
+            .media-panel
+              .videos
+                video.remoteVideo(autoplay='autoplay')
+                |
+                video.localVideo(autoplay='autoplay')
+          |
+          .modal-footer
+            button.btn.btn-danger.stopVideo(type='button', data-dismiss='modal', data-i18n='Stop') STOP
+            |
+            input.BSswitch.mute(type='checkbox', data-off-text='Muted', data-on-text='Unmuted', checked='true')

@@ -107,8 +107,13 @@ $(function() {
         $('.videoIcon').popover({
           title: t('Reminder'),
           content: '<p>' + t('Click here to reopen the hidden video pane') + '</p>',
-          html: true
+          html: true,
+          trigger: 'manual'
         })
+        $('.videoIcon').popover('show')
+        setTimeout(function() {
+          $('.videoIcon').popover('hide')
+        }, 3000)
       }
     })
 

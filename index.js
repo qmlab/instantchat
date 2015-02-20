@@ -34,7 +34,7 @@ var port = nconf.get('port')
 
 // For rendering views
 app.set('views', __dirname + '/public')
-app.engine('html', require('ejs').renderFile);
+app.engine('html', require('jade').__express);
 app.set('view engine', 'ejs');
 
 // For static html
@@ -61,7 +61,7 @@ i18n.init(function(t) {
 
     // Routing, should be placed after redirect
     app.get('/', function(req, res) {
-      res.render('chat.ejs')
+      res.render('chat.jade')
     })
 
     var privateKey  = fs.readFileSync('certs/talkyet.key', 'utf8')
