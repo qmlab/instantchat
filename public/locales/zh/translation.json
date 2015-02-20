@@ -61,5 +61,7 @@
     "You are disconnected. Do you want to re-login?": "连接已断开，是否要重新登陆？",
     "user logged in from another location": "用户已从其它地方登陆",
     "You are logged out": "你已被登出",
-    "last message at": "最近一条消息发出时间"
+    "last message at": "最近一条消息发出时间",
+    "Reminder": "温馨提醒",
+    "Click here to reopen the hidden video pane": "点击这里以显示视频"
 }

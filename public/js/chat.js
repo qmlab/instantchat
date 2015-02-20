@@ -104,6 +104,11 @@ $(function() {
     $('#videoChannel').on('hidden.bs.modal', function() {
       if (mediaChannel.inSession) {
         $('.videoIcon').show()
+        $('.videoIcon').popover({
+          title: t('Reminder'),
+          content: '<p>' + t('Click here to reopen the hidden video pane') + '</p>',
+          html: true
+        })
       }
     })
 

@@ -62,5 +62,7 @@
     "You are disconnected. Do you want to re-login?": "You are disconnected. Do you want to re-login?",
     "user logged in from another location": "user logged in from another location",
     "You are logged out": "You are logged out",
-    "last message at": "last message at"
+    "last message at": "last message at",
+    "Reminder": "Reminder",
+    "Click here to reopen the hidden video pane": "Click here to reopen the hidden video pane"
 }
