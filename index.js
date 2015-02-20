@@ -35,7 +35,7 @@ var port = nconf.get('port')
 // For rendering views
 app.set('views', __dirname + '/public')
 app.engine('html', require('jade').__express);
-app.set('view engine', 'ejs');
+app.set('view engine', 'jade');
 
 // For static html
 app.use(express.static(path.join(__dirname, 'public')));
@@ -80,7 +80,7 @@ i18n.init(function(t) {
   else {
     // Routing
     app.get('/', function(req, res) {
-      res.render('chat.ejs')
+      res.render('chat.jade')
     })
 
     server = http.createServer(app)
