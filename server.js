@@ -73,10 +73,6 @@ i18n.init(function(t) {
       console.log('Server listening at port %d', port)
     })
 
-    var httpServer = http.createServer(app)
-    httpServer.listen('80', function() {
-      console.log('Http server listening at port 80')
-    })
   }
   else {
     // Routing
