@@ -30,8 +30,8 @@ else {
   nconf.file({ file: 'config.debug.json' });
 }
 
-//var port = nconf.get('port')
-var port = process.env.PORT || 3000;
+var port = nconf.get('port')
+//var port = process.env.PORT || 3000;
 
 // For rendering views
 app.set('views', __dirname + '/public')
